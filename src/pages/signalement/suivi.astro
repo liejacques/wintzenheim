@@ -1,0 +1,80 @@
+---
+// Suivi d'un signalement. Le site étant statique (sans base de données), le
+// suivi consiste à recontacter la mairie avec le numéro : le formulaire
+// pré-remplit un e-mail (ou un appel) avec ce numéro.
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { mairie } from "../../data/commune";
+---
+
+<Base
+  title="Suivre mon signalement — Wintzenheim"
+  description="Suivez l'avancement d'un signalement transmis à la mairie de Wintzenheim grâce à votre numéro de suivi."
+>
+  <PageHero
+    kicker="Participation citoyenne"
+    title="Suivre mon signalement"
+    lede="Renseignez votre numéro de suivi : nous préparons un message à la mairie pour connaître l'avancement de votre demande."
+    crumbs={[{ label: "Signaler un problème", href: "/signalement/" }, { label: "Suivi" }]}
+  />
+
+  <section class="section">
+    <div class="container suivi-wrap">
+      <form id="suiviForm" class="suivi-form" data-mairie-email={mairie.email}>
+        <label class="suivi-label" for="suiviNum">Votre numéro de suivi</label>
+        <div class="suivi-row">
+          <input id="suiviNum" name="numero" type="text" inputmode="text" placeholder="WZ-2026-000000" autocomplete="off" required />
+          <button type="submit" class="btn btn--primary">Demander l'avancement</button>
+        </div>
+        <p class="suivi-err" id="suiviErr" role="alert"></p>
+        <p class="suivi-hint">Le numéro vous a été communiqué après l'envoi de votre signalement (format <strong>WZ-année-chiffres</strong>).</p>
+      </form>
+
+      <div class="suivi-help">
+        <h2 class="suivi-help__title">Vous n'avez plus votre numéro&nbsp;?</h2>
+        <p>Contactez directement la mairie en précisant la date et le lieu du problème signalé :</p>
+        <ul class="suivi-contacts">
+          <li><a href={`tel:${mairie.telE164}`}>{mairie.tel}</a></li>
+          <li><a href={`mailto:${mairie.email}`}>{mairie.email}</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .suivi-wrap { max-width: 680px; }
+  .suivi-form { background: var(--creme-3); border-top: 3px solid var(--or); padding: clamp(22px, 3vw, 32px); }
+  .suivi-label { display: block; font-weight: 600; margin-bottom: 8px; }
+  .suivi-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .suivi-row input { flex: 1; min-width: 200px; padding: 12px 14px; border: 1px solid var(--trait-fort); background: #fff; font: 400 16px/1.4 var(--sans); color: var(--encre); }
+  .suivi-row input:focus { outline: 2px solid var(--sinople); outline-offset: 1px; border-color: var(--sinople); }
+  .suivi-row .btn { min-height: 48px; white-space: nowrap; }
+  .suivi-err { color: #b3261e; font-weight: 600; font-size: 14px; min-height: 1.2em; margin: 10px 0 0; }
+  .suivi-hint { font-size: 13.5px; color: var(--muted); margin: 8px 0 0; }
+  .suivi-help { margin-top: 34px; padding-top: 26px; border-top: 1px solid var(--trait); }
+  .suivi-help__title { font-size: clamp(20px, 2.6vw, 26px); margin: 0 0 10px; }
+  .suivi-contacts { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
+  .suivi-contacts a { color: var(--sinople); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--or); }
+  @media (max-width: 520px) { .suivi-row .btn { flex: 1; justify-content: center; } }
+</style>
+
+<script>
+  const form = document.getElementById("suiviForm");
+  if (form instanceof HTMLFormElement) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = document.getElementById("suiviNum");
+      const err = document.getElementById("suiviErr");
+      const num = input instanceof HTMLInputElement ? input.value.trim().toUpperCase() : "";
+      if (!/^WZ-\d{4}-\d{3,}$/.test(num)) {
+        if (err) err.textContent = "Numéro invalide. Exemple attendu : WZ-2026-123456.";
+        return;
+      }
+      if (err) err.textContent = "";
+      const email = form.dataset.mairieEmail || "";
+      const corps = "Bonjour,\n\nJe souhaite connaître l'avancement de mon signalement n° " + num + ".\n\nMerci.";
+      window.location.href = "mailto:" + email + "?subject=" + encodeURIComponent("Suivi du signalement " + num) + "&body=" + encodeURIComponent(corps);
+    });
+  }
+</script>

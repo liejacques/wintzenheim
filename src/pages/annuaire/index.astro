@@ -1,0 +1,121 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { annuaireRubriques } from "../../data/annuaire";
+import { associations } from "../../data/vie-locale";
+
+const arrow =
+  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>';
+---
+
+<Base
+  title="Annuaire local — Wintzenheim"
+  description="L'annuaire de Wintzenheim : commerces, artisans, professionnels de santé, entreprises et vie associative de la commune."
+>
+  <PageHero
+    kicker="Vie économique & associative"
+    title="Annuaire local"
+    lede="Commerces, artisans, santé, entreprises et associations de Wintzenheim et de Logelbach. Une activité manque ou a changé ? Signalez-le à la mairie pour être référencé."
+    crumbs={[{ label: "Annuaire" }]}
+  />
+
+  <!-- Sommaire -->
+  <nav class="toc" aria-label="Catégories de l'annuaire">
+    <div class="container toc__inner">
+      {annuaireRubriques.map((r) => <a class="toc__link" href={`#${r.id}`}>{r.titre}</a>)}
+      <a class="toc__link" href="#associations">Associations</a>
+    </div>
+  </nav>
+
+  {annuaireRubriques.map((r, i) => (
+    <section id={r.id} class={`section rub ${i % 2 === 1 ? "rub--alt" : ""}`} aria-labelledby={`${r.id}-t`}>
+      <div class="container section__pad">
+        <p class="kicker"><span class="kicker__tick"></span><span class="kicker__label">{r.titre}</span></p>
+        <h2 id={`${r.id}-t`} class="block-title">{r.titre}</h2>
+        <p class="rub__intro">{r.intro}</p>
+
+        {r.entrees.length > 0 ? (
+          <div class="rub__grid">
+            {r.entrees.map((e) => (
+              <article class="rub__card">
+                <strong class="rub__nom">{e.nom}</strong>
+                {e.activite && <span class="rub__act">{e.activite}</span>}
+                {e.adresse && <p class="rub__addr">{e.adresse}</p>}
+                {e.tel && <a class="rub__tel" href={`tel:${e.telE164 ?? e.tel.replace(/\s/g, "")}`}>{e.tel}</a>}
+                {e.web && <a class="rub__web" href={e.web} rel="noopener" target="_blank">Site internet<span aria-hidden="true"> ↗</span></a>}
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="rub__empty">
+            <p>Cette rubrique est en cours de constitution.</p>
+            <a class="arrow-link" href="/contact/#ecrire">Référencer mon activité <Fragment set:html={arrow} /></a>
+          </div>
+        )}
+      </div>
+    </section>
+  ))}
+
+  <!-- Associations (données réelles) -->
+  <section id="associations" class="section--cream3 assoc" aria-labelledby="assoc-t">
+    <div class="container section__pad">
+      <p class="kicker"><span class="kicker__tick"></span><span class="kicker__label">Vie associative</span></p>
+      <h2 id="assoc-t" class="block-title">Les associations</h2>
+      <p class="rub__intro">
+        Wintzenheim compte une vie associative dense. Voici un aperçu par famille ;
+        l'annuaire complet et à jour est tenu par la commune.
+      </p>
+      <div class="assoc__grid">
+        {associations.familles.map((f) => (
+          <div class="assoc__col">
+            <h3 class="assoc__fam">{f.famille}</h3>
+            <ul class="assoc__list">
+              {f.exemples.map((ex) => <li>{ex}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <a class="arrow-link assoc__cta" href={associations.annuaireUrl} rel="noopener" target="_blank">
+        Annuaire complet des associations<span aria-hidden="true"> ↗</span>
+      </a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .toc { position: sticky; top: 0; z-index: 40; background: var(--vert-profond); border-bottom: 1px solid var(--trait-clair); }
+  .toc__inner { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-block: 12px; }
+  .toc__link { color: var(--sur-vert); text-decoration: none; font-size: 13.5px; font-weight: 600; padding: 4px 2px; border-bottom: 2px solid transparent; }
+  .toc__link:hover { color: #fff; border-color: var(--or); }
+
+  .rub { border-top: 1px solid var(--trait); scroll-margin-top: 60px; }
+  .rub--alt { background: var(--creme-3); }
+  .rub__intro { margin: 12px 0 0; max-width: 60ch; font-size: 16px; line-height: 1.6; color: var(--encre-douce); }
+
+  .rub__grid { margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 1px; background: var(--trait); border-block: 2px solid var(--or); }
+  .rub__card { background: var(--creme); padding: clamp(18px, 2.2vw, 24px); display: flex; flex-direction: column; gap: 4px; }
+  .rub--alt .rub__card { background: var(--creme-3); }
+  .rub__nom { font-family: var(--serif); font-size: 20px; }
+  .rub__act { font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sinople); font-weight: 600; }
+  .rub__addr { margin: 4px 0; font-size: 14.5px; color: var(--muted); }
+  .rub__tel, .rub__web { color: var(--sinople); text-decoration: none; font-weight: 600; border-bottom: 1px solid var(--or); width: fit-content; }
+
+  .rub__empty { margin-top: 22px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; background: var(--creme); border: 1px dashed var(--trait-fort); padding: 20px 24px; }
+  .rub--alt .rub__empty { background: #fff; }
+  .rub__empty p { margin: 0; color: var(--muted); }
+
+  .section--cream3 { background: var(--creme-3); border-top: 1px solid var(--trait); }
+  .assoc__grid { margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px; background: var(--trait); border-block: 2px solid var(--or); }
+  .assoc__col { background: var(--creme); padding: clamp(18px, 2.2vw, 24px); }
+  .assoc__fam { font-family: var(--serif); font-size: 21px; margin: 0 0 12px; color: var(--sinople); }
+  .assoc__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14.5px; line-height: 1.45; }
+  .assoc__list li { padding-left: 14px; position: relative; }
+  .assoc__list li::before { content: ""; position: absolute; left: 0; top: 9px; width: 5px; height: 5px; background: var(--or); border-radius: 50%; }
+  .assoc__cta { margin-top: 22px; }
+
+  /* En-tête collant sur mobile : on désactive le sommaire collant pour éviter
+     qu'il passe derrière l'en-tête. */
+  @media (max-width: 1080px) {
+    .toc { position: static; }
+  }
+</style>

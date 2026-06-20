@@ -1,0 +1,111 @@
+---
+// Bandeau d'alerte en haut du site (piloté par src/data/alerte.ts).
+// Ne s'affiche que si l'alerte est active. Masquable par l'usager (mémorisé
+// localement, par message : une nouvelle alerte réapparaît).
+import { alerte } from "../data/alerte";
+
+const show = alerte.active && alerte.message.trim().length > 0;
+const close =
+  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+const bell =
+  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a6 6 0 0 0-6 6c0 5-2 6-2 6h16s-2-1-2-6a6 6 0 0 0-6-6Z"/><path d="M10.5 20a1.5 1.5 0 0 0 3 0"/></svg>';
+---
+
+{show && (
+  <aside class={`alertbar alertbar--${alerte.niveau}`} role="region" aria-label="Information importante" data-alert data-alert-id={alerte.message.slice(0, 40)}>
+    <div class="container alertbar__inner">
+      <span class="alertbar__icon" aria-hidden="true"><Fragment set:html={bell} /></span>
+      <p class="alertbar__msg">
+        {alerte.message}
+        {alerte.lien && (
+          <a class="alertbar__link" href={alerte.lien}>{alerte.libelleLien ?? "En savoir plus"}</a>
+        )}
+      </p>
+      <button type="button" class="alertbar__close" data-alert-close aria-label="Masquer ce message">
+        <Fragment set:html={close} />
+      </button>
+    </div>
+  </aside>
+)}
+
+<style>
+  .alertbar {
+    color: #fff;
+  }
+  .alertbar--info {
+    background: var(--vert-profond);
+    color: var(--sur-vert);
+  }
+  .alertbar--attention {
+    background: #8a5e08;
+  }
+  .alertbar--urgent {
+    background: #9b2218;
+  }
+  .alertbar__inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-block: 11px;
+  }
+  .alertbar__icon {
+    flex: none;
+    display: inline-flex;
+    color: var(--or-clair);
+  }
+  .alertbar--urgent .alertbar__icon,
+  .alertbar--attention .alertbar__icon {
+    color: #fff;
+  }
+  .alertbar__msg {
+    margin: 0;
+    flex: 1;
+    font-size: 14.5px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .alertbar__link {
+    margin-left: 8px;
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    white-space: nowrap;
+  }
+  .alertbar__close {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  .alertbar__close:hover {
+    background: rgba(255, 255, 255, 0.16);
+  }
+</style>
+
+<script>
+  // Masquage mémorisé par message (une nouvelle alerte réapparaît).
+  document.querySelectorAll("[data-alert]").forEach((bar) => {
+    const id = "alerte-vue:" + (bar.getAttribute("data-alert-id") || "");
+    try {
+      if (localStorage.getItem(id) === "1") {
+        (bar as HTMLElement).hidden = true;
+      }
+    } catch (e) {
+      /* localStorage indisponible : on garde l'alerte visible */
+    }
+    bar.querySelector("[data-alert-close]")?.addEventListener("click", () => {
+      (bar as HTMLElement).hidden = true;
+      try {
+        localStorage.setItem(id, "1");
+      } catch (e) {
+        /* sans stockage, le masquage reste valable pour la session visuelle */
+      }
+    });
+  });
+</script>

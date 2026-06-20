@@ -49,8 +49,8 @@ export const mainNav: NavItem[] = [
 
 // Liens « utilitaires » (barre supérieure)
 export const utilityNav: NavItem[] = [
-  { label: "Logelbach", href: "/contact/#logelbach" },
-  { label: "Annuaire", href: "/la-mairie/" },
+  { label: "Signaler un problème", href: "/signalement/" },
+  { label: "Annuaire", href: "/annuaire/" },
   { label: "Contact", href: "/contact/" },
 ];
 
@@ -60,7 +60,9 @@ export const footerNav: { titre: string; liens: NavItem[] }[] = [
     titre: "Au quotidien",
     liens: [
       { label: "Vos démarches", href: "/demarches/" },
+      { label: "Signaler un problème", href: "/signalement/" },
       { label: "Déchets & collecte", href: "/dechets/" },
+      { label: "Annuaire", href: "/annuaire/" },
       { label: "Agenda", href: "/agenda/" },
       { label: "Actualités", href: "/actualites/" },
     ],

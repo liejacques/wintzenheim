@@ -1,0 +1,440 @@
+---
+// Signaler un problème — formulaire citoyen en 6 étapes, pensé mobile d'abord.
+// Envoi e-mail à la mairie via Web3Forms si une clé est configurée
+// (src/data/forms.ts) ; sinon repli automatique sur un lien e-mail (mailto)
+// pré-rempli. Numéro de suivi généré côté client. Démo (sans envoi) en local.
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { mairie } from "../../data/commune";
+import { web3formsKey, imgbbKey, formsConfigured } from "../../data/forms";
+
+const categories = [
+  { val: "Voirie", desc: "Trou, route abîmée, panneau…" },
+  { val: "Éclairage public", desc: "Lampadaire en panne…" },
+  { val: "Déchets", desc: "Dépôt sauvage, poubelle…" },
+  { val: "Eau & assainissement", desc: "Fuite, écoulement…" },
+  { val: "Espaces verts", desc: "Arbre, haie, propreté…" },
+  { val: "Sécurité", desc: "Danger, dégradation…" },
+  { val: "Autre", desc: "Tout autre problème" },
+];
+
+const icons: Record<string, string> = {
+  Voirie: '<path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M10 21v-5h4v5"/>',
+  "Éclairage public": '<path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V18h8v-3.3A7 7 0 0 0 12 2Z"/>',
+  Déchets: '<path d="M3 6h18l-1.5 13.5a1 1 0 0 1-1 .9H5.5a1 1 0 0 1-1-.9Z"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/>',
+  "Eau & assainissement": '<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11Z"/>',
+  "Espaces verts": '<path d="M12 22V12"/><path d="M12 12c0-4 3-7 7-7 0 4-3 7-7 7Z"/><path d="M12 14c0-3-2.5-5-5-5 0 3 2 5 5 5Z"/>',
+  Sécurité: '<path d="M12 3 5 6v5c0 4 3 7 7 8 4-1 7-4 7-8V6Z"/>',
+  Autre: '<path d="M4 4h16v12H7l-3 3Z"/>',
+};
+
+const steps = ["Problème", "Photo", "Lieu", "Détails", "Coordonnées", "Envoi"];
+const arrow =
+  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>';
+const check =
+  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+---
+
+<Base
+  title="Signaler un problème — Wintzenheim"
+  description="Signalez un problème à la mairie de Wintzenheim en quelques étapes : voirie, éclairage, déchets, eau… avec photo et localisation. Vous recevez un numéro de suivi."
+>
+  <PageHero
+    kicker="Participation citoyenne"
+    title="Signaler un problème"
+    lede="Un lampadaire en panne, un dépôt sauvage, un trou dans la route ? Dites-le nous en deux minutes : la mairie s'en occupe et vous gardez un numéro de suivi."
+    crumbs={[{ label: "Signaler un problème" }]}
+  />
+
+  <section class="section">
+    <div class="container sig-wrap">
+      <ol class="sig-steps" id="sigSteps" aria-label="Étapes du signalement">
+        {steps.map((s, i) => (
+          <li class={i === 0 ? "on" : ""} data-step={i + 1}><span>{i + 1}</span>{s}</li>
+        ))}
+      </ol>
+
+      <form
+        id="sigForm"
+        class="sig-form"
+        novalidate
+        data-web3forms-key={web3formsKey}
+        data-imgbb-key={imgbbKey}
+        data-configured={String(formsConfigured)}
+        data-mairie-email={mairie.email}
+      >
+        <input type="hidden" name="access_key" value={web3formsKey} />
+        <input type="hidden" name="subject" value="Nouveau signalement — site de Wintzenheim" />
+        <input type="hidden" name="from_name" value="Site de Wintzenheim" />
+        <input type="hidden" name="numero_de_suivi" id="sigNumero" value="" />
+        <input type="hidden" name="latitude" id="sigLat" value="" />
+        <input type="hidden" name="longitude" id="sigLng" value="" />
+        <input type="hidden" name="photo_jointe" id="sigPhotoJointe" value="Non" />
+        <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+        <!-- ÉTAPE 1 -->
+        <fieldset class="sig-panel" data-panel="1">
+          <legend class="sig-legend">De quel type de problème s'agit-il&nbsp;?</legend>
+          <div class="sig-cats" role="radiogroup" aria-label="Type de problème">
+            {categories.map((c) => (
+              <label class="sig-cat">
+                <input type="radio" name="categorie" value={c.val} required />
+                <span class="sig-cat__ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><Fragment set:html={icons[c.val]} /></svg></span>
+                <span class="sig-cat__txt"><strong>{c.val}</strong><small>{c.desc}</small></span>
+              </label>
+            ))}
+          </div>
+          <p class="sig-err" id="err-1" role="alert"></p>
+        </fieldset>
+
+        <!-- ÉTAPE 2 -->
+        <fieldset class="sig-panel" data-panel="2" hidden>
+          <legend class="sig-legend">Une photo aide beaucoup <span class="sig-opt">(facultatif)</span></legend>
+          <label class="sig-photobtn" for="sigPhoto">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 7h4l2-2h6l2 2h4v12H3Z"/><circle cx="12" cy="13" r="3.2"/></svg>
+            Prendre ou choisir une photo
+          </label>
+          <input type="file" id="sigPhoto" name="photo" accept="image/*" capture="environment" class="sr-only" />
+          <div class="sig-photoprev" id="sigPhotoPrev" hidden>
+            <img id="sigPhotoImg" alt="Aperçu de votre photo" />
+            <button type="button" class="btn btn--ghost" id="sigPhotoDel">Retirer la photo</button>
+          </div>
+          <p class="sig-hint">Photo de 8 Mo maximum. Évitez les personnes reconnaissables, merci.</p>
+        </fieldset>
+
+        <!-- ÉTAPE 3 -->
+        <fieldset class="sig-panel" data-panel="3" hidden>
+          <legend class="sig-legend">Où se trouve le problème&nbsp;?</legend>
+          <div class="sig-field">
+            <label for="sigLieu">Adresse ou lieu-dit *</label>
+            <input id="sigLieu" name="lieu" type="text" required placeholder="Ex. 12 rue Clemenceau, ou « parking de la Halle des Fêtes »" aria-describedby="err-3" />
+          </div>
+          <button type="button" class="btn btn--ghost sig-geo" id="sigGeo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            Utiliser ma position
+          </button>
+          <p class="sig-hint" id="sigGeoStatus" role="status" aria-live="polite"></p>
+          <p class="sig-err" id="err-3" role="alert"></p>
+        </fieldset>
+
+        <!-- ÉTAPE 4 -->
+        <fieldset class="sig-panel" data-panel="4" hidden>
+          <legend class="sig-legend">Décrivez le problème</legend>
+          <div class="sig-field">
+            <label for="sigDesc">Description *</label>
+            <textarea id="sigDesc" name="description" rows="5" required placeholder="Expliquez brièvement le problème…" aria-describedby="err-4"></textarea>
+          </div>
+          <p class="sig-err" id="err-4" role="alert"></p>
+        </fieldset>
+
+        <!-- ÉTAPE 5 -->
+        <fieldset class="sig-panel" data-panel="5" hidden>
+          <legend class="sig-legend">Vos coordonnées</legend>
+          <p class="sig-hint" style="margin-top:0">Elles restent à la mairie et ne sont jamais publiées.</p>
+          <div class="sig-field">
+            <label for="sigNom">Nom et prénom *</label>
+            <input id="sigNom" name="nom" type="text" required autocomplete="name" aria-describedby="err-5" />
+          </div>
+          <div class="sig-row">
+            <div class="sig-field">
+              <label for="sigTel">Téléphone</label>
+              <input id="sigTel" name="telephone" type="tel" autocomplete="tel" />
+            </div>
+            <div class="sig-field">
+              <label for="sigEmail">E-mail *</label>
+              <input id="sigEmail" name="email" type="email" required autocomplete="email" />
+            </div>
+          </div>
+          <label class="sig-check">
+            <input id="sigConsent" name="consentement" type="checkbox" required />
+            <span>J'accepte que mes données soient utilisées pour traiter ce signalement, conformément à la <a href="/confidentialite/">politique de confidentialité</a>. *</span>
+          </label>
+          <p class="sig-err" id="err-5" role="alert"></p>
+        </fieldset>
+
+        <!-- ÉTAPE 6 -->
+        <fieldset class="sig-panel" data-panel="6" hidden>
+          <legend class="sig-legend">Vérifiez avant d'envoyer</legend>
+          <dl class="sig-recap" id="sigRecap"></dl>
+          <p class="sig-hint">En envoyant, vous obtenez un numéro de suivi à conserver.</p>
+        </fieldset>
+
+        <div class="sig-nav">
+          <button type="button" class="btn btn--ghost" id="sigPrev" hidden>← Précédent</button>
+          <button type="button" class="btn btn--primary" id="sigNext">Continuer <Fragment set:html={arrow} /></button>
+          <button type="submit" class="btn btn--primary" id="sigSend" hidden><Fragment set:html={check} /> Envoyer le signalement</button>
+        </div>
+        <p class="sig-status" id="sigStatus" role="status" aria-live="polite"></p>
+      </form>
+
+      <div class="sig-done" id="sigDone" hidden>
+        <span class="sig-done__ico"><Fragment set:html={check} /></span>
+        <h2 class="sig-done__title">Merci, votre signalement est transmis&nbsp;!</h2>
+        <p>Votre numéro de suivi&nbsp;:</p>
+        <p class="sig-done__num" id="sigDoneNumero">WZ-2026-000000</p>
+        <p class="sig-done__note">Notez-le : il vous permettra de suivre l'avancement. La mairie le traite dans les meilleurs délais.</p>
+        <div class="sig-done__actions">
+          <a class="btn btn--primary" href="/signalement/suivi/">Suivre mon signalement</a>
+          <a class="btn btn--ghost" href="/">Retour à l'accueil</a>
+        </div>
+      </div>
+
+      <p class="sig-urgent">
+        <strong>Urgence ou danger immédiat&nbsp;?</strong> N'utilisez pas ce formulaire :
+        appelez le <a href="tel:18">18</a> (pompiers), le <a href="tel:17">17</a> (gendarmerie)
+        ou le <a href="tel:112">112</a> (numéro d'urgence européen).
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .sig-wrap { max-width: 720px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Étapes */
+  .sig-steps { list-style: none; display: flex; flex-wrap: wrap; gap: 4px; padding: 0; margin: 0 0 28px; }
+  .sig-steps li { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; color: var(--muted); padding: 6px 11px; border-radius: 999px; }
+  .sig-steps li span { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--trait); color: var(--encre); font-size: 12px; }
+  .sig-steps li.on { background: rgba(31,107,58,0.10); color: var(--sinople); }
+  .sig-steps li.on span { background: var(--sinople); color: #fff; }
+  .sig-steps li.done span { background: var(--or); color: #2a1f08; }
+
+  .sig-legend { font-family: var(--serif); font-size: clamp(22px, 3vw, 27px); font-weight: 600; color: var(--encre); margin-bottom: 18px; }
+  .sig-opt { font-family: var(--sans); font-size: 14px; color: var(--muted); font-weight: 500; }
+  .sig-panel { border: 0; padding: 0; margin: 0; }
+
+  /* Étape 1 : tuiles */
+  .sig-cats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .sig-cat { display: flex; align-items: center; gap: 13px; background: var(--creme); border: 2px solid var(--trait); padding: 14px 16px; cursor: pointer; transition: border-color .15s, background .15s; }
+  .sig-cat:hover { border-color: var(--sinople); }
+  .sig-cat input { position: absolute; opacity: 0; }
+  .sig-cat:has(input:checked) { border-color: var(--sinople); background: rgba(31,107,58,0.07); }
+  .sig-cat:has(input:focus-visible) { outline: 2px solid var(--sinople); outline-offset: 2px; }
+  .sig-cat__ico { width: 44px; height: 44px; flex: none; display: grid; place-items: center; background: rgba(31,107,58,0.10); color: var(--sinople); }
+  .sig-cat:has(input:checked) .sig-cat__ico { background: var(--sinople); color: #fff; }
+  .sig-cat__txt strong { display: block; font-size: 15.5px; }
+  .sig-cat__txt small { color: var(--muted); font-size: 12.5px; }
+
+  /* Étape 2 : photo */
+  .sig-photobtn { display: inline-flex; align-items: center; gap: 10px; background: var(--creme); border: 2px dashed var(--sinople); color: var(--sinople); padding: 18px 22px; font-weight: 600; cursor: pointer; }
+  .sig-photobtn:hover { background: rgba(31,107,58,0.07); }
+  .sig-photoprev { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+  .sig-photoprev img { max-width: 100%; max-height: 280px; border: 1px solid var(--trait); }
+
+  /* Champs */
+  .sig-field { margin-bottom: 16px; }
+  .sig-field label { display: block; font-weight: 600; font-size: 14.5px; margin-bottom: 6px; }
+  .sig-field input, .sig-field textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--trait-fort); background: #fff; font: 400 16px/1.4 var(--sans); color: var(--encre); }
+  .sig-field input:focus, .sig-field textarea:focus { outline: 2px solid var(--sinople); outline-offset: 1px; border-color: var(--sinople); }
+  .sig-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .sig-geo { margin-top: 2px; }
+  .sig-hint { font-size: 13.5px; color: var(--muted); margin-top: 10px; }
+  .sig-err { color: #b3261e; font-weight: 600; font-size: 14px; min-height: 1.2em; margin-top: 8px; }
+
+  .sig-check { display: flex; gap: 10px; align-items: flex-start; margin-top: 8px; font-size: 14.5px; line-height: 1.45; }
+  .sig-check input { margin-top: 3px; width: 18px; height: 18px; flex: none; accent-color: var(--sinople); }
+  .sig-check a { color: var(--sinople); }
+
+  /* Récap */
+  .sig-recap { background: var(--creme-3); border: 1px solid var(--trait); padding: 4px 18px; margin: 0; }
+  .sig-recap div { display: flex; justify-content: space-between; gap: 14px; padding: 11px 0; border-bottom: 1px solid var(--trait); font-size: 14.5px; }
+  .sig-recap div:last-child { border-bottom: 0; }
+  .sig-recap dt { color: var(--muted); flex: none; }
+  .sig-recap dd { margin: 0; font-weight: 600; text-align: right; overflow-wrap: anywhere; }
+
+  .sig-nav { display: flex; gap: 12px; margin-top: 26px; flex-wrap: wrap; }
+  .sig-nav .btn { min-height: 48px; }
+  .sig-status { margin-top: 14px; font-weight: 600; }
+  .sig-status.ko { color: #b3261e; }
+
+  /* Succès */
+  .sig-done { text-align: center; background: var(--creme-3); border-top: 3px solid var(--or); padding: 44px 28px; }
+  .sig-done__ico { display: inline-flex; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 50%; background: var(--sinople); color: #fff; margin-bottom: 14px; }
+  .sig-done__title { font-size: clamp(24px, 4vw, 32px); margin: 0 0 10px; }
+  .sig-done__num { font-family: var(--serif); font-size: 34px; font-weight: 700; color: var(--sinople); letter-spacing: 1px; margin: 6px 0 12px; }
+  .sig-done__note { color: var(--encre-douce); font-size: 15px; max-width: 48ch; margin: 0 auto 22px; }
+  .sig-done__actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  .sig-urgent { margin-top: 30px; font-size: 14px; color: var(--encre-douce); background: rgba(200,165,60,0.12); border: 1px solid var(--or); padding: 14px 18px; }
+  .sig-urgent a { color: var(--sinople); font-weight: 700; }
+
+  @media (max-width: 600px) {
+    .sig-cats { grid-template-columns: 1fr; }
+    .sig-row { grid-template-columns: 1fr; }
+    .sig-nav .btn { flex: 1; justify-content: center; }
+  }
+</style>
+
+<script>
+  const form = document.getElementById("sigForm");
+  if (form instanceof HTMLFormElement) {
+    const panels = Array.from(document.querySelectorAll(".sig-panel"));
+    const stepsEls = Array.from(document.querySelectorAll("#sigSteps li"));
+    const prevBtn = document.getElementById("sigPrev");
+    const nextBtn = document.getElementById("sigNext");
+    const sendBtn = document.getElementById("sigSend");
+    const status = document.getElementById("sigStatus");
+    const TOTAL = 6;
+    let etape = 1;
+
+    const val = (id) => {
+      const el = document.getElementById(id);
+      return el && "value" in el ? String(el.value).trim() : "";
+    };
+
+    // Numéro de suivi : WZ-ANNÉE-XXXXXX
+    const numero = "WZ-" + new Date().getFullYear() + "-" + String(Date.now()).slice(-6);
+    const numEl = document.getElementById("sigNumero");
+    if (numEl) numEl.value = numero;
+
+    const erreur = (n, msg) => { const e = document.getElementById("err-" + n); if (e) e.textContent = msg; };
+
+    function montre(n) {
+      etape = n;
+      panels.forEach((p) => { p.hidden = Number(p.dataset.panel) !== n; });
+      stepsEls.forEach((s, i) => { s.classList.toggle("on", i + 1 === n); s.classList.toggle("done", i + 1 < n); });
+      if (prevBtn) prevBtn.hidden = n === 1;
+      if (nextBtn) nextBtn.hidden = n === TOTAL;
+      if (sendBtn) sendBtn.hidden = n !== TOTAL;
+      if (n === TOTAL) recap();
+      document.getElementById("sigSteps")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function valide(n) {
+      erreur(n, "");
+      if (n === 1 && !form.querySelector('input[name="categorie"]:checked')) { erreur(1, "Choisissez un type de problème pour continuer."); return false; }
+      if (n === 3 && !val("sigLieu")) { erreur(3, "Indiquez l'adresse ou le lieu du problème."); return false; }
+      if (n === 4 && val("sigDesc").length < 10) { erreur(4, "Décrivez le problème en quelques mots (au moins une phrase)."); return false; }
+      if (n === 5) {
+        const email = val("sigEmail");
+        const consent = document.getElementById("sigConsent");
+        if (!val("sigNom")) { erreur(5, "Indiquez votre nom."); return false; }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { erreur(5, "Votre adresse e-mail semble invalide."); return false; }
+        if (consent instanceof HTMLInputElement && !consent.checked) { erreur(5, "Merci d'accepter l'utilisation de vos données pour ce signalement."); return false; }
+      }
+      return true;
+    }
+
+    nextBtn?.addEventListener("click", () => { if (valide(etape)) montre(etape + 1); });
+    prevBtn?.addEventListener("click", () => montre(etape - 1));
+
+    // Photo : aperçu / suppression
+    const photo = document.getElementById("sigPhoto");
+    const prev = document.getElementById("sigPhotoPrev");
+    const img = document.getElementById("sigPhotoImg");
+    if (photo instanceof HTMLInputElement) {
+      photo.addEventListener("change", () => {
+        const f = photo.files && photo.files[0];
+        if (!f) return;
+        if (f.size > 8 * 1024 * 1024) { alert("Photo trop lourde (8 Mo maximum)."); photo.value = ""; return; }
+        if (img instanceof HTMLImageElement) img.src = URL.createObjectURL(f);
+        if (prev) prev.hidden = false;
+      });
+      document.getElementById("sigPhotoDel")?.addEventListener("click", () => {
+        photo.value = ""; if (prev) prev.hidden = true; if (img instanceof HTMLImageElement) img.src = "";
+      });
+    }
+
+    // Géolocalisation
+    document.getElementById("sigGeo")?.addEventListener("click", () => {
+      const st = document.getElementById("sigGeoStatus");
+      if (!navigator.geolocation) { if (st) st.textContent = "La géolocalisation n'est pas disponible sur cet appareil."; return; }
+      if (st) st.textContent = "Recherche de votre position…";
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = document.getElementById("sigLat"); const lng = document.getElementById("sigLng");
+          if (lat) lat.value = pos.coords.latitude.toFixed(5);
+          if (lng) lng.value = pos.coords.longitude.toFixed(5);
+          if (st) st.textContent = "✓ Position enregistrée, elle sera jointe au signalement.";
+        },
+        () => { if (st) st.textContent = "Position indisponible : indiquez simplement l'adresse ci-dessus."; }
+      );
+    });
+
+    function recap() {
+      const cat = form.querySelector('input[name="categorie"]:checked');
+      const lignes = [
+        ["Numéro de suivi", numero],
+        ["Problème", cat instanceof HTMLInputElement ? cat.value : "—"],
+        ["Photo", photo instanceof HTMLInputElement && photo.files && photo.files.length ? "1 photo jointe" : "aucune"],
+        ["Lieu", val("sigLieu") || "—"],
+        ["Description", val("sigDesc")],
+        ["Nom", val("sigNom")],
+        ["E-mail", val("sigEmail")],
+        ["Téléphone", val("sigTel") || "—"],
+      ];
+      const recapEl = document.getElementById("sigRecap");
+      if (recapEl) recapEl.innerHTML = lignes.map(([t, d]) => `<div><dt>${t}</dt><dd>${String(d).replace(/</g, "&lt;")}</dd></div>`).join("");
+    }
+
+    const reussite = () => {
+      form.hidden = true;
+      const stepsBar = document.getElementById("sigSteps"); if (stepsBar) stepsBar.hidden = true;
+      const dn = document.getElementById("sigDoneNumero"); if (dn) dn.textContent = numero;
+      const done = document.getElementById("sigDone"); if (done) { done.hidden = false; done.scrollIntoView({ behavior: "smooth", block: "center" }); }
+    };
+
+    // Repli e-mail (mailto) quand aucune clé Web3Forms n'est configurée.
+    function envoiMailto() {
+      const email = form.dataset.mairieEmail || "";
+      const cat = form.querySelector('input[name="categorie"]:checked');
+      const corps = [
+        "Numéro de suivi : " + numero,
+        "Problème : " + (cat instanceof HTMLInputElement ? cat.value : "—"),
+        "Lieu : " + (val("sigLieu") || "—"),
+        "Position GPS : " + (val("sigLat") ? val("sigLat") + ", " + val("sigLng") : "non renseignée"),
+        "",
+        "Description :",
+        val("sigDesc"),
+        "",
+        "Nom : " + val("sigNom"),
+        "E-mail : " + val("sigEmail"),
+        "Téléphone : " + (val("sigTel") || "—"),
+        "",
+        "(Si vous avez une photo, joignez-la à cet e-mail.)",
+      ].join("\n");
+      const href = "mailto:" + email + "?subject=" + encodeURIComponent("Signalement " + numero) + "&body=" + encodeURIComponent(corps);
+      window.location.href = href;
+    }
+
+    async function envoiWeb3() {
+      const payload = {};
+      new FormData(form).forEach((v, k) => { if (typeof v === "string") payload[k] = v; });
+      const file = photo instanceof HTMLInputElement ? photo.files && photo.files[0] : null;
+      const imgbb = (form.dataset.imgbbKey || "").trim();
+      if (file) {
+        payload["photo_jointe"] = "Oui — photo à demander à l'usager";
+        if (imgbb) {
+          try {
+            const fd = new FormData(); fd.append("image", file);
+            const up = await fetch("https://api.imgbb.com/1/upload?key=" + imgbb, { method: "POST", body: fd });
+            const j = await up.json();
+            if (j && j.success && j.data && j.data.url) { payload["lien_photo"] = j.data.url; payload["photo_jointe"] = "Oui — voir lien_photo"; }
+          } catch (e) { /* repli : photo à demander */ }
+        }
+      }
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      return !!json.success;
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!valide(5)) { montre(5); return; }
+      const local = ["localhost", "127.0.0.1"].includes(location.hostname);
+      const configured = form.dataset.configured === "true";
+      if (local) { reussite(); return; }
+      if (!configured) { envoiMailto(); reussite(); return; }
+      if (status) { status.textContent = "Envoi en cours…"; status.className = "sig-status"; }
+      envoiWeb3().then((ok) => {
+        if (ok) { reussite(); }
+        else if (status) { status.textContent = "L'envoi a échoué. Réessayez ou appelez la mairie."; status.className = "sig-status ko"; }
+      }).catch(() => { if (status) { status.textContent = "L'envoi a échoué. Réessayez ou appelez la mairie."; status.className = "sig-status ko"; } });
+    });
+  }
+</script>

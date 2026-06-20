@@ -3,9 +3,21 @@ import Base from "../../layouts/Base.astro";
 import PageHero from "../../components/PageHero.astro";
 import { mairie, annexe, mapsUrl } from "../../data/commune";
 import { urgences, servicesProximite, transports } from "../../data/pratique";
+import { web3formsKey, formsConfigured } from "../../data/forms";
 
 // Itinéraire vers la mairie (ouvre Google Maps)
 const itineraire = mapsUrl(`${mairie.nom}, ${mairie.adresse}, ${mairie.cp} ${mairie.ville}`);
+
+const arrow =
+  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>';
+const sujets = [
+  "Question générale",
+  "État civil & papiers",
+  "Urbanisme",
+  "Rendez-vous avec le maire",
+  "Vie associative & salles",
+  "Autre",
+];
 ---
 
 <Base
@@ -51,6 +63,75 @@ const itineraire = mapsUrl(`${mairie.nom}, ${mairie.adresse}, ${mairie.cp} ${mai
             <span data-office-status>Consulter les horaires</span>
           </p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Écrire à la mairie / rendez-vous -->
+  <section id="ecrire" class="section--cream3 ecrire" aria-labelledby="ecrire-t">
+    <div class="container section__pad">
+      <div class="ecrire__grid">
+        <div class="ecrire__intro">
+          <p class="kicker"><span class="kicker__tick"></span><span class="kicker__label">Nous écrire</span></p>
+          <h2 id="ecrire-t" class="block-title">Envoyer un message</h2>
+          <p class="ecrire__lede">
+            Une question, une demande, un rendez-vous&nbsp;? Écrivez-nous : votre message
+            arrive directement à la mairie, qui vous répond par e-mail ou par téléphone.
+          </p>
+          <div class="ecrire__maire">
+            <h3 class="ecrire__maire-t">Rencontrer le maire</h3>
+            <p>
+              Le maire et les adjoints reçoivent sur rendez-vous. Choisissez l'objet
+              «&nbsp;Rendez-vous avec le maire&nbsp;» dans le formulaire, ou appelez la mairie
+              au <a href={`tel:${mairie.telE164}`}>{mairie.tel}</a>.
+            </p>
+          </div>
+        </div>
+
+        <form id="contactForm" class="ecrire__form" novalidate
+          data-configured={String(formsConfigured)} data-mairie-email={mairie.email}>
+          <input type="hidden" name="access_key" value={web3formsKey} />
+          <input type="hidden" name="subject" value="Nouveau message — site de Wintzenheim" />
+          <input type="hidden" name="from_name" value="Site de Wintzenheim" />
+          <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+          <div class="ct-field">
+            <label for="ctNom">Nom et prénom *</label>
+            <input id="ctNom" name="nom" type="text" required autocomplete="name" />
+          </div>
+          <div class="ct-row">
+            <div class="ct-field">
+              <label for="ctEmail">E-mail *</label>
+              <input id="ctEmail" name="email" type="email" required autocomplete="email" />
+            </div>
+            <div class="ct-field">
+              <label for="ctTel">Téléphone</label>
+              <input id="ctTel" name="telephone" type="tel" autocomplete="tel" />
+            </div>
+          </div>
+          <div class="ct-field">
+            <label for="ctSujet">Objet</label>
+            <select id="ctSujet" name="objet">
+              {sujets.map((s) => <option value={s}>{s}</option>)}
+            </select>
+          </div>
+          <div class="ct-field">
+            <label for="ctMsg">Votre message *</label>
+            <textarea id="ctMsg" name="message" rows="5" required></textarea>
+          </div>
+          <label class="ct-check">
+            <input id="ctConsent" name="consentement" type="checkbox" required />
+            <span>J'accepte que mes données soient utilisées pour traiter ma demande (<a href="/confidentialite/">confidentialité</a>). *</span>
+          </label>
+          <p class="ct-err" id="ctErr" role="alert"></p>
+          <button type="submit" class="btn btn--primary ct-send">Envoyer le message <Fragment set:html={arrow} /></button>
+          <p class="ct-status" id="ctStatus" role="status" aria-live="polite"></p>
+
+          <div class="ct-done" id="ctDone" hidden>
+            <strong>Merci, votre message est transmis.</strong>
+            <span>La mairie vous répondra dans les meilleurs délais.</span>
+          </div>
+        </form>
       </div>
     </div>
   </section>
@@ -320,9 +401,83 @@ const itineraire = mapsUrl(`${mairie.nom}, ${mairie.adresse}, ${mairie.cp} ${mai
 
   section { scroll-margin-top: 20px; }
 
+  /* Écrire à la mairie */
+  .section--cream3 { background: var(--creme-3); border-top: 1px solid var(--trait); }
+  .ecrire__grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(28px, 4vw, 56px); align-items: start; }
+  .ecrire__lede { margin: 14px 0 0; font-size: 16.5px; line-height: 1.6; color: var(--encre-douce); max-width: 46ch; }
+  .ecrire__maire { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--trait); }
+  .ecrire__maire-t { font-family: var(--sans); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sinople); font-weight: 600; margin: 0 0 8px; }
+  .ecrire__maire p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--encre-douce); }
+  .ecrire__maire a { color: var(--sinople); font-weight: 600; }
+
+  .ecrire__form { background: var(--creme); border-top: 3px solid var(--or); padding: clamp(20px, 2.6vw, 30px); }
+  .ct-field { margin-bottom: 14px; }
+  .ct-field label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+  .ct-field input, .ct-field textarea, .ct-field select { width: 100%; padding: 11px 13px; border: 1px solid var(--trait-fort); background: #fff; font: 400 16px/1.4 var(--sans); color: var(--encre); }
+  .ct-field input:focus, .ct-field textarea:focus, .ct-field select:focus { outline: 2px solid var(--sinople); outline-offset: 1px; border-color: var(--sinople); }
+  .ct-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .ct-check { display: flex; gap: 10px; align-items: flex-start; margin: 4px 0 16px; font-size: 14px; line-height: 1.45; }
+  .ct-check input { margin-top: 3px; width: 18px; height: 18px; flex: none; accent-color: var(--sinople); }
+  .ct-check a { color: var(--sinople); }
+  .ct-err { color: #b3261e; font-weight: 600; font-size: 14px; min-height: 1.2em; margin: 0 0 8px; }
+  .ct-send { min-height: 48px; }
+  .ct-status { margin: 12px 0 0; font-weight: 600; }
+  .ct-status.ko { color: #b3261e; }
+  .ct-done { display: flex; flex-direction: column; gap: 4px; margin-top: 16px; padding: 16px 18px; background: rgba(31,107,58,0.08); border-left: 3px solid var(--sinople); }
+  .ct-done strong { font-family: var(--serif); font-size: 19px; }
+
   @media (max-width: 820px) {
     .main-contact__grid,
     .annexe__grid,
-    .transports__grid { grid-template-columns: 1fr; }
+    .transports__grid,
+    .ecrire__grid { grid-template-columns: 1fr; }
+    .ct-row { grid-template-columns: 1fr; }
   }
 </style>
+
+<script>
+  const cf = document.getElementById("contactForm");
+  if (cf instanceof HTMLFormElement) {
+    const err = document.getElementById("ctErr");
+    const status = document.getElementById("ctStatus");
+    const v = (id) => { const el = document.getElementById(id); return el && "value" in el ? String(el.value).trim() : ""; };
+    const done = () => {
+      const d = document.getElementById("ctDone");
+      cf.querySelector(".ct-send")?.setAttribute("hidden", "");
+      if (d) d.hidden = false;
+    };
+    function mailto() {
+      const email = cf.dataset.mairieEmail || "";
+      const corps = [
+        "Objet : " + v("ctSujet"),
+        "Nom : " + v("ctNom"),
+        "E-mail : " + v("ctEmail"),
+        "Téléphone : " + (v("ctTel") || "—"),
+        "",
+        v("ctMsg"),
+      ].join("\n");
+      window.location.href = "mailto:" + email + "?subject=" + encodeURIComponent(v("ctSujet") + " — " + v("ctNom")) + "&body=" + encodeURIComponent(corps);
+    }
+    async function web3() {
+      const payload = {};
+      new FormData(cf).forEach((val, k) => { if (typeof val === "string") payload[k] = val; });
+      const res = await fetch("https://api.web3forms.com/submit", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) });
+      return !!(await res.json()).success;
+    }
+    cf.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (err) err.textContent = "";
+      const consent = document.getElementById("ctConsent");
+      if (!v("ctNom")) { if (err) err.textContent = "Indiquez votre nom."; return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v("ctEmail"))) { if (err) err.textContent = "Adresse e-mail invalide."; return; }
+      if (v("ctMsg").length < 5) { if (err) err.textContent = "Écrivez votre message."; return; }
+      if (consent instanceof HTMLInputElement && !consent.checked) { if (err) err.textContent = "Merci d'accepter l'utilisation de vos données."; return; }
+      const local = ["localhost", "127.0.0.1"].includes(location.hostname);
+      if (local) { done(); return; }
+      if (cf.dataset.configured !== "true") { mailto(); done(); return; }
+      if (status) { status.textContent = "Envoi en cours…"; status.className = "ct-status"; }
+      web3().then((ok) => { if (ok) done(); else if (status) { status.textContent = "L'envoi a échoué. Réessayez ou écrivez par e-mail."; status.className = "ct-status ko"; } })
+        .catch(() => { if (status) { status.textContent = "L'envoi a échoué. Réessayez ou écrivez par e-mail."; status.className = "ct-status ko"; } });
+    });
+  }
+</script>

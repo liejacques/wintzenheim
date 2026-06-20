@@ -1,0 +1,92 @@
+---
+import Base from "../layouts/Base.astro";
+
+const arrow =
+  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>';
+const liens = [
+  { label: "Accueil", href: "/" },
+  { label: "Vos démarches", href: "/demarches/" },
+  { label: "Agenda", href: "/agenda/" },
+  { label: "Contact", href: "/contact/" },
+  { label: "Plan du site", href: "/plan-du-site/" },
+];
+---
+
+<Base
+  title="Page introuvable — Wintzenheim"
+  description="La page demandée n'existe pas ou a été déplacée. Retrouvez votre chemin sur le site de la commune de Wintzenheim."
+>
+  <section class="nf">
+    <div class="container nf__inner">
+      <img class="nf__blason" src="/blason.svg" width="72" height="80" alt="" aria-hidden="true" decoding="async" />
+      <p class="nf__code">Erreur 404</p>
+      <h1 class="nf__title">Cette page est introuvable</h1>
+      <p class="nf__lede">
+        La page que vous cherchez n'existe pas, a changé d'adresse ou n'est plus disponible.
+        Pas d'inquiétude : voici quelques pistes pour retrouver votre chemin.
+      </p>
+
+      <div class="nf__actions">
+        <a class="btn btn--primary" href="/">Retour à l'accueil <Fragment set:html={arrow} /></a>
+        <button class="btn btn--ghost" type="button" data-search-open>Rechercher un service</button>
+      </div>
+
+      <nav class="nf__links" aria-label="Pages utiles">
+        {liens.map((l) => <a href={l.href}>{l.label}</a>)}
+      </nav>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { background: var(--creme); }
+  .nf__inner {
+    max-width: 640px;
+    text-align: center;
+    padding-block: clamp(56px, 10vw, 110px);
+  }
+  .nf__blason { width: clamp(60px, 9vw, 78px); height: auto; margin-bottom: 18px; filter: drop-shadow(0 6px 16px rgba(22, 64, 31, 0.18)); }
+  .nf__code {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--sinople);
+  }
+  .nf__title {
+    font-size: clamp(34px, 6vw, 54px);
+    line-height: 1.04;
+    margin: 10px 0 14px;
+  }
+  .nf__lede {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--encre-douce);
+    margin: 0 auto 28px;
+    max-width: 52ch;
+  }
+  .nf__actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+  }
+  .nf__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 26px;
+    justify-content: center;
+    padding-top: 24px;
+    border-top: 1px solid var(--trait);
+  }
+  .nf__links a {
+    color: var(--encre);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid var(--or);
+    padding-bottom: 2px;
+  }
+  .nf__links a:hover { color: var(--sinople); border-color: var(--sinople); }
+</style>
