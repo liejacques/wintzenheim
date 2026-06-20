@@ -196,6 +196,8 @@ function viewList(key: string) {
         ${col.columns.map((c, i) => `<td data-label="${esc(fieldLabel(col, c))}">${i === 0 ? `<strong>${cell(it, c)}</strong>` : cell(it, c)}</td>`).join("")}
         <td class="row-actions">
           <a class="ad-link" href="#/c/${key}/edit/${it.id}">${canEdit ? "Modifier" : "Voir"}</a>
+          ${canEdit && col.statut === "contenu" ? `<button class="ad-link ad-link--btn" data-act="dup" data-id="${it.id}">Dupliquer</button>` : ""}
+          ${canEdit && (col.statut === "contenu" || col.statut === "annonce") && it.statut !== "archive" && it.statut !== "archivee" ? `<button class="ad-link ad-link--btn" data-act="arch" data-id="${it.id}">Archiver</button>` : ""}
         </td></tr>`).join("")}</tbody>
     </table></div>`}
   `, key);
@@ -204,6 +206,12 @@ function viewList(key: string) {
   q?.addEventListener("input", () => { st.q = q.value; const items2 = renderRoute; viewList(key); (document.getElementById("listQ") as HTMLInputElement)?.focus(); });
   const sel = document.getElementById("listStatut") as HTMLSelectElement;
   sel?.addEventListener("change", () => { st.statut = sel.value; viewList(key); });
+  root.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", () => {
+    const el = b as HTMLElement; const itemId = el.dataset.id!;
+    if (el.dataset.act === "dup") store.duplicate(key, itemId);
+    else if (el.dataset.act === "arch") store.update(key, itemId, { statut: col.statut === "annonce" ? "archivee" : "archive" } as any);
+    viewList(key);
+  }));
 }
 
 function fieldLabel(col: Collection, name: string): string {
