@@ -1,0 +1,78 @@
+---
+import { Image } from "astro:assets";
+import Base from "../../../layouts/Base.astro";
+import PageHero from "../../../components/PageHero.astro";
+import { quartiers } from "../../../data/commune";
+import { photos } from "../../../data/photos";
+
+// Image d'ambiance par quartier (la légende garde le sujet réel de la photo)
+const ambiance = [photos.fontaine, photos.panorama, photos.vista];
+---
+
+<Base
+  title="Les trois quartiers — Wintzenheim"
+  description="Wintzenheim se compose de trois quartiers : le Centre historique et viticole, Logelbach l'ancienne cité textile, et le hameau de La Forge. Découvrez leur histoire et leur identité."
+  ogImage={photos.fontaine.image.src}
+>
+  <PageHero
+    kicker="Un territoire, trois visages"
+    title="Les trois quartiers"
+    lede="Le Centre historique et viticole, Logelbach née de l'industrie textile, et le hameau rural de La Forge : trois quartiers qui composent l'identité de Wintzenheim."
+    crumbs={[{ label: "Découvrir", href: "/decouvrir/" }, { label: "Les trois quartiers" }]}
+  />
+
+  <div class="quartiers">
+    {quartiers.map((q, i) => {
+      const photo = ambiance[i % ambiance.length];
+      const alt = i % 2 === 1;
+      return (
+        <section class={`quartier ${alt ? "quartier--alt" : ""}`} aria-labelledby={`q-${i}`}>
+          <div class="container quartier__pad">
+            <div class="quartier__grid">
+              <figure class="quartier__media">
+                <Image src={photo.image} alt={photo.alt} widths={[400, 700, 1000]} sizes="(max-width: 820px) 100vw, 46vw" loading="lazy" />
+                <figcaption class="credit credit--overlay">{photo.credit}</figcaption>
+              </figure>
+              <div class="quartier__text">
+                <p class="kicker"><span class="kicker__tick"></span><span class="kicker__label">Quartier · {q.cp}</span></p>
+                <h2 id={`q-${i}`} class="quartier__nom">{q.nom}</h2>
+                <p class="quartier__resume">{q.resume}</p>
+                <p class="quartier__detail">{q.detail}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    })}
+  </div>
+
+  <section class="section--sinople back" aria-label="Continuer la découverte">
+    <div class="container section__pad back__inner">
+      <p class="back__text">Poursuivez avec le patrimoine bâti de la commune et ses huit siècles d'histoire.</p>
+      <a class="arrow-link arrow-link--underline back__cta" href="/decouvrir/patrimoine/">Patrimoine & histoire</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .quartier { border-top: 1px solid var(--trait); background: var(--creme); }
+  .quartier--alt { background: var(--creme-3); }
+  .quartier__pad { padding-block: clamp(40px, 5vw, 72px); }
+  .quartier__grid { display: grid; grid-template-columns: 0.95fr 1.05fr; gap: clamp(28px, 4vw, 56px); align-items: center; }
+  .quartier--alt .quartier__media { order: 2; }
+  .quartier__media { position: relative; margin: 0; aspect-ratio: 4 / 3; overflow: hidden; }
+  .quartier__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .quartier__media .credit { position: absolute; right: 10px; bottom: 8px; margin: 0; }
+  .quartier__nom { font-size: clamp(32px, 4.4vw, 52px); margin: 12px 0 14px; line-height: 1; }
+  .quartier__resume { margin: 0 0 14px; font-size: 18px; font-weight: 600; line-height: 1.45; color: var(--encre); max-width: 46ch; }
+  .quartier__detail { margin: 0; font-size: 16px; line-height: 1.7; color: var(--encre-douce); max-width: 56ch; }
+
+  .back__inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  .back__text { margin: 0; font-size: 18px; color: var(--sur-vert); max-width: 50ch; }
+  .back__cta { color: #fff; }
+
+  @media (max-width: 820px) {
+    .quartier__grid { grid-template-columns: 1fr; }
+    .quartier--alt .quartier__media { order: 0; }
+  }
+</style>

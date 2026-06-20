@@ -1,0 +1,78 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { commune, mairie } from "../../data/commune";
+import { maire } from "../../data/elus";
+---
+
+<Base
+  title="Mentions légales — Wintzenheim"
+  description="Mentions légales du site officiel de la commune de Wintzenheim : éditeur, directeur de la publication, hébergement, propriété intellectuelle et crédits."
+>
+  <PageHero
+    title="Mentions légales"
+    kicker="Informations légales"
+    crumbs={[{ label: "Mentions légales" }]}
+  />
+
+  <section class="section">
+    <div class="container prose">
+      <h2>Éditeur du site</h2>
+      <p>
+        Ce site est édité par la <strong>Commune de {commune.nom}</strong>, collectivité
+        territoriale du département du {commune.departement} ({commune.codeDepartement}).
+      </p>
+      <p>
+        {mairie.nom}<br />
+        {mairie.adresse}, {mairie.cp} {mairie.ville}<br />
+        Téléphone : <a href={`tel:${mairie.telE164}`}>{mairie.tel}</a><br />
+        Courriel : <a href={`mailto:${mairie.email}`}>{mairie.email}</a>
+      </p>
+
+      <h2>Directeur de la publication</h2>
+      <p>
+        Le directeur de la publication est <strong>{maire.nom}</strong>, {maire.fonction.toLowerCase()},
+        ou son représentant.
+      </p>
+
+      <h2>Hébergement</h2>
+      <p>
+        Le site est généré sous forme de pages statiques et hébergé par un prestataire
+        d'hébergement web. Les coordonnées complètes de l'hébergeur sont disponibles sur
+        simple demande auprès de la mairie.
+      </p>
+
+      <h2>Propriété intellectuelle</h2>
+      <p>
+        L'ensemble des contenus de ce site (textes, mise en page, identité visuelle, blason)
+        est, sauf mention contraire, la propriété de la Commune de {commune.nom}. Le blason
+        de la commune est reproduit à des fins d'identification institutionnelle.
+      </p>
+      <p>
+        Les photographies sont publiées sous les licences indiquées sur la page
+        <a href="/credits-photos/">Crédits photos</a>. Toute réutilisation doit respecter
+        les conditions de la licence correspondante et créditer l'auteur.
+      </p>
+
+      <h2>Liens hypertextes</h2>
+      <p>
+        Ce site renvoie vers des téléservices officiels (service-public.fr, ANTS,
+        Colmar Agglomération, etc.) et des sites partenaires. La commune n'exerce aucun
+        contrôle sur ces sites et décline toute responsabilité quant à leur contenu.
+      </p>
+
+      <h2>Accessibilité & données personnelles</h2>
+      <p>
+        Consultez la <a href="/accessibilite/">déclaration d'accessibilité</a> et la
+        politique de <a href="/confidentialite/">protection des données personnelles</a>
+        de ce site.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Pour toute question relative au site ou à son contenu, vous pouvez écrire à la mairie :
+        <a href={`mailto:${mairie.email}`}>{mairie.email}</a>.
+      </p>
+    </div>
+  </section>
+</Base>

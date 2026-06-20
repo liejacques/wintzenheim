@@ -1,0 +1,124 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { evenements, marches, billetterieUrl } from "../../data/agenda";
+
+const chevron =
+  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+
+// Tri chronologique
+const events = [...evenements].sort((a, b) => a.iso.localeCompare(b.iso));
+---
+
+<Base
+  title="Agenda — Wintzenheim"
+  description="L'agenda de Wintzenheim et Logelbach : fêtes, marchés hebdomadaires, concerts et rendez-vous associatifs. Fête de la Musique, Fête Révolutionnaire, Marché de Noël et plus encore."
+>
+  <PageHero
+    kicker="Ne rien manquer"
+    title="Agenda"
+    lede="Fêtes du village, marchés, concerts et rendez-vous associatifs : retrouvez tous les temps forts de Wintzenheim et de Logelbach tout au long de l'année."
+    crumbs={[{ label: "Agenda" }]}
+  />
+
+  <!-- Événements -->
+  <section class="section--dark events" aria-labelledby="ev-t">
+    <div class="container section__pad">
+      <p class="kicker kicker--gold"><span class="kicker__tick"></span><span class="kicker__label">Les temps forts</span></p>
+      <h2 id="ev-t" class="block-title block-title--light">Prochains rendez-vous</h2>
+      <ul class="ev-list">
+        {events.map((e) => (
+          <li>
+            <a class="ev" href={`/agenda/${e.slug}/`}>
+              <span class="ev__date">
+                <span class="ev__day">{e.jour}</span>
+                <span class="ev__month">{e.mois}</span>
+              </span>
+              <span class="ev__body">
+                <span class="ev__titre">{e.titre}</span>
+                <span class="ev__meta">{e.dateLisible} · {e.lieu}</span>
+                <span class="ev__resume">{e.resume}</span>
+              </span>
+              <span class="ev__chev"><Fragment set:html={chevron} /></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Marchés hebdomadaires -->
+  <section class="section marches" aria-labelledby="ma-t">
+    <div class="container section__pad">
+      <p class="kicker"><span class="kicker__tick"></span><span class="kicker__label">Chaque semaine</span></p>
+      <h2 id="ma-t" class="block-title">Marchés hebdomadaires</h2>
+      <div class="marche-grid">
+        {marches.map((m) => (
+          <article class="marche">
+            <span class="marche__jour">{m.jour}</span>
+            <span class="marche__horaire">{m.horaire}</span>
+            <p class="marche__lieu">{m.lieu}</p>
+            <p class="marche__produits">{m.produits}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Billetterie -->
+  <section class="section--sinople billet" aria-labelledby="bi-t">
+    <div class="container section__pad billet__inner">
+      <div>
+        <h2 id="bi-t" class="block-title block-title--light">Réserver vos spectacles</h2>
+        <p class="billet__text">
+          Concerts, spectacles et événements de l'Espace Arthuss sont en vente sur la
+          billetterie en ligne de la commune.
+        </p>
+      </div>
+      <a class="btn btn--ghost billet__cta" href={billetterieUrl} rel="noopener" target="_blank">
+        Accéder à la billetterie<span aria-hidden="true"> ↗</span>
+      </a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ev-list { list-style: none; margin: 26px 0 0; padding: 0; }
+  .ev {
+    display: grid;
+    grid-template-columns: 84px 1fr auto;
+    gap: 24px;
+    align-items: center;
+    padding: 22px 0;
+    text-decoration: none;
+    color: inherit;
+    border-top: 1px solid var(--trait-clair);
+    transition: background 0.15s ease;
+  }
+  .ev-list li:last-child .ev { border-bottom: 1px solid var(--trait-clair); }
+  .ev:hover { background: rgba(255,255,255,0.04); }
+  .ev__date { text-align: center; }
+  .ev__day { display: block; font-family: var(--serif); font-size: 44px; font-weight: 600; line-height: 1; color: var(--or-clair); font-variant-numeric: tabular-nums; }
+  .ev__month { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sur-vert-muted); }
+  .ev__titre { display: block; font-family: var(--serif); font-size: 25px; font-weight: 600; line-height: 1.1; color: #fff; }
+  .ev__meta { display: block; margin: 4px 0 6px; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--or-clair); }
+  .ev__resume { display: block; font-size: 15px; color: var(--sur-vert-muted); max-width: 60ch; }
+  .ev__chev { color: var(--or-clair); display: flex; }
+
+  .marche-grid { margin-top: 26px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px; background: var(--trait); border-block: 2px solid var(--or); }
+  .marche { background: var(--creme); padding: clamp(22px, 2.6vw, 30px); }
+  .marche__jour { font-family: var(--serif); font-size: 28px; font-weight: 600; color: var(--sinople); }
+  .marche__horaire { display: inline-block; margin-left: 10px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .marche__lieu { margin: 10px 0 6px; font-weight: 600; }
+  .marche__produits { margin: 0; font-size: 15px; color: var(--muted); line-height: 1.55; }
+
+  .billet__inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .billet__text { margin: 12px 0 0; font-size: 17px; color: var(--sur-vert); max-width: 52ch; }
+  .billet__cta { color: #fff; border-color: var(--or-clair); white-space: nowrap; }
+  .billet__cta:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: #fff; }
+
+  @media (max-width: 560px) {
+    .ev { grid-template-columns: 64px 1fr; gap: 16px; }
+    .ev__chev { display: none; }
+  }
+</style>

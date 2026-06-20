@@ -1,0 +1,76 @@
+---
+import { Image } from "astro:assets";
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { articles } from "../../data/actualites";
+import { articleImages } from "../../data/photos";
+
+export function getStaticPaths() {
+  return articles.map((a) => ({ params: { slug: a.slug }, props: { a } }));
+}
+
+const { a } = Astro.props;
+const photo = a.image ? articleImages[a.image] : null;
+---
+
+<Base
+  title={`${a.titre} — Actualités de Wintzenheim`}
+  description={a.chapo}
+  ogImage={photo?.image.src}
+>
+  <PageHero
+    kicker={`${a.rubrique} · ${a.dateLisible}`}
+    title={a.titre}
+    crumbs={[{ label: "Actualités", href: "/actualites/" }, { label: a.titre }]}
+  />
+
+  {photo && (
+    <figure class="article-media">
+      <Image src={photo.image} alt={photo.alt} widths={[500, 900, 1300]} sizes="(max-width: 900px) 100vw, 1180px" loading="eager" />
+      <figcaption class="credit credit--overlay">{photo.credit}</figcaption>
+    </figure>
+  )}
+
+  <section class="section detail" aria-label="Article">
+    <div class="container detail__grid">
+      <article class="prose detail__body">
+        <p class="detail__chapo">{a.chapo}</p>
+        {a.corps.map((p) => <p>{p}</p>)}
+        <a class="arrow-link detail__back" href="/actualites/">← Toutes les actualités</a>
+      </article>
+
+      {a.pratique && (
+        <aside class="practical" aria-label="Informations pratiques">
+          <h2 class="practical__title">En pratique</h2>
+          <dl class="practical__list">
+            {a.pratique.map((p) => (
+              <div class="practical__row">
+                <dt>{p.label}</dt>
+                <dd>{p.valeur}</dd>
+              </div>
+            ))}
+          </dl>
+        </aside>
+      )}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .article-media { position: relative; margin: 0; aspect-ratio: 16 / 7; overflow: hidden; background: var(--vert-profond); }
+  .article-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .article-media .credit { position: absolute; right: 10px; bottom: 8px; margin: 0; }
+
+  /* .detail__grid / .practical sont factorisés dans global.css */
+  .detail__chapo {
+    font-family: var(--serif);
+    font-size: clamp(20px, 2.2vw, 25px);
+    line-height: 1.4;
+    color: var(--sinople);
+    margin: 0 0 8px;
+  }
+
+  @media (max-width: 760px) {
+    .article-media { aspect-ratio: 16 / 10; }
+  }
+</style>

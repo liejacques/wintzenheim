@@ -1,0 +1,63 @@
+---
+// Bandeau d'en-tête des pages intérieures : fil d'Ariane, surtitre, titre
+// (le seul <h1> de la page), chapô. Reprend la langue graphique de l'accueil
+// (filet doré, serif, crème).
+import Breadcrumb from "./Breadcrumb.astro";
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+interface Props {
+  title: string;
+  kicker?: string;
+  lede?: string;
+  crumbs?: Crumb[];
+}
+const { title, kicker, lede, crumbs = [] } = Astro.props;
+---
+
+<section class="pagehero">
+  <div class="container pagehero__inner">
+    <Breadcrumb crumbs={crumbs} />
+    {kicker && (
+      <p class="kicker pagehero__kicker">
+        <span class="kicker__tick"></span>
+        <span class="kicker__label">{kicker}</span>
+      </p>
+    )}
+    <h1 class="pagehero__title">{title}</h1>
+    {lede && <p class="pagehero__lede">{lede}</p>}
+  </div>
+  <div class="pagehero__rule" aria-hidden="true"></div>
+</section>
+
+<style>
+  .pagehero {
+    background: var(--creme);
+  }
+  .pagehero__inner {
+    padding-block: clamp(24px, 4vw, 44px) clamp(20px, 3vw, 32px);
+  }
+  .pagehero__kicker {
+    margin: 22px 0 0;
+  }
+  .pagehero__title {
+    font-size: clamp(38px, 6vw, 68px);
+    line-height: 1.0;
+    letter-spacing: -0.01em;
+    margin: 14px 0 0;
+    max-width: 18ch;
+  }
+  .pagehero__lede {
+    font-size: clamp(17px, 1.5vw, 20px);
+    line-height: 1.6;
+    color: var(--encre-douce);
+    max-width: 60ch;
+    margin: 20px 0 0;
+  }
+  .pagehero__rule {
+    height: 2px;
+    background: linear-gradient(90deg, var(--or) 0%, var(--or-clair) 50%, transparent 100%);
+  }
+</style>

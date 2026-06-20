@@ -1,0 +1,30 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+*.log
+
+# environment
+.env
+.env.production
+
+# données de recherche brutes (local uniquement)
+.research-digest.txt
+
+# maquette de référence « Claude Design » (source du visuel, non déployée)
+.claude-design/
+.claude-design-handoff/
+
+# config locale de l'agent (ne pas publier)
+.claude/settings.local.json
+
+# os / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

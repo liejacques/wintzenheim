@@ -1,0 +1,128 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { legalNav } from "../../data/nav";
+import { evenements } from "../../data/agenda";
+import { articles } from "../../data/actualites";
+
+const sections = [
+  {
+    titre: "Découvrir",
+    racine: { label: "Découvrir la commune", href: "/decouvrir/" },
+    liens: [
+      { label: "Patrimoine & histoire", href: "/decouvrir/patrimoine/" },
+      { label: "Les trois quartiers", href: "/decouvrir/quartiers/" },
+    ],
+  },
+  {
+    titre: "Démarches & cadre de vie",
+    racine: { label: "Vos démarches", href: "/demarches/" },
+    liens: [
+      { label: "Déchets & collecte", href: "/dechets/" },
+    ],
+  },
+  {
+    titre: "Vie locale",
+    racine: { label: "Vie locale", href: "/vie-locale/" },
+    liens: [],
+  },
+  {
+    titre: "Agenda",
+    racine: { label: "Tous les événements", href: "/agenda/" },
+    liens: evenements.map((e) => ({ label: e.titre, href: `/agenda/${e.slug}/` })),
+  },
+  {
+    titre: "Actualités",
+    racine: { label: "Toutes les actualités", href: "/actualites/" },
+    liens: articles.map((a) => ({ label: a.titre, href: `/actualites/${a.slug}/` })),
+  },
+  {
+    titre: "La Mairie",
+    racine: { label: "La Mairie", href: "/la-mairie/" },
+    liens: [
+      { label: "Contact & accès", href: "/contact/" },
+    ],
+  },
+];
+---
+
+<Base
+  title="Plan du site — Wintzenheim"
+  description="Plan du site officiel de la commune de Wintzenheim : toutes les pages et rubriques accessibles en un coup d'œil."
+>
+  <PageHero
+    title="Plan du site"
+    kicker="Toutes les pages"
+    crumbs={[{ label: "Plan du site" }]}
+  />
+
+  <section class="section">
+    <div class="container">
+      <div class="map">
+        <div class="map__col map__col--home">
+          <a class="map__home" href="/">Accueil</a>
+        </div>
+        {sections.map((s) => (
+          <nav class="map__group" aria-label={s.titre}>
+            <a class="map__root" href={s.racine.href}>{s.racine.label}</a>
+            {s.liens.length > 0 && (
+              <ul class="map__list">
+                {s.liens.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+              </ul>
+            )}
+          </nav>
+        ))}
+      </div>
+
+      <nav class="map__legal" aria-label="Informations légales">
+        <h2 class="map__legaltitle">Informations légales</h2>
+        <ul>
+          {legalNav.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        </ul>
+      </nav>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .map {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--trait);
+    border-block: 2px solid var(--or);
+  }
+  .map__col--home { background: var(--vert-profond); display: flex; align-items: center; padding: clamp(20px, 2.4vw, 28px); }
+  .map__home { font-family: var(--serif); font-size: 28px; font-weight: 600; color: #fff; text-decoration: none; }
+  .map__home:hover { color: var(--or-clair); }
+  .map__group { background: var(--creme); padding: clamp(20px, 2.4vw, 28px); }
+  .map__root {
+    display: block;
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--sinople);
+    text-decoration: none;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--trait);
+  }
+  .map__root:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .map__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+  .map__list a { color: var(--encre); text-decoration: none; font-size: 15px; line-height: 1.4; }
+  .map__list a:hover { color: var(--sinople); }
+
+  .map__legal { margin-top: 40px; }
+  .map__legaltitle {
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sinople);
+    font-weight: 600;
+    margin: 0 0 16px;
+  }
+  .map__legal ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 28px; }
+  .map__legal a { color: var(--encre); text-decoration: none; border-bottom: 1px solid var(--or); padding-bottom: 2px; }
+  .map__legal a:hover { color: var(--sinople); border-color: var(--sinople); }
+</style>

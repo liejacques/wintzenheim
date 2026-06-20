@@ -1,0 +1,646 @@
+---
+import { mainNav, utilityNav } from "../data/nav";
+
+const today = new Intl.DateTimeFormat("fr-FR", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+}).format(new Date());
+
+const searchLinks = [
+  { label: "Horaires et contact de la mairie", href: "/#pratique", meta: "Adresse, téléphone et horaires", keywords: "mairie ouverture téléphone email adresse" },
+  { label: "État civil et papiers", href: "/demarches/#etat-civil", meta: "Actes, mariage, PACS, recensement", keywords: "naissance décès passeport cni carte identité" },
+  { label: "Déchets et collecte", href: "/dechets/", meta: "Calendrier, tri et déchèterie", keywords: "poubelle bac ordures recyclage" },
+  { label: "Urbanisme", href: "/demarches/#urbanisme", meta: "Permis et déclarations", keywords: "travaux plu construction déclaration" },
+  { label: "Écoles et périscolaire", href: "/vie-locale/#ecoles", meta: "Inscriptions, cantine et accueil", keywords: "enfant scolaire crèche jeunesse" },
+  { label: "Agenda de la commune", href: "/#agenda", meta: "Les prochains rendez-vous", keywords: "sortie fête marché événement" },
+  { label: "Signaler un problème", href: "/contact/", meta: "Voirie, éclairage ou propreté", keywords: "incident nid poule lampadaire route" },
+];
+
+const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>';
+---
+
+<header class="site-header">
+  <div class="masthead-top">
+    <div class="container masthead-top__inner">
+      <a class="office-state" href="/#pratique">
+        <span class="office-state__dot" data-office-dot aria-hidden="true"></span>
+        <span data-office-status>Consulter les horaires de la mairie</span>
+      </a>
+      <span class="masthead-top__date" id="js-today">{today}</span>
+      <nav class="masthead-top__nav" aria-label="Liens utiles">
+        {utilityNav.map((l) => <a href={l.href}>{l.label}</a>)}
+        <button class="masthead-top__search" type="button" data-search-open>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+          Rechercher
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <div class="masthead">
+    <div class="masthead__rule" aria-hidden="true"></div>
+    <div class="container masthead__inner">
+      <a class="brand" href="/" aria-label="Wintzenheim, accueil">
+        <img
+          class="brand__blason"
+          src="/blason.svg"
+          width="46"
+          height="51"
+          alt="Blason de Wintzenheim : un lévrier d'argent sur champ de sinople"
+          decoding="async"
+          data-egg
+        />
+        <span class="brand__text">
+          <span class="brand__name">Wintzenheim</span>
+          <span class="brand__tag">Ville d'Alsace · Haut-Rhin</span>
+        </span>
+      </a>
+
+      <nav class="mainnav" aria-label="Navigation principale">
+        {mainNav.map((item) => item.children ? (
+          <details class="navitem">
+            <summary>
+              {item.label}
+              <Fragment set:html={chevron} />
+            </summary>
+            <div class="navitem__panel">
+              <a class="navitem__overview" href={item.href}>Vue d'ensemble</a>
+              {item.children.map((child) => <a href={child.href}>{child.label}</a>)}
+            </div>
+          </details>
+        ) : (
+          <a class="mainnav__link" href={item.href}>{item.label}</a>
+        ))}
+        <button class="nav-search" type="button" data-search-open aria-label="Rechercher un service">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        </button>
+        <a class="btn btn--primary mainnav__cta" href="/demarches/">
+          Mes démarches
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+        </a>
+      </nav>
+
+      <div class="mobile-actions">
+        <button class="mobile-actions__search" type="button" data-search-open aria-label="Rechercher un service">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        </button>
+        <details class="mobile-menu">
+          <summary aria-label="Ouvrir le menu principal" data-testid="mobile-menu-toggle">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+            <span class="mobile-menu__label">Menu</span>
+          </summary>
+          <nav class="mobile-menu__panel" aria-label="Navigation mobile">
+            {mainNav.map((item) => (
+              <div class="mobile-menu__group">
+                <a class="mobile-menu__parent" href={item.href}>{item.label}</a>
+                {item.children && (
+                  <div class="mobile-menu__children">
+                    {item.children.map((child) => <a href={child.href}>{child.label}</a>)}
+                  </div>
+                )}
+              </div>
+            ))}
+            <a class="mobile-menu__cta" href="/demarches/">Accéder à mes démarches</a>
+          </nav>
+        </details>
+      </div>
+    </div>
+  </div>
+</header>
+
+<dialog class="search-dialog" id="site-search" aria-labelledby="search-dialog-title">
+  <div class="search-dialog__inner">
+    <form method="dialog" class="search-dialog__head">
+      <div>
+        <p class="search-dialog__eyebrow">Accès direct</p>
+        <h2 id="search-dialog-title">Que cherchez-vous&nbsp;?</h2>
+      </div>
+      <button class="search-dialog__close" value="close" aria-label="Fermer la recherche">×</button>
+    </form>
+    <label class="search-field" for="quick-search">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      <input id="quick-search" type="search" autocomplete="off" aria-label="Rechercher un service" placeholder="Ex. déchets, passeport, horaires…" data-search-input />
+    </label>
+    <p class="search-dialog__hint">Les services les plus demandés sont accessibles immédiatement.</p>
+    <ul class="search-results" data-search-results>
+      {searchLinks.map((link) => (
+        <li data-search-item data-search-text={`${link.label} ${link.meta} ${link.keywords}`}>
+          <a href={link.href}>
+            <span><strong>{link.label}</strong><small>{link.meta}</small></span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="search-empty" data-search-empty hidden>Aucun accès rapide ne correspond. Utilisez le formulaire de contact pour être orienté.</p>
+  </div>
+</dialog>
+
+<nav class="mobile-dock" aria-label="Accès rapides sur mobile">
+  <a href="tel:+33389279494">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 3h3l1.5 4-2 1.5a15 15 0 0 0 6 6l1.5-2 4 1.5v3c0 2-2 4-4 4C9 20 4 15 3 7c0-2 2-4 4-4Z"/></svg>
+    <span>Appeler</span>
+  </a>
+  <button type="button" data-search-open>
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+    <span>Trouver</span>
+  </button>
+  <a href="/#pratique">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    <span>Horaires</span>
+  </a>
+</nav>
+
+<style>
+  .site-header {
+    position: relative;
+    z-index: 100;
+  }
+  .masthead-top {
+    background: var(--vert-profond);
+    color: var(--sur-vert);
+    font-size: 13px;
+  }
+  .masthead-top__inner {
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-block: 5px;
+  }
+  .office-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .office-state:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .office-state__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--or-clair);
+    box-shadow: 0 0 0 3px rgba(226, 201, 122, 0.14);
+  }
+  .office-state__dot.is-open {
+    background: #8ed69f;
+    box-shadow: 0 0 0 3px rgba(142, 214, 159, 0.14);
+  }
+  .masthead-top__date {
+    margin-left: auto;
+    opacity: 0.78;
+    text-transform: capitalize;
+  }
+  .masthead-top__nav {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .masthead-top__nav a,
+  .masthead-top__search {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.88;
+  }
+  .masthead-top__nav a:hover,
+  .masthead-top__search:hover {
+    opacity: 1;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .masthead-top__search {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+  }
+  .masthead {
+    position: relative;
+    background: rgba(248, 246, 239, 0.97);
+    border-bottom: 1px solid var(--trait);
+    box-shadow: 0 8px 28px rgba(22, 64, 31, 0.06);
+  }
+  .masthead__rule {
+    height: 3px;
+    background: var(--or);
+  }
+  .masthead__inner {
+    min-height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    color: inherit;
+    text-decoration: none;
+    flex: none;
+  }
+  .brand__blason {
+    width: 46px;
+    height: auto;
+  }
+  .brand__text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+  .brand__name {
+    font-family: var(--serif);
+    font-size: 29px;
+    font-weight: 600;
+  }
+  .brand__tag {
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .mainnav {
+    display: flex;
+    align-items: center;
+    gap: clamp(14px, 1.8vw, 24px);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .mainnav__link,
+  .navitem > summary {
+    color: inherit;
+    text-decoration: none;
+    padding: 26px 0;
+  }
+  .mainnav__link:hover,
+  .navitem > summary:hover,
+  .navitem[open] > summary {
+    color: var(--sinople);
+  }
+  .navitem {
+    position: relative;
+  }
+  .navitem > summary {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .navitem > summary::-webkit-details-marker {
+    display: none;
+  }
+  .navitem[open] > summary svg {
+    transform: rotate(180deg);
+  }
+  .navitem__panel {
+    position: absolute;
+    top: calc(100% - 8px);
+    left: -18px;
+    width: 260px;
+    display: grid;
+    padding: 10px;
+    background: var(--creme-2);
+    border: 1px solid var(--trait);
+    border-top: 2px solid var(--or);
+    box-shadow: 0 18px 38px rgba(22, 64, 31, 0.14);
+  }
+  .navitem__panel a {
+    padding: 9px 11px;
+    color: var(--encre);
+    text-decoration: none;
+    font-size: 14.5px;
+    line-height: 1.35;
+  }
+  .navitem__panel a:hover {
+    background: rgba(31, 107, 58, 0.07);
+    color: var(--sinople);
+  }
+  .navitem__panel .navitem__overview {
+    color: var(--sinople);
+    border-bottom: 1px solid var(--trait);
+    margin-bottom: 4px;
+  }
+  .nav-search {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    flex: none;
+    border: 1px solid var(--trait-fort);
+    background: transparent;
+    color: var(--encre);
+    cursor: pointer;
+  }
+  .nav-search:hover {
+    border-color: var(--sinople);
+    color: var(--sinople);
+  }
+  .mainnav__cta {
+    min-height: 44px;
+    padding: 11px 16px;
+    font-size: 14.5px;
+    white-space: nowrap;
+  }
+  .mobile-actions,
+  .mobile-dock {
+    display: none;
+  }
+
+  .search-dialog {
+    width: min(680px, calc(100vw - 32px));
+    max-height: min(760px, calc(100vh - 32px));
+    padding: 0;
+    border: 0;
+    border-top: 4px solid var(--or);
+    background: var(--creme-2);
+    color: var(--encre);
+    box-shadow: 0 26px 80px rgba(10, 32, 16, 0.3);
+  }
+  .search-dialog::backdrop {
+    background: rgba(12, 30, 17, 0.7);
+    backdrop-filter: blur(3px);
+  }
+  .search-dialog__inner {
+    padding: clamp(24px, 5vw, 42px);
+  }
+  .search-dialog__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  .search-dialog__eyebrow {
+    margin: 0 0 6px;
+    color: var(--sinople);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .search-dialog h2 {
+    margin: 0;
+    font-size: clamp(30px, 5vw, 46px);
+  }
+  .search-dialog__close {
+    width: 44px;
+    height: 44px;
+    flex: none;
+    border: 1px solid var(--trait-fort);
+    background: transparent;
+    color: var(--encre);
+    font-size: 27px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .search-field {
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 0 18px;
+    border: 2px solid var(--sinople);
+    background: #fff;
+    color: var(--sinople);
+  }
+  .search-field input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--encre);
+    font: 500 17px/1.2 var(--sans);
+  }
+  .search-dialog__hint {
+    margin: 10px 0 18px;
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+  .search-results {
+    max-height: 390px;
+    overflow-y: auto;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--trait);
+  }
+  .search-results li {
+    border-bottom: 1px solid var(--trait);
+  }
+  .search-results a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 14px 4px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .search-results a:hover strong {
+    color: var(--sinople);
+  }
+  .search-results span,
+  .search-results small {
+    display: block;
+  }
+  .search-results strong {
+    font-size: 16px;
+  }
+  .search-results small {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+  .search-results svg {
+    color: var(--sinople);
+    flex: none;
+  }
+  .search-empty {
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  @media (max-width: 1080px) {
+    .mainnav {
+      display: none;
+    }
+    .mobile-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mobile-actions__search,
+    .mobile-menu > summary {
+      min-width: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--trait-fort);
+      background: transparent;
+      color: var(--encre);
+      cursor: pointer;
+    }
+    .mobile-actions__search {
+      padding: 0;
+    }
+    .mobile-menu {
+      position: relative;
+    }
+    .mobile-menu > summary {
+      gap: 7px;
+      padding: 0 13px;
+      list-style: none;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .mobile-menu > summary::-webkit-details-marker {
+      display: none;
+    }
+    .mobile-menu__panel {
+      position: absolute;
+      top: calc(100% + 15px);
+      right: calc(-1 * var(--gutter));
+      width: min(420px, 100vw);
+      max-height: calc(100vh - 124px);
+      overflow-y: auto;
+      padding: 20px var(--gutter) 26px;
+      background: var(--creme-2);
+      border-top: 2px solid var(--or);
+      box-shadow: 0 18px 38px rgba(22, 64, 31, 0.18);
+    }
+    .mobile-menu__group {
+      padding: 11px 0;
+      border-bottom: 1px solid var(--trait);
+    }
+    .mobile-menu__parent {
+      display: block;
+      color: var(--encre);
+      font-family: var(--serif);
+      font-size: 23px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .mobile-menu__children {
+      display: grid;
+      gap: 3px;
+      margin-top: 7px;
+      padding-left: 14px;
+      border-left: 2px solid var(--or);
+    }
+    .mobile-menu__children a {
+      padding: 4px 0;
+      color: var(--muted);
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .mobile-menu__cta {
+      display: block;
+      margin-top: 18px;
+      padding: 13px 18px;
+      background: var(--sinople);
+      color: #fff;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .masthead-top__date,
+    .masthead-top__nav {
+      display: none;
+    }
+    .masthead-top__inner {
+      min-height: 31px;
+      justify-content: center;
+    }
+    .office-state {
+      font-size: 12.5px;
+    }
+    .masthead__inner {
+      min-height: 68px;
+    }
+    .brand__blason {
+      width: 38px;
+    }
+    .brand__name {
+      font-size: 25px;
+    }
+    .brand__tag {
+      display: none;
+    }
+    .mobile-menu > summary .mobile-menu__label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+    .mobile-menu > summary {
+      padding: 0;
+    }
+    .mobile-menu__panel {
+      top: calc(100% + 12px);
+      max-height: calc(100vh - 156px);
+      padding-bottom: 92px;
+    }
+    .mobile-dock {
+      position: fixed;
+      z-index: 120;
+      right: 12px;
+      bottom: 12px;
+      left: 12px;
+      height: 58px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: var(--vert-profond);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 12px 34px rgba(12, 30, 17, 0.32);
+    }
+    .mobile-dock a,
+    .mobile-dock button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      border: 0;
+      border-right: 1px solid rgba(255, 255, 255, 0.14);
+      background: transparent;
+      color: inherit;
+      font: 600 13px/1 var(--sans);
+      text-decoration: none;
+    }
+    .mobile-dock > :last-child {
+      border-right: 0;
+    }
+    .search-dialog__inner {
+      padding: 24px 20px;
+    }
+  }
+
+  @media (max-width: 390px) {
+    .brand__text {
+      display: none;
+    }
+    .mobile-menu__panel {
+      top: calc(100% + 12px);
+    }
+  }
+</style>

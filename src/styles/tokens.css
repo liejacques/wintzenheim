@@ -1,0 +1,60 @@
+/* =========================================================================
+   Design tokens — Wintzenheim
+   Palette alignée sur la maquette « Claude Design » : verts du blason
+   (sinople / vert profond), or héraldique, et une ambiance crème assumée.
+   Une seule source de vérité pour les couleurs, la typo et le rythme.
+   ========================================================================= */
+
+:root {
+  /* --- Verts (émail sinople du blason) --- */
+  --sinople: #1f6b3a;          /* primaire : marque, boutons, liens colorés */
+  --sinople-fonce: #16512c;    /* survol des boutons pleins */
+  --sinople-section: #1a5d33;  /* fond des sections « sinople » : assez sombre pour l'or et le blanc en AA */
+  --vert-profond: #16401f;     /* bandeaux sombres (barre utilitaire, agenda) */
+  --vert-footer: #12331a;      /* pied de page */
+
+  /* --- Or héraldique (collier & boucle du lévrier) --- */
+  --or: #c8a53c;               /* filets, ticks — décoratif */
+  --or-clair: #e2c97a;         /* or lisible sur fond vert foncé */
+
+  /* --- Neutres crème (ambiance tenue) --- */
+  --creme: #f8f6ef;            /* fond de page */
+  --creme-2: #fcfaf3;          /* section actualités */
+  --creme-3: #f1eee2;          /* section patrimoine */
+
+  /* --- Texte --- */
+  --encre: #1b1b18;            /* titres & corps sur clair */
+  --encre-douce: #3b3b33;      /* chapôs, paragraphes secondaires */
+  --muted: #5e5c4f;            /* légendes, sous-titres (AA tenu sur crème) */
+
+  /* --- Texte sur fond vert --- */
+  --sur-vert: #f4efe1;
+  --sur-vert-muted: #cfc9b6;
+
+  /* --- Filets --- */
+  --trait: rgba(27, 27, 24, 0.10);
+  --trait-fort: rgba(27, 27, 24, 0.28);
+  --trait-clair: rgba(255, 255, 255, 0.16);
+
+  /* --- Typographie (self-hosted, voir Base.astro) --- */
+  --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --sans: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* --- Mise en page --- */
+  --max: 1180px;
+  --gutter: clamp(20px, 5vw, 32px);
+  --radius: 2px;
+
+  /* --- Échelle d'espacement (base 4) --- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 40px;
+  --space-7: 64px;
+  --space-8: 96px;
+
+  /* --- Décalage de défilement au focus clavier (cf. reset.css) --- */
+  --header-offset: 6rem;
+}

@@ -1,0 +1,65 @@
+---
+// Gabarit de base partagé : <head>, polices self-hosted, en-tête, pied de page.
+// Aucune requête vers Google Fonts : les .woff2 sont servis depuis le site
+// (conformité RGPD/CNIL pour une collectivité).
+import "@fontsource/cormorant-garamond/500.css";
+import "@fontsource/cormorant-garamond/600.css";
+import "@fontsource/cormorant-garamond/700.css";
+import "@fontsource/cormorant-garamond/500-italic.css";
+import "@fontsource/cormorant-garamond/600-italic.css";
+import "@fontsource/source-sans-3/400.css";
+import "@fontsource/source-sans-3/500.css";
+import "@fontsource/source-sans-3/600.css";
+import "@fontsource/source-sans-3/700.css";
+
+import "../styles/reset.css";
+import "../styles/tokens.css";
+import "../styles/global.css";
+
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import SiteScripts from "../components/SiteScripts.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  /** URL (absolue ou relative au site) de l'image Open Graph. */
+  ogImage?: string;
+}
+
+const { title, description, ogImage } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImageUrl = ogImage ? new URL(ogImage, Astro.site).href : undefined;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    <link rel="icon" href="/blason.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#1f6b3a" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Ville de Wintzenheim" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <SiteHeader />
+    <main id="contenu">
+      <slot />
+    </main>
+    <SiteFooter />
+    <SiteScripts />
+  </body>
+</html>

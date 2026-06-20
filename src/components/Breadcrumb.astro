@@ -1,0 +1,63 @@
+---
+// Fil d'Ariane accessible (RGAA) : <nav aria-label> + ol, dernier élément
+// marqué aria-current="page".
+interface Crumb {
+  label: string;
+  href?: string;
+}
+interface Props {
+  crumbs: Crumb[];
+}
+const { crumbs } = Astro.props;
+const all: Crumb[] = [{ label: "Accueil", href: "/" }, ...crumbs];
+---
+
+<nav class="breadcrumb" aria-label="Fil d'Ariane">
+  <ol>
+    {all.map((c, i) => (
+      <li>
+        {c.href && i < all.length - 1 ? (
+          <a href={c.href}>{c.label}</a>
+        ) : (
+          <span aria-current="page">{c.label}</span>
+        )}
+        {i < all.length - 1 && <span class="breadcrumb__sep" aria-hidden="true">/</span>}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .breadcrumb ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+  .breadcrumb li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .breadcrumb a:hover {
+    color: var(--sinople);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .breadcrumb [aria-current="page"] {
+    color: var(--encre);
+    font-weight: 600;
+  }
+  .breadcrumb__sep {
+    color: var(--or);
+  }
+</style>

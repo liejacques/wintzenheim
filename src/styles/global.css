@@ -1,0 +1,324 @@
+/* =========================================================================
+   Styles globaux — éléments de base, utilitaires et composants partagés.
+   Convertit en vrai CSS les états (:hover / :focus-visible) de la maquette.
+   ========================================================================= */
+
+body {
+  font-family: var(--sans);
+  color: var(--encre);
+  background: var(--creme);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--sinople);
+  color: #fff;
+}
+
+/* Focus clavier visible partout (RGAA 10.7). Or sur fond vert. */
+:focus-visible {
+  outline: 2px solid var(--sinople);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.section--dark :focus-visible,
+.section--sinople :focus-visible,
+.masthead-top :focus-visible,
+.site-footer :focus-visible {
+  outline-color: var(--or-clair);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--serif);
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+/* --- Conteneur centré --- */
+.container {
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* --- Lien « Aller au contenu » (CSS pur, visible au focus) --- */
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: 16px;
+  transform: translateY(-130%);
+  z-index: 200;
+  background: var(--sinople);
+  color: #fff;
+  padding: 12px 18px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 4px 4px;
+  transition: transform 0.15s ease;
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* --- Surtitre éditorial (tick or + label sinople) --- */
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.kicker__tick {
+  display: block;
+  width: 34px;
+  height: 1px;
+  background: var(--or);
+}
+.kicker__label {
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sinople);
+  font-weight: 600;
+}
+.kicker--gold .kicker__label {
+  color: var(--or-clair);
+}
+
+/* --- Boutons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.2;
+  border-radius: var(--radius);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.btn svg {
+  flex: none;
+}
+.btn--primary {
+  background: var(--sinople);
+  color: #fff;
+  border: 1px solid var(--sinople);
+  padding: 14px 26px;
+  min-height: 48px;
+}
+.btn--primary:hover {
+  background: var(--sinople-fonce);
+  border-color: var(--sinople-fonce);
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--encre);
+  padding: 14px 24px;
+  min-height: 48px;
+  border: 1px solid var(--trait-fort);
+}
+.btn--ghost:hover {
+  border-color: var(--sinople);
+  color: var(--sinople);
+}
+
+/* --- Lien « fléché » (souligné or) --- */
+.arrow-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--sinople);
+  text-decoration: none;
+  font-size: 15.5px;
+}
+.arrow-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.arrow-link--underline {
+  color: inherit;
+  border-bottom: 1px solid var(--or);
+  padding-bottom: 4px;
+}
+.arrow-link--underline:hover {
+  text-decoration: none;
+  border-color: currentColor;
+}
+
+/* --- Légende-crédit photo --- */
+.credit {
+  font-size: 12.5px;
+  font-style: italic;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.credit--overlay {
+  color: var(--sur-vert-muted);
+}
+
+/* --- Rythme vertical des sections --- */
+.section {
+  border-top: 1px solid var(--trait);
+}
+.section__pad {
+  padding-block: clamp(44px, 6vw, 80px);
+}
+
+/* Sections thématiques sombres : le fond ET la couleur de texte sont portés
+   par la classe modificatrice (et non par chaque page), pour ne jamais laisser
+   un texte clair s'afficher sur le crème. Le vert sinople de section est
+   assombri (--sinople-section) afin que l'or et le texte secondaire restent
+   lisibles (contraste AA). */
+.section--dark {
+  background: var(--vert-profond);
+  color: var(--sur-vert);
+}
+.section--sinople {
+  background: var(--sinople-section);
+  color: var(--sur-vert);
+}
+
+/* --- Titre de section réutilisable (fond clair ou sombre) --- */
+.block-title {
+  font-size: clamp(28px, 3.8vw, 44px);
+  line-height: 1.05;
+  margin: 12px 0 0;
+}
+.block-title--light {
+  color: #fff;
+}
+
+/* --- Gabarit des fiches détail (agenda/[slug], actualités/[slug]) :
+       corps de lecture + encart « infos pratiques » collant. --- */
+.detail__grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+.detail__back {
+  margin-top: 12px;
+}
+.practical {
+  position: sticky;
+  top: 20px;
+  background: var(--creme-3);
+  border-top: 2px solid var(--or);
+  padding: clamp(20px, 2.6vw, 28px);
+}
+.practical__title {
+  font-family: var(--sans);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sinople);
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+.practical__list {
+  margin: 0;
+}
+.practical__row {
+  padding: 12px 0;
+  border-top: 1px solid var(--trait);
+}
+.practical__row:first-child {
+  border-top: 0;
+}
+.practical__row dt {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.practical__row dd {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+  .detail__grid {
+    grid-template-columns: 1fr;
+  }
+  .practical {
+    position: static;
+  }
+}
+
+/* --- Grille de cartes --- */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1px;
+  background: var(--trait);
+  border-block: 2px solid var(--or);
+}
+.card-grid--loose {
+  gap: clamp(16px, 2vw, 24px);
+  background: transparent;
+  border: 0;
+}
+
+/* --- Prose : colonne de lecture confortable (~65 car.) --- */
+.prose {
+  max-width: 65ch;
+}
+.prose > * + * {
+  margin-top: 1em;
+}
+.prose p {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--encre-douce);
+}
+.prose h2 {
+  font-size: clamp(26px, 3vw, 36px);
+  margin-top: 1.4em;
+}
+.prose h3 {
+  font-size: clamp(20px, 2.2vw, 26px);
+  margin-top: 1.3em;
+}
+.prose a:not(.btn):not(.arrow-link) {
+  color: var(--sinople);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--or);
+}
+.prose a:not(.btn):not(.arrow-link):hover {
+  text-decoration-thickness: 2px;
+}
+
+/* --- Étiquette / rubrique --- */
+.tag {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sinople);
+  font-weight: 600;
+}
+
+/* --- Pile verticale utilitaire --- */
+.stack > * + * {
+  margin-top: var(--stack-gap, 16px);
+}
+
+/* --- Marqueur « lien externe » accessible --- */
+.ext-mark {
+  font-size: 0.85em;
+}
+
+@media (max-width: 720px) {
+  body {
+    padding-bottom: 82px;
+  }
+}

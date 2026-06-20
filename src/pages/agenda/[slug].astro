@@ -1,0 +1,58 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { evenements } from "../../data/agenda";
+
+export function getStaticPaths() {
+  return evenements.map((e) => ({ params: { slug: e.slug }, props: { e } }));
+}
+
+const { e } = Astro.props;
+const corps = e.detail ?? [e.resume];
+---
+
+<Base
+  title={`${e.titre} — Agenda de Wintzenheim`}
+  description={`${e.dateLisible} · ${e.lieu}. ${e.resume}`}
+>
+  <PageHero
+    kicker={`${e.dateLisible} · ${e.lieu}`}
+    title={e.titre}
+    crumbs={[{ label: "Agenda", href: "/agenda/" }, { label: e.titre }]}
+  />
+
+  <section class="section detail" aria-label="Détail de l'événement">
+    <div class="container detail__grid">
+      <article class="prose detail__body">
+        <p class="detail__resume">{e.resume}</p>
+        {corps.map((p) => <p>{p}</p>)}
+        <a class="arrow-link detail__back" href="/agenda/">← Retour à l'agenda</a>
+      </article>
+
+      {e.pratique && (
+        <aside class="practical" aria-label="Informations pratiques">
+          <h2 class="practical__title">Infos pratiques</h2>
+          <dl class="practical__list">
+            {e.pratique.map((p) => (
+              <div class="practical__row">
+                <dt>{p.label}</dt>
+                <dd>{p.valeur}</dd>
+              </div>
+            ))}
+          </dl>
+        </aside>
+      )}
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* .detail__grid / .practical sont factorisés dans global.css */
+  .detail__resume {
+    font-family: var(--serif);
+    font-size: clamp(20px, 2.2vw, 25px);
+    line-height: 1.4;
+    color: var(--sinople);
+    margin: 0 0 8px;
+  }
+</style>

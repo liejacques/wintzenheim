@@ -1,0 +1,249 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { dechetsContact, collecte, tri, decheterie } from "../../data/dechets";
+
+const arrow =
+  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>';
+---
+
+<Base
+  title="Déchets & collecte — Wintzenheim"
+  description="Calendrier de collecte, consignes de tri et déchèterie à Wintzenheim. La gestion des déchets est assurée par Colmar Agglomération : carte interactive des jours de passage et contacts utiles."
+>
+  <PageHero
+    kicker="Cadre de vie"
+    title="Déchets & collecte"
+    lede="La collecte et le tri des déchets sont assurés par Colmar Agglomération. Retrouvez vos jours de passage, les consignes de tri et les informations de la déchèterie."
+    crumbs={[{ label: "Déchets & collecte" }]}
+  />
+
+  <!-- Calendrier -->
+  <section class="section calendar" aria-labelledby="cal-t">
+    <div class="container section__pad">
+      <div class="calendar__grid">
+        <div>
+          <p class="kicker"><span class="kicker__tick"></span><span class="kicker__label">Jours de passage</span></p>
+          <h2 id="cal-t" class="block-title">Connaître votre calendrier</h2>
+          <p class="lede">{collecte.intro}</p>
+          <a class="btn btn--primary" href={dechetsContact.carteUrl} rel="noopener" target="_blank">
+            Voir la carte interactive
+            <span aria-hidden="true"> ↗</span>
+          </a>
+        </div>
+        <div class="rules">
+          <h3 class="rules__title">Bons réflexes</h3>
+          <ul class="rules__list">
+            {collecte.regles.map((r) => <li>{r}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tri -->
+  <section class="section--sinople tri" aria-labelledby="tri-t">
+    <div class="container section__pad">
+      <p class="kicker kicker--gold"><span class="kicker__tick"></span><span class="kicker__label">Bien trier</span></p>
+      <h2 id="tri-t" class="block-title block-title--light">Les consignes de tri</h2>
+      <div class="tri__grid">
+        {tri.map((t) => (
+          <div class="tri__card">
+            <h3 class="tri__flux">{t.flux}</h3>
+            <p class="tri__consigne">{t.consigne}</p>
+          </div>
+        ))}
+      </div>
+      <p class="tri__note">
+        Un doute sur un emballage&nbsp;?
+        <a href={dechetsContact.memotriUrl} rel="noopener" target="_blank">Consulter le Mémo-Tri<span aria-hidden="true"> ↗</span></a>
+      </p>
+    </div>
+  </section>
+
+  <!-- Déchèterie -->
+  <section class="section decheterie" aria-labelledby="dech-t">
+    <div class="container section__pad">
+      <div class="decheterie__grid">
+        <div>
+          <p class="kicker"><span class="kicker__tick"></span><span class="kicker__label">Encombrants & déchets verts</span></p>
+          <h2 id="dech-t" class="block-title">{decheterie.nom}</h2>
+          <address class="decheterie__addr">
+            {decheterie.adresse}<br />
+            <a href={`tel:${decheterie.tel.replace(/\s/g, "")}`}>{decheterie.tel}</a>
+          </address>
+          <p class="decheterie__acces">{decheterie.acces}</p>
+        </div>
+        <div class="hours">
+          <h3 class="hours__title">Horaires d'ouverture</h3>
+          <dl class="hours__list">
+            {decheterie.horaires.map((h) => (
+              <div class="hours__row">
+                <dt>{h.saison}</dt>
+                <dd>{h.h}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="section--dark contact-strip" aria-labelledby="cs-t">
+    <div class="container section__pad">
+      <div class="contact-strip__grid">
+        <div>
+          <h2 id="cs-t" class="block-title block-title--light">Une question sur vos déchets&nbsp;?</h2>
+          <p class="lede lede--light">
+            Le service déchets de {dechetsContact.autorite} répond à vos questions
+            sur la collecte, les bacs et le tri.
+          </p>
+        </div>
+        <address class="contact-strip__addr">
+          <strong>{dechetsContact.autorite}</strong><br />
+          <a href={`tel:${dechetsContact.telE164}`}>{dechetsContact.tel}</a><br />
+          <a href={`mailto:${dechetsContact.email}`}>{dechetsContact.email}</a>
+        </address>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .block-title { margin-bottom: 16px; }
+  .lede {
+    max-width: 56ch;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--encre-douce);
+    margin: 0 0 24px;
+  }
+  .lede--light { color: var(--sur-vert); }
+
+  .calendar__grid,
+  .decheterie__grid,
+  .contact-strip__grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: clamp(28px, 4vw, 56px);
+    align-items: start;
+  }
+  .rules {
+    background: var(--creme-3);
+    border-top: 2px solid var(--or);
+    padding: clamp(20px, 2.6vw, 30px);
+  }
+  .rules__title,
+  .hours__title {
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sinople);
+    font-weight: 600;
+    margin: 0 0 14px;
+  }
+  .rules__list {
+    margin: 0;
+    padding-left: 20px;
+    display: grid;
+    gap: 10px;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .tri__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    background: var(--trait-clair);
+    border-block: 2px solid var(--or-clair);
+    margin-top: 8px;
+  }
+  .tri__card {
+    background: var(--vert-profond);
+    padding: clamp(20px, 2.4vw, 28px);
+  }
+  .tri__flux {
+    font-size: 19px;
+    color: var(--or-clair);
+    margin: 0 0 10px;
+  }
+  .tri__consigne {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--sur-vert);
+  }
+  .tri__note {
+    margin: 22px 0 0;
+    font-size: 16px;
+    color: var(--sur-vert);
+  }
+  .tri__note a,
+  .contact-strip__addr a,
+  .decheterie__addr a {
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid var(--or);
+  }
+  .tri__note a:hover { border-color: #fff; }
+
+  .decheterie__addr {
+    font-style: normal;
+    font-size: 17px;
+    line-height: 1.7;
+    margin: 0 0 14px;
+  }
+  .decheterie__addr a {
+    color: var(--sinople);
+    border-color: var(--or);
+  }
+  .decheterie__addr a:hover { border-color: var(--sinople); }
+  .decheterie__acces {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .hours {
+    background: var(--creme-3);
+    border-top: 2px solid var(--or);
+    padding: clamp(20px, 2.6vw, 30px);
+  }
+  .hours__list { margin: 0; }
+  .hours__row {
+    padding: 12px 0;
+    border-top: 1px solid var(--trait);
+  }
+  .hours__row:first-child { border-top: 0; }
+  .hours__row dt {
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .hours__row dd {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  .contact-strip__grid { align-items: center; }
+  .contact-strip__addr {
+    font-style: normal;
+    font-size: 17px;
+    line-height: 1.7;
+    color: #ebe6d6;
+  }
+  .contact-strip__addr strong { color: #fff; }
+  .contact-strip__addr a { overflow-wrap: anywhere; }
+  .contact-strip__addr a:hover { border-color: #fff; }
+
+  @media (max-width: 720px) {
+    .calendar__grid,
+    .decheterie__grid,
+    .contact-strip__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,325 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { mairie, annexe } from "../../data/commune";
+import { urgences, servicesProximite, transports } from "../../data/pratique";
+
+// Itinéraire vers la mairie (lien externe, sans traceur embarqué)
+const itineraire = `https://www.openstreetmap.org/search?query=${encodeURIComponent(
+  `${mairie.adresse}, ${mairie.cp} ${mairie.ville}`
+)}`;
+---
+
+<Base
+  title="Contact & horaires — Mairie de Wintzenheim"
+  description="Coordonnées, horaires et plan d'accès de la mairie de Wintzenheim et de la mairie annexe de Logelbach. Numéros utiles, services de proximité et transports."
+>
+  <PageHero
+    kicker="Nous joindre"
+    title="Contact & accès"
+    lede="Horaires, adresses et numéros utiles pour joindre la mairie de Wintzenheim, la mairie annexe de Logelbach et les services de proximité."
+    crumbs={[{ label: "Contact" }]}
+  />
+
+  <!-- Mairie principale -->
+  <section class="section main-contact" aria-labelledby="mc-t">
+    <div class="container section__pad">
+      <div class="main-contact__grid">
+        <div>
+          <p class="kicker"><span class="kicker__tick"></span><span class="kicker__label">Hôtel de ville</span></p>
+          <h2 id="mc-t" class="block-title">{mairie.nom}</h2>
+          <address class="big-addr">
+            {mairie.adresse}<br />
+            {mairie.cp} {mairie.ville}<br /><br />
+            <a href={`tel:${mairie.telE164}`}>{mairie.tel}</a><br />
+            <a href={`mailto:${mairie.email}`}>{mairie.email}</a>
+          </address>
+          <a class="btn btn--ghost" href={itineraire} rel="noopener" target="_blank">
+            Calculer mon itinéraire<span aria-hidden="true"> ↗</span>
+          </a>
+        </div>
+        <div class="hours-card">
+          <h3 class="card-label">Horaires d'ouverture au public</h3>
+          <dl class="hours">
+            {mairie.horaires.map((h) => (
+              <div class="hours__row">
+                <dt>{h.jour}</dt>
+                <dd>{h.h}</dd>
+              </div>
+            ))}
+          </dl>
+          <p class="hours__note">{mairie.noteHoraires}</p>
+          <p class="hours__live">
+            <span class="hours__dot" data-office-dot aria-hidden="true"></span>
+            <span data-office-status>Consulter les horaires</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mairie annexe Logelbach -->
+  <section id="logelbach" class="section--sinople annexe" aria-labelledby="annexe-t">
+    <div class="container section__pad">
+      <div class="annexe__grid">
+        <div>
+          <p class="kicker kicker--gold"><span class="kicker__tick"></span><span class="kicker__label">Quartier de Logelbach</span></p>
+          <h2 id="annexe-t" class="block-title block-title--light">{annexe.nom}</h2>
+          <p class="annexe__lede">
+            Une permanence de proximité est assurée à Logelbach pour les habitants
+            du quartier.
+          </p>
+        </div>
+        <address class="annexe__addr">
+          <span class="annexe__h">{annexe.horaires}</span>
+          <a href={`tel:${annexe.telE164}`}>{annexe.tel}</a><br />
+          <a href={`mailto:${annexe.email}`}>{annexe.email}</a>
+        </address>
+      </div>
+    </div>
+  </section>
+
+  <!-- Numéros d'urgence -->
+  <section class="section urgences" aria-labelledby="urg-t">
+    <div class="container section__pad">
+      <p class="kicker"><span class="kicker__tick"></span><span class="kicker__label">En cas d'urgence</span></p>
+      <h2 id="urg-t" class="block-title">Numéros utiles</h2>
+      <ul class="urg-grid">
+        {urgences.map((u) => (
+          <li class="urg">
+            <a href={`tel:${u.num.replace(/\s/g, "")}`}>
+              <span class="urg__num">{u.num}</span>
+              <span class="urg__label">{u.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <h3 class="sub-title">Services de proximité</h3>
+      <div class="prox-grid">
+        {servicesProximite.map((s) => (
+          <article class="prox">
+            <strong class="prox__nom">{s.nom}</strong>
+            <p class="prox__detail">{s.detail}</p>
+            {s.tel && <a class="prox__tel" href={`tel:${s.telE164}`}>{s.tel}</a>}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Transports -->
+  <section class="section--dark transports" aria-labelledby="tr-t">
+    <div class="container section__pad">
+      <div class="transports__grid">
+        <div>
+          <p class="kicker kicker--gold"><span class="kicker__tick"></span><span class="kicker__label">Se déplacer</span></p>
+          <h2 id="tr-t" class="block-title block-title--light">Venir & circuler</h2>
+          <p class="transports__lede">{transports.intro}</p>
+          <p class="transports__contact">{transports.contact}</p>
+          <a class="arrow-link arrow-link--underline transports__cta" href={transports.lien} rel="noopener" target="_blank">
+            Réseau TRACE Colmar<span aria-hidden="true"> ↗</span>
+          </a>
+        </div>
+        <ul class="lignes">
+          {transports.lignes.map((l) => (
+            <li class="ligne">
+              <strong class="ligne__nom">{l.nom}</strong>
+              <span class="ligne__detail">{l.detail}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .block-title { margin-bottom: 18px; }
+  .sub-title {
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sinople);
+    font-weight: 600;
+    margin: 44px 0 16px;
+  }
+  .card-label {
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sinople);
+    font-weight: 600;
+    margin: 0 0 14px;
+  }
+
+  .main-contact__grid,
+  .annexe__grid,
+  .transports__grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: clamp(28px, 4vw, 56px);
+    align-items: start;
+  }
+  .big-addr {
+    font-style: normal;
+    font-size: 18px;
+    line-height: 1.7;
+    margin: 0 0 22px;
+  }
+  .big-addr a {
+    color: var(--sinople);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid var(--or);
+    overflow-wrap: anywhere;
+  }
+  .big-addr a:hover { border-color: var(--sinople); }
+
+  .hours-card {
+    background: var(--creme-3);
+    border-top: 2px solid var(--or);
+    padding: clamp(20px, 2.6vw, 30px);
+  }
+  .hours { margin: 0; }
+  .hours__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 0;
+    border-top: 1px solid var(--trait);
+  }
+  .hours__row:first-child { border-top: 0; }
+  .hours__row dd {
+    margin: 0;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .hours__note {
+    margin: 14px 0 0;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .hours__live {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0 0;
+    padding-top: 14px;
+    border-top: 1px solid var(--trait);
+    font-weight: 600;
+    font-size: 14.5px;
+  }
+  .hours__dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--or);
+    flex: none;
+  }
+  .hours__dot.is-open { background: #2f9c54; }
+
+  /* Annexe */
+  .annexe__grid { align-items: center; }
+  .annexe__lede {
+    margin: 14px 0 0;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--sur-vert);
+    max-width: 46ch;
+  }
+  .annexe__addr {
+    font-style: normal;
+    font-size: 17px;
+    line-height: 1.8;
+    background: rgba(255, 255, 255, 0.08);
+    border-top: 2px solid var(--or-clair);
+    padding: clamp(18px, 2.4vw, 26px);
+    color: #ebe6d6;
+  }
+  .annexe__h { display: block; margin-bottom: 10px; color: #fff; font-weight: 600; }
+  .annexe__addr a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid var(--or);
+    overflow-wrap: anywhere;
+  }
+  .annexe__addr a:hover { border-color: #fff; }
+
+  /* Urgences */
+  .urg-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--trait);
+    border-block: 2px solid var(--or);
+  }
+  .urg a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: var(--creme);
+    text-decoration: none;
+    color: inherit;
+    min-height: 64px;
+  }
+  .urg a:hover { background: #f0f3ee; }
+  .urg__num {
+    flex: none;
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--sinople);
+    min-width: 56px;
+  }
+  .urg__label { font-size: 14.5px; line-height: 1.4; }
+
+  .prox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .prox {
+    border: 1px solid var(--trait);
+    padding: 18px 20px;
+    background: var(--creme);
+  }
+  .prox__nom { display: block; font-family: var(--serif); font-size: 20px; }
+  .prox__detail { margin: 6px 0 8px; font-size: 14.5px; color: var(--muted); line-height: 1.5; }
+  .prox__tel {
+    color: var(--sinople);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid var(--or);
+  }
+
+  /* Transports */
+  .transports__lede {
+    margin: 14px 0 14px;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--sur-vert);
+    max-width: 48ch;
+  }
+  .transports__contact { font-size: 15px; color: var(--sur-vert-muted); margin: 0 0 16px; }
+  .transports__cta { color: #fff; }
+  .lignes { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; background: var(--trait-clair); border-block: 2px solid var(--or-clair); }
+  .ligne { background: var(--vert-profond); padding: 18px 20px; }
+  .ligne__nom { display: block; font-family: var(--serif); font-size: 20px; color: var(--or-clair); }
+  .ligne__detail { font-size: 15px; color: var(--sur-vert); }
+
+  section { scroll-margin-top: 20px; }
+
+  @media (max-width: 820px) {
+    .main-contact__grid,
+    .annexe__grid,
+    .transports__grid { grid-template-columns: 1fr; }
+  }
+</style>

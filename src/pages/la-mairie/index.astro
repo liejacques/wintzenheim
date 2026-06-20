@@ -1,0 +1,428 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { maire, adjoints, conseillersDelegues, conseil, instances } from "../../data/elus";
+import { jumelages, mairie } from "../../data/commune";
+import { articles } from "../../data/actualites";
+
+// Offres / vie municipale : on remonte les actualités « municipales »
+const offres = articles.filter((a) =>
+  /municipal|recrut|police/i.test(`${a.rubrique} ${a.titre}`)
+);
+---
+
+<Base
+  title="La Mairie — Wintzenheim"
+  description="Le maire, les adjoints et le conseil municipal de Wintzenheim. Comptes-rendus du conseil, recrutement, marchés publics et jumelages de la commune."
+>
+  <PageHero
+    kicker="Votre municipalité"
+    title="La Mairie"
+    lede="Le maire, les adjoints et le conseil municipal conduisent l'action de la commune. Retrouvez l'équipe, le fonctionnement du conseil et les informations sur le recrutement."
+    crumbs={[{ label: "La Mairie" }]}
+  />
+
+  <!-- Le maire -->
+  <section id="elus" class="section maire" aria-labelledby="elus-t">
+    <div class="container section__pad">
+      <p class="kicker"><span class="kicker__tick"></span><span class="kicker__label">L'équipe municipale</span></p>
+      <h2 id="elus-t" class="block-title">Le maire & les adjoints</h2>
+
+      <div class="maire__card">
+        <span class="maire__role">{maire.fonction}</span>
+        <strong class="maire__nom">{maire.nom}</strong>
+        <p class="maire__detail">{maire.detail}</p>
+      </div>
+
+      <div class="adjoints">
+        {adjoints.map((a) => (
+          <article class="adjoint">
+            <span class="adjoint__rang">{a.rang}</span>
+            <strong class="adjoint__nom">{a.nom}</strong>
+            <p class="adjoint__deleg">{a.delegation}</p>
+          </article>
+        ))}
+      </div>
+
+      <h3 class="sub-title">Conseillers municipaux délégués</h3>
+      <ul class="delegues">
+        {conseillersDelegues.map((c) => (
+          <li class="delegue">
+            <strong>{c.nom}</strong>
+            <span>{c.delegation}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Conseil municipal -->
+  <section id="conseil" class="section--dark conseil" aria-labelledby="conseil-t">
+    <div class="container section__pad">
+      <div class="conseil__grid">
+        <div>
+          <p class="kicker kicker--gold"><span class="kicker__tick"></span><span class="kicker__label">Démocratie locale</span></p>
+          <h2 id="conseil-t" class="block-title block-title--light">Le conseil municipal</h2>
+          <p class="conseil__note">{conseil.note}</p>
+          <p class="conseil__lieu"><strong>Lieu des séances :</strong> {conseil.lieu}</p>
+          <a class="arrow-link arrow-link--underline conseil__cta" href={conseil.pvUrl} rel="noopener" target="_blank">
+            Comptes-rendus & procès-verbaux<span aria-hidden="true"> ↗</span>
+          </a>
+        </div>
+        <div class="compo">
+          <div class="compo__stat">
+            <span class="compo__num">{conseil.sieges}</span>
+            <span class="compo__label">sièges au conseil</span>
+          </div>
+          <ul class="compo__list">
+            <li>
+              <span class="compo__group">Majorité — {conseil.majorite.liste}</span>
+              <span class="compo__seats">{conseil.majorite.sieges} sièges</span>
+            </li>
+            <li>
+              <span class="compo__group">Opposition — {conseil.opposition.liste}</span>
+              <span class="compo__seats">{conseil.opposition.sieges} sièges</span>
+            </li>
+          </ul>
+          <h3 class="compo__instances-title">Instances participatives</h3>
+          <ul class="compo__instances">
+            {instances.map((i) => <li>{i}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recrutement & marchés publics -->
+  <section id="recrutement" class="section recrut" aria-labelledby="recrut-t">
+    <div class="container section__pad">
+      <p class="kicker"><span class="kicker__tick"></span><span class="kicker__label">Travailler avec la commune</span></p>
+      <h2 id="recrut-t" class="block-title">Recrutement & marchés publics</h2>
+      <p class="lede">
+        La commune publie ses offres d'emploi et ses appels d'offres. Les candidatures
+        sont à adresser à Monsieur le Maire, en mairie ou par courriel.
+      </p>
+
+      <div class="recrut__grid">
+        <div class="recrut__col">
+          <h3 class="sub-title">Offres & vie municipale</h3>
+          {offres.length > 0 ? (
+            <ul class="recrut__offres">
+              {offres.map((o) => (
+                <li>
+                  <a href={`/actualites/${o.slug}/`}>
+                    <span class="recrut__rub">{o.rubrique}</span>
+                    <span class="recrut__titre">{o.titre}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="recrut__empty">Aucune offre en cours. Les candidatures spontanées restent les bienvenues.</p>
+          )}
+        </div>
+        <div class="recrut__col">
+          <h3 class="sub-title">Adresser une candidature</h3>
+          <address class="recrut__addr">
+            <strong>{mairie.nom}</strong> — à l'attention de Monsieur le Maire<br />
+            {mairie.adresse}, {mairie.cp} {mairie.ville}<br /><br />
+            <a href={`tel:${mairie.telE164}`}>{mairie.tel}</a><br />
+            <a href={`mailto:${mairie.email}`}>{mairie.email}</a>
+          </address>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Jumelages -->
+  <section class="section--sinople jumelages" aria-labelledby="jum-t">
+    <div class="container section__pad">
+      <p class="kicker kicker--gold"><span class="kicker__tick"></span><span class="kicker__label">Ouverture & amitié</span></p>
+      <h2 id="jum-t" class="block-title block-title--light">Jumelages & pactes d'amitié</h2>
+      <div class="jumelages__grid">
+        {jumelages.map((j) => (
+          <article class="jumelage">
+            <strong class="jumelage__ville">{j.ville}</strong>
+            <span class="jumelage__pays">{j.pays}</span>
+            <p class="jumelage__detail">{j.detail}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .block-title { margin-top: 12px; }
+  .sub-title {
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sinople);
+    font-weight: 600;
+    margin: 36px 0 14px;
+  }
+  .lede {
+    max-width: 60ch;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--encre-douce);
+    margin: 16px 0 28px;
+  }
+
+  /* Maire */
+  .maire__card {
+    margin-top: 28px;
+    padding: clamp(22px, 3vw, 34px);
+    background: var(--creme-3);
+    border-left: 4px solid var(--or);
+  }
+  .maire__role {
+    display: block;
+    font-size: 12.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sinople);
+    font-weight: 600;
+  }
+  .maire__nom {
+    display: block;
+    font-family: var(--serif);
+    font-size: clamp(28px, 3.4vw, 38px);
+    line-height: 1.05;
+    margin: 6px 0 8px;
+  }
+  .maire__detail {
+    margin: 0;
+    color: var(--encre-douce);
+    font-size: 16px;
+  }
+  .adjoints {
+    margin-top: 1px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--trait);
+    border-block: 2px solid var(--or);
+    margin-top: 24px;
+  }
+  .adjoint {
+    background: var(--creme);
+    padding: clamp(18px, 2.2vw, 24px);
+  }
+  .adjoint__rang {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sinople);
+    font-weight: 600;
+  }
+  .adjoint__nom {
+    display: block;
+    font-family: var(--serif);
+    font-size: 22px;
+    margin: 5px 0 7px;
+  }
+  .adjoint__deleg {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .delegues {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .delegue {
+    padding: 14px 18px;
+    border: 1px solid var(--trait);
+    background: var(--creme);
+  }
+  .delegue strong { display: block; font-family: var(--serif); font-size: 19px; }
+  .delegue span { font-size: 14px; color: var(--muted); }
+
+  /* Conseil */
+  .conseil__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: clamp(28px, 4vw, 56px);
+    align-items: start;
+  }
+  .conseil__note {
+    margin: 16px 0 16px;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--sur-vert);
+    max-width: 52ch;
+  }
+  .conseil__lieu {
+    font-size: 15px;
+    color: var(--sur-vert-muted);
+    margin: 0 0 18px;
+  }
+  .conseil__lieu strong { color: #fff; }
+  .conseil__cta { color: #fff; }
+  .compo {
+    background: rgba(255, 255, 255, 0.06);
+    border-top: 2px solid var(--or-clair);
+    padding: clamp(22px, 3vw, 30px);
+  }
+  .compo__stat {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--trait-clair);
+  }
+  .compo__num {
+    font-family: var(--serif);
+    font-size: 52px;
+    font-weight: 600;
+    color: var(--or-clair);
+    line-height: 1;
+  }
+  .compo__label {
+    font-size: 14px;
+    color: var(--sur-vert-muted);
+  }
+  .compo__list {
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .compo__list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: baseline;
+  }
+  .compo__group {
+    font-family: var(--serif);
+    font-size: 17px;
+    color: #fff;
+  }
+  .compo__seats {
+    flex: none;
+    font-weight: 600;
+    color: var(--or-clair);
+    font-variant-numeric: tabular-nums;
+  }
+  .compo__instances-title {
+    font-family: var(--sans);
+    font-size: 12.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--or-clair);
+    font-weight: 600;
+    margin: 22px 0 10px;
+  }
+  .compo__instances {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+    font-size: 15px;
+    color: var(--sur-vert);
+  }
+
+  /* Recrutement */
+  .recrut__grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: clamp(28px, 4vw, 56px);
+  }
+  .recrut__offres {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .recrut__offres li { border-top: 1px solid var(--trait); }
+  .recrut__offres li:first-child { border-top: 0; }
+  .recrut__offres a {
+    display: block;
+    padding: 16px 0;
+    text-decoration: none;
+    color: inherit;
+  }
+  .recrut__rub {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sinople);
+    font-weight: 600;
+  }
+  .recrut__titre {
+    display: block;
+    font-family: var(--serif);
+    font-size: 21px;
+    line-height: 1.15;
+    margin-top: 5px;
+  }
+  .recrut__offres a:hover .recrut__titre { color: var(--sinople); }
+  .recrut__empty { color: var(--muted); }
+  .recrut__addr {
+    font-style: normal;
+    font-size: 16px;
+    line-height: 1.7;
+    background: var(--creme-3);
+    border-top: 2px solid var(--or);
+    padding: clamp(18px, 2.4vw, 26px);
+  }
+  .recrut__addr a {
+    color: var(--sinople);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid var(--or);
+    overflow-wrap: anywhere;
+  }
+
+  /* Jumelages */
+  .jumelages__grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--trait-clair);
+    border-block: 2px solid var(--or-clair);
+  }
+  .jumelage {
+    background: var(--sinople-section);
+    padding: clamp(20px, 2.6vw, 28px);
+  }
+  .jumelage__ville {
+    font-family: var(--serif);
+    font-size: 26px;
+    color: #fff;
+    display: block;
+  }
+  .jumelage__pays {
+    display: block;
+    font-size: 12.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--or-clair);
+    margin: 4px 0 10px;
+  }
+  .jumelage__detail {
+    margin: 0;
+    color: var(--sur-vert);
+    font-size: 15px;
+  }
+
+  section { scroll-margin-top: 20px; }
+
+  @media (max-width: 820px) {
+    .conseil__grid,
+    .recrut__grid { grid-template-columns: 1fr; }
+  }
+</style>

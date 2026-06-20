@@ -1,0 +1,67 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { mairie } from "../../data/commune";
+---
+
+<Base
+  title="Données personnelles — Wintzenheim"
+  description="Politique de protection des données personnelles du site de Wintzenheim : aucun cookie de mesure d'audience, polices auto-hébergées, droits RGPD et contact."
+>
+  <PageHero
+    title="Données personnelles"
+    kicker="Confidentialité & RGPD"
+    crumbs={[{ label: "Données personnelles" }]}
+  />
+
+  <section class="section">
+    <div class="container prose">
+      <p>
+        La Commune de Wintzenheim attache une grande importance à la protection de votre
+        vie privée et de vos données personnelles, conformément au Règlement général sur la
+        protection des données (RGPD) et à la loi « Informatique et Libertés ».
+      </p>
+
+      <h2>Un site sobre, sans pistage</h2>
+      <p>
+        Ce site a été conçu pour respecter votre vie privée par défaut :
+      </p>
+      <ul>
+        <li>aucun cookie de mesure d'audience ni de publicité n'est déposé ;</li>
+        <li>aucun traceur tiers n'est chargé&nbsp;;</li>
+        <li>les polices de caractères sont <strong>hébergées sur le site</strong> et ne déclenchent aucune requête vers un service externe (par exemple Google Fonts)&nbsp;;</li>
+        <li>la recherche rapide et l'affichage des horaires fonctionnent entièrement dans votre navigateur, sans envoi de données.</li>
+      </ul>
+
+      <h2>Données que vous nous transmettez</h2>
+      <p>
+        Lorsque vous nous contactez par téléphone ou par courriel, les informations que vous
+        communiquez (nom, coordonnées, objet de la demande) sont utilisées uniquement pour
+        traiter votre demande. Elles ne sont ni cédées ni vendues à des tiers et sont
+        conservées le temps nécessaire au traitement.
+      </p>
+
+      <h2>Téléservices externes</h2>
+      <p>
+        Les démarches en ligne sont réalisées sur des plateformes officielles
+        (service-public.fr, ANTS, guichet unique de Colmar Agglomération, etc.) qui disposent
+        de leurs propres politiques de confidentialité. Nous vous invitons à les consulter.
+      </p>
+
+      <h2>Vos droits</h2>
+      <p>
+        Vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation et
+        d'opposition au traitement de vos données. Pour exercer ces droits, contactez la mairie :
+      </p>
+      <p>
+        {mairie.nom} — {mairie.adresse}, {mairie.cp} {mairie.ville}<br />
+        Courriel : <a href={`mailto:${mairie.email}`}>{mairie.email}</a>
+      </p>
+      <p>
+        Si vous estimez, après nous avoir contactés, que vos droits ne sont pas respectés,
+        vous pouvez adresser une réclamation à la
+        <a href="https://www.cnil.fr/" rel="noopener" target="_blank">CNIL<span aria-hidden="true"> ↗</span></a>.
+      </p>
+    </div>
+  </section>
+</Base>

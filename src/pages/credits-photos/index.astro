@@ -1,0 +1,98 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { creditsListe } from "../../data/photos";
+---
+
+<Base
+  title="Crédits photos — Wintzenheim"
+  description="Crédits, auteurs et licences des photographies et du blason utilisés sur le site de la commune de Wintzenheim. Images issues de Wikimedia Commons et polices auto-hébergées."
+>
+  <PageHero
+    title="Crédits photos"
+    kicker="Auteurs & licences"
+    lede="Les photographies de ce site proviennent de Wikimedia Commons et sont réutilisées dans le respect de leur licence. Merci à leurs auteurs."
+    crumbs={[{ label: "Crédits photos" }]}
+  />
+
+  <section class="section">
+    <div class="container">
+      <table class="credits">
+        <thead>
+          <tr>
+            <th scope="col">Sujet</th>
+            <th scope="col">Auteur</th>
+            <th scope="col">Licence</th>
+            <th scope="col">Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          {creditsListe.map((c) => (
+            <tr>
+              <td data-label="Sujet">{c.sujet}</td>
+              <td data-label="Auteur">{c.auteur}</td>
+              <td data-label="Licence">{c.licence}</td>
+              <td data-label="Source">{c.source}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div class="prose notes">
+        <h2>À propos des licences</h2>
+        <p>
+          La mention « CC BY-SA 4.0 » renvoie à la licence
+          <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr" rel="noopener" target="_blank">Creative Commons Attribution – Partage dans les mêmes conditions 4.0<span aria-hidden="true"> ↗</span></a>.
+          Les œuvres en domaine public sont libres de droits.
+        </p>
+        <h2>Polices de caractères</h2>
+        <p>
+          Le site utilise les polices <strong>Cormorant Garamond</strong> et
+          <strong>Source Sans 3</strong>, distribuées sous licence SIL Open Font License et
+          hébergées directement sur le site (aucun appel à un service externe).
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .credits {
+    width: 100%;
+    border-collapse: collapse;
+    border-block: 2px solid var(--or);
+    font-size: 15.5px;
+  }
+  .credits th {
+    text-align: left;
+    font-family: var(--sans);
+    font-size: 12.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sinople);
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--trait-fort);
+  }
+  .credits td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--trait);
+    vertical-align: top;
+    overflow-wrap: anywhere;
+  }
+  .credits tbody tr:hover { background: var(--creme-3); }
+  .notes { margin-top: 36px; }
+
+  @media (max-width: 680px) {
+    .credits thead { display: none; }
+    .credits, .credits tbody, .credits tr, .credits td { display: block; width: 100%; }
+    .credits tr { border-bottom: 1px solid var(--trait-fort); padding: 12px 0; }
+    .credits td { border: 0; padding: 4px 0; }
+    .credits td::before {
+      content: attr(data-label) " : ";
+      font-weight: 600;
+      color: var(--sinople);
+    }
+    .credits td[data-label="Sujet"] { font-family: var(--serif); font-size: 19px; }
+    .credits td[data-label="Sujet"]::before { content: ""; }
+  }
+</style>

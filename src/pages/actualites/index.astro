@@ -1,0 +1,81 @@
+---
+import { Image } from "astro:assets";
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { articles } from "../../data/actualites";
+import { photos, articleImages } from "../../data/photos";
+
+const sorted = [...articles].sort((a, b) => b.iso.localeCompare(a.iso));
+const [lead, ...rest] = sorted;
+const leadPhoto = lead?.image ? articleImages[lead.image] : photos.rueClemenceau;
+---
+
+<Base
+  title="Actualités — Wintzenheim"
+  description="Toute l'actualité de Wintzenheim : informations municipales, cadre de vie, enfance et jeunesse, solidarité et vie associative."
+>
+  <PageHero
+    kicker="Vie locale"
+    title="Actualités"
+    lede="Informations municipales, cadre de vie, jeunesse et solidarité : suivez les nouvelles de la commune."
+    crumbs={[{ label: "Actualités" }]}
+  />
+
+  <!-- Une -->
+  {lead && (
+  <section class="section lead" aria-labelledby="lead-t">
+    <div class="container section__pad">
+      <a class="lead__link" href={`/actualites/${lead.slug}/`}>
+        <figure class="lead__media">
+          <Image src={leadPhoto.image} alt={leadPhoto.alt} widths={[500, 900, 1300]} sizes="(max-width: 900px) 100vw, 1180px" loading="eager" />
+        </figure>
+        <span class="tag">{lead.rubrique}</span>
+        <h2 id="lead-t" class="lead__title">{lead.titre}</h2>
+        <p class="lead__chapo">{lead.chapo}</p>
+        <p class="lead__date">{lead.dateLisible}</p>
+      </a>
+      <p class="credit">{leadPhoto.credit}</p>
+    </div>
+  </section>
+  )}
+
+  <!-- Liste -->
+  <section class="section--cream2 list" aria-label="Autres actualités">
+    <div class="container section__pad">
+      <div class="list__grid">
+        {rest.map((a) => (
+          <article class="news">
+            <a class="news__link" href={`/actualites/${a.slug}/`}>
+              <span class="tag">{a.rubrique}</span>
+              <h3 class="news__title">{a.titre}</h3>
+              <p class="news__chapo">{a.chapo}</p>
+              <p class="news__date">{a.dateLisible}</p>
+            </a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .section--cream2 { background: var(--creme-2); border-top: 1px solid var(--trait); }
+
+  .lead__link { display: block; text-decoration: none; color: inherit; }
+  .lead__media { margin: 0 0 20px; overflow: hidden; border-radius: var(--radius); aspect-ratio: 16 / 8; }
+  .lead__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+  .lead__link:hover .lead__media img { transform: scale(1.02); }
+  .lead__title { font-size: clamp(28px, 4vw, 48px); line-height: 1.05; margin: 10px 0 12px; max-width: 22ch; }
+  .lead__link:hover .lead__title { color: var(--sinople); }
+  .lead__chapo { font-size: 18px; line-height: 1.6; color: var(--encre-douce); margin: 0 0 12px; max-width: 64ch; }
+  .lead__date { font-size: 14px; color: var(--muted); margin: 0; }
+
+  .list__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1px; background: var(--trait); border-block: 2px solid var(--or); }
+  .news { background: var(--creme-2); }
+  .news__link { display: block; padding: clamp(20px, 2.6vw, 28px); text-decoration: none; color: inherit; height: 100%; }
+  .news__link:hover { background: var(--creme); }
+  .news__title { font-size: 23px; line-height: 1.15; margin: 8px 0 10px; }
+  .news__link:hover .news__title { color: var(--sinople); }
+  .news__chapo { font-size: 15px; line-height: 1.55; color: var(--muted); margin: 0 0 12px; }
+  .news__date { font-size: 13.5px; color: var(--muted); margin: 0; }
+</style>

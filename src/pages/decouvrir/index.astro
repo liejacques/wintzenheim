@@ -1,0 +1,178 @@
+---
+import { Image } from "astro:assets";
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { tourisme } from "../../data/patrimoine";
+import { photos } from "../../data/photos";
+
+const arrow =
+  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>';
+
+const find = (frag: string) => tourisme.find((t) => t.nom.includes(frag));
+const hengst = find("Hengst");
+const routeVins = find("Route des Vins");
+const chateau = find("Hohlandsbourg");
+const cinqChateaux = find("Cinq Châteaux");
+const nature = find("Sentiers");
+---
+
+<Base
+  title="Découvrir Wintzenheim — vignoble, châteaux & nature"
+  description="Préparez votre visite de Wintzenheim : le Grand Cru Hengst et la Route des Vins, le château du Hohlandsbourg et la Route des Cinq Châteaux, les sentiers du Parc des Ballons des Vosges."
+  ogImage={photos.chateau.image.src}
+>
+  <PageHero
+    kicker="Destination Wintzenheim"
+    title="Découvrir la commune"
+    lede="Au pied du Hohlandsbourg, entre vignoble du Grand Cru Hengst et forêts des Vosges, Wintzenheim est une étape vivante de la Route des Vins d'Alsace, à quelques minutes de Colmar."
+    crumbs={[{ label: "Découvrir" }]}
+  />
+
+  <!-- Image phare -->
+  <figure class="lead-media">
+    <Image
+      src={photos.chateau.image}
+      alt={photos.chateau.alt}
+      widths={[600, 1000, 1600]}
+      sizes="100vw"
+      loading="eager"
+    />
+    <figcaption class="credit credit--overlay">{photos.chateau.credit}</figcaption>
+  </figure>
+
+  <!-- Vignoble -->
+  <section id="vignoble" class="section vignoble" aria-labelledby="vig-t">
+    <div class="container section__pad">
+      <p class="kicker"><span class="kicker__tick"></span><span class="kicker__label">Terroir & Route des Vins</span></p>
+      <h2 id="vig-t" class="block-title">Le vignoble</h2>
+      <div class="duo">
+        {hengst && (
+          <article class="topic">
+            <h3 class="topic__nom">{hengst.nom}</h3>
+            <p class="topic__desc">{hengst.desc}</p>
+          </article>
+        )}
+        {routeVins && (
+          <article class="topic">
+            <h3 class="topic__nom">{routeVins.nom}</h3>
+            <p class="topic__desc">{routeVins.desc}</p>
+          </article>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- Châteaux / tourisme -->
+  <section id="tourisme" class="section--dark chateaux" aria-labelledby="chx-t">
+    <div class="container section__pad">
+      <div class="chateaux__grid">
+        <div>
+          <p class="kicker kicker--gold"><span class="kicker__tick"></span><span class="kicker__label">Sur les hauteurs</span></p>
+          <h2 id="chx-t" class="block-title block-title--light">Châteaux & panoramas</h2>
+          {chateau && (
+            <div class="topic topic--light">
+              <h3 class="topic__nom topic__nom--light">{chateau.nom}</h3>
+              <p class="topic__desc topic__desc--light">{chateau.desc}</p>
+              {chateau.lien && (
+                <a class="arrow-link arrow-link--underline topic__link" href={chateau.lien} rel="noopener" target="_blank">
+                  Site du château<span aria-hidden="true"> ↗</span>
+                </a>
+              )}
+            </div>
+          )}
+          {cinqChateaux && (
+            <div class="topic topic--light">
+              <h3 class="topic__nom topic__nom--light">{cinqChateaux.nom}</h3>
+              <p class="topic__desc topic__desc--light">{cinqChateaux.desc}</p>
+            </div>
+          )}
+        </div>
+        <figure class="chateaux__media">
+          <Image
+            src={photos.vista.image}
+            alt={photos.vista.alt}
+            widths={[400, 700, 1000]}
+            sizes="(max-width: 820px) 100vw, 44vw"
+            loading="lazy"
+          />
+          <figcaption class="credit credit--overlay">{photos.vista.credit}</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Balades & nature -->
+  <section id="balades" class="section balades" aria-labelledby="bal-t">
+    <div class="container section__pad">
+      <p class="kicker"><span class="kicker__tick"></span><span class="kicker__label">Au grand air</span></p>
+      <h2 id="bal-t" class="block-title">Balades & nature</h2>
+      {nature && <p class="lede">{nature.desc}</p>}
+    </div>
+  </section>
+
+  <!-- Vers patrimoine & quartiers -->
+  <section class="section--cream3 next" aria-label="Aller plus loin">
+    <div class="container section__pad">
+      <div class="next__grid">
+        <a class="next-card" href="/decouvrir/patrimoine/">
+          <Image class="next-card__img" src={photos.egliseSaintLaurent.image} alt={photos.egliseSaintLaurent.alt} widths={[400, 700]} sizes="(max-width: 760px) 100vw, 48vw" loading="lazy" />
+          <span class="next-card__shade" aria-hidden="true"></span>
+          <span class="next-card__body">
+            <small>Patrimoine & histoire</small>
+            <strong>Huit siècles à ciel ouvert</strong>
+            <span class="next-card__go">Explorer le patrimoine <Fragment set:html={arrow} /></span>
+          </span>
+        </a>
+        <a class="next-card" href="/decouvrir/quartiers/">
+          <Image class="next-card__img" src={photos.fontaine.image} alt={photos.fontaine.alt} widths={[400, 700]} sizes="(max-width: 760px) 100vw, 48vw" loading="lazy" />
+          <span class="next-card__shade" aria-hidden="true"></span>
+          <span class="next-card__body">
+            <small>Centre · Logelbach · La Forge</small>
+            <strong>Les trois quartiers</strong>
+            <span class="next-card__go">Découvrir les quartiers <Fragment set:html={arrow} /></span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .section--cream3 { background: var(--creme-3); border-top: 1px solid var(--trait); }
+  .lede { margin: 16px 0 0; max-width: 60ch; font-size: 17.5px; line-height: 1.65; color: var(--encre-douce); }
+
+  .lead-media { position: relative; margin: 0; aspect-ratio: 21 / 9; overflow: hidden; background: var(--vert-profond); }
+  .lead-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lead-media .credit { position: absolute; right: 10px; bottom: 8px; margin: 0; }
+
+  .duo { margin-top: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--trait); border-block: 2px solid var(--or); }
+  .topic { background: var(--creme); padding: clamp(22px, 3vw, 32px); }
+  .topic--light { background: transparent; padding: 0; margin-top: 26px; }
+  .topic__nom { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 28px); margin: 0 0 10px; }
+  .topic__nom--light { color: var(--or-clair); }
+  .topic__desc { margin: 0; font-size: 16px; line-height: 1.6; color: var(--encre-douce); max-width: 52ch; }
+  .topic__desc--light { color: var(--sur-vert); }
+  .topic__link { color: #fff; margin-top: 12px; display: inline-flex; }
+
+  .chateaux__grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(28px, 4vw, 56px); align-items: center; }
+  .chateaux__media { position: relative; margin: 0; aspect-ratio: 4 / 3; overflow: hidden; }
+  .chateaux__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .chateaux__media .credit { position: absolute; right: 10px; bottom: 8px; margin: 0; }
+
+  .next__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .next-card { position: relative; display: block; min-height: 320px; overflow: hidden; background: var(--vert-profond); color: #fff; text-decoration: none; }
+  .next-card__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(0.2,0.65,0.25,1); }
+  .next-card:hover .next-card__img { transform: scale(1.04); }
+  .next-card__shade { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, rgba(8,29,14,0.85) 100%); }
+  .next-card__body { position: absolute; z-index: 2; left: clamp(20px,3vw,32px); right: clamp(20px,3vw,32px); bottom: clamp(22px,3vw,30px); }
+  .next-card__body small { display: block; margin-bottom: 6px; color: var(--or-clair); font-size: 11.5px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; }
+  .next-card__body strong { display: block; font-family: var(--serif); font-size: clamp(26px, 3.2vw, 36px); line-height: 1; }
+  .next-card__go { display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 14px; font-weight: 600; }
+
+  section { scroll-margin-top: 20px; }
+
+  @media (max-width: 820px) {
+    .duo, .chateaux__grid, .next__grid { grid-template-columns: 1fr; }
+    .lead-media { aspect-ratio: 16 / 10; }
+  }
+</style>

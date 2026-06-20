@@ -1,0 +1,1484 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import { photos } from "../data/photos";
+import { evenements } from "../data/agenda";
+import { articles } from "../data/actualites";
+import { mairie } from "../data/commune";
+
+// Accès rapides « démarches » (curaté pour l'accueil → pages réelles)
+const acces = [
+  { key: "contact", titre: "Horaires & contact", sous: "Mairie, annexe et plan d'accès", href: "#pratique" },
+  { key: "etat-civil", titre: "État civil", sous: "Actes, mariage, PACS, recensement", href: "/demarches/#etat-civil" },
+  { key: "dechets", titre: "Déchets & collecte", sous: "Calendrier, déchèterie, tri", href: "/dechets/" },
+  { key: "urbanisme", titre: "Urbanisme", sous: "Permis, déclarations, guichet unique", href: "/demarches/#urbanisme" },
+  { key: "scolaire", titre: "Scolaire & périscolaire", sous: "Inscriptions, périscolaire, cantine", href: "/vie-locale/#ecoles" },
+  { key: "signaler", titre: "Signaler un problème", sous: "Voirie, éclairage, propreté", href: "/contact/" },
+];
+
+const icons = {
+  contact:
+    '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  "etat-civil":
+    '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M14 3v5h5"/><path d="M7 3h7l5 5v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M9 13h6M9 17h4"/></svg>',
+  dechets:
+    '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 6h18l-1.5 13.5a1 1 0 0 1-1 .9H5.5a1 1 0 0 1-1-.9Z"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M10 11v5M14 11v5"/></svg>',
+  urbanisme:
+    '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M10 21v-5h4v5"/></svg>',
+  scolaire:
+    '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 9 12 4l9 5-9 5-9-5Z"/><path d="M7 11v5c0 1 2.2 2.5 5 2.5s5-1.5 5-2.5v-5"/></svg>',
+  signaler:
+    '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 3 3 19h18Z"/><path d="M12 10v4M12 17h.01"/></svg>',
+};
+
+const enBref = [
+  { eyebrow: "Mairie aujourd'hui", valeur: "Consulter les horaires", href: "#pratique", dynamic: true },
+  { eyebrow: "Prochain rendez-vous", valeur: "Fête de la Musique · 21 juin", href: "#agenda" },
+  { eyebrow: "Terroir", valeur: "Grand Cru Hengst · 53 ha", href: "#decouvrir" },
+  { eyebrow: "Sur les hauteurs", valeur: "Hohlandsbourg · depuis 1279", href: "#patrimoine" },
+];
+
+// Actualité à la une : la Fête Révolutionnaire (page événement dédiée)
+const lead = {
+  rubrique: "Vie locale",
+  titre: "La Fête Révolutionnaire fait son grand retour",
+  chapo:
+    "Le 12 juillet, le centre-ville remonte le temps : déambulation, orchestres, défilé costumé de la rue Clemenceau jusqu'à l'école Dame-Blanche, puis feu d'artifice à 23 h. La municipalité prête gratuitement les costumes.",
+  date: "Publié le 8 juin 2026",
+  href: "/agenda/fete-revolutionnaire-2026/",
+};
+const autresActus = articles.slice(0, 3);
+const agendaAccueil = evenements.slice(0, 4);
+
+const arrow =
+  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>';
+const chevron =
+  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+---
+
+<Base
+  title="Wintzenheim — Site officiel de la commune (Haut-Rhin)"
+  description="Wintzenheim, ville viticole au pied du Hohlandsbourg : services aux habitants, actualités, agenda, patrimoine et découverte de la Route des Vins d'Alsace."
+  ogImage={photos.mairie.image.src}
+>
+  <!-- ============ HERO ============ -->
+  <section class="hero" aria-label="Présentation">
+    <div class="hero__stage">
+      <div class="hero__panel">
+        <svg class="hero__contours" aria-hidden="true" viewBox="0 0 800 700" preserveAspectRatio="xMidYMax slice">
+          <g fill="none" stroke-linecap="round">
+            <path d="M-50,260 C200,215 420,285 850,220" opacity=".24"></path>
+            <path d="M-50,320 C200,270 430,345 850,275" opacity=".28"></path>
+            <path d="M-50,385 C220,330 440,415 850,340" opacity=".32"></path>
+            <path d="M-50,455 C220,395 455,485 850,415" opacity=".36"></path>
+            <path d="M-50,530 C240,465 470,565 850,495" opacity=".40"></path>
+            <path d="M-50,610 C240,540 480,640 850,580" opacity=".44"></path>
+          </g>
+        </svg>
+
+        <div class="hero__content">
+          <p class="kicker hero__kicker">
+            <span class="kicker__tick"></span>
+            <span class="kicker__label">Au pied du Hohlandsbourg · Route des Vins</span>
+          </p>
+          <h1 class="hero__title">
+            Wintzenheim,<br />
+            <em>à vivre et à découvrir.</em>
+          </h1>
+          <p class="hero__lede">
+            Une ville alsacienne entre vignoble, patrimoine et vie locale.
+            Choisissez votre parcours pour aller directement à l'essentiel.
+          </p>
+
+          <div class="hero__routes" aria-label="Choisir un parcours">
+            <a class="hero-route hero-route--resident" href="#demarches">
+              <span>
+                <small>Je vis à Wintzenheim</small>
+                <strong>Mes services au quotidien</strong>
+              </span>
+              <Fragment set:html={arrow} />
+            </a>
+            <a class="hero-route hero-route--visitor" href="#decouvrir">
+              <span>
+                <small>Je découvre la commune</small>
+                <strong>Préparer ma visite</strong>
+              </span>
+              <Fragment set:html={arrow} />
+            </a>
+          </div>
+
+          <a class="hero__status" href="#pratique">
+            <span class="hero__status-dot" data-office-dot aria-hidden="true"></span>
+            <span>
+              <small>La mairie aujourd'hui</small>
+              <strong data-office-status>Consulter les horaires d'ouverture</strong>
+            </span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+          </a>
+        </div>
+      </div>
+
+      <figure class="hero__media">
+        <Image
+          class="hero__img"
+          src={photos.mairie.image}
+          alt={photos.mairie.alt}
+          widths={[500, 800, 1200]}
+          sizes="(max-width: 920px) 100vw, 56vw"
+          loading="eager"
+          fetchpriority="high"
+        />
+        <div class="hero__place">
+          <span class="hero__place-line" aria-hidden="true"></span>
+          <span>
+            <small>Au cœur du bourg</small>
+            <strong>L'hôtel de ville fleuri</strong>
+          </span>
+        </div>
+        <a class="hero__event" href="#agenda">
+          <span class="hero__event-date">21 juin</span>
+          <span>
+            <small>Prochain rendez-vous</small>
+            <strong>Fête de la Musique · dès 19 h</strong>
+          </span>
+          <Fragment set:html={arrow} />
+        </a>
+        <figcaption class="hero__caption">{photos.mairie.credit}</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ EN BREF ============ -->
+  <section class="enbref" aria-label="Wintzenheim en bref">
+    <div class="container">
+      <ul class="enbref__grid">
+        {enBref.map((b) => (
+          <li class="enbref__item">
+            <a href={b.href}>
+              <span class="enbref__eyebrow">{b.eyebrow}</span>
+              <span class="enbref__valeur" {...(b.dynamic ? { "data-office-status": true } : {})}>{b.valeur}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ DÉMARCHES ============ -->
+  <section id="demarches" class="section demarches" aria-labelledby="demarches-t">
+    <div class="container section__pad">
+      <div class="demarches__head">
+        <div>
+          <p class="demarches__eyebrow">Les accès les plus demandés</p>
+          <h2 id="demarches-t" class="demarches__title">Que souhaitez-vous faire&nbsp;?</h2>
+          <p class="demarches__intro">Six raccourcis directs, pensés pour aller à l'essentiel.</p>
+        </div>
+        <a class="arrow-link" href="/demarches/">
+          Toutes les démarches
+          <Fragment set:html={arrow} />
+        </a>
+      </div>
+
+      <div class="demarches__grid">
+        {acces.map((d) => (
+          <a class="demarches__tile" href={d.href}>
+            <span class="demarches__icon"><Fragment set:html={icons[d.key]} /></span>
+            <span class="demarches__tiletitle">{d.titre}</span>
+            <span class="demarches__tilesub">{d.sous}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DÉCOUVRIR ============ -->
+  <section id="decouvrir" class="decouvrir" aria-labelledby="decouvrir-t">
+    <div class="container section__pad">
+      <div class="decouvrir__head">
+        <div>
+          <p class="kicker">
+            <span class="kicker__tick"></span>
+            <span class="kicker__label">Destination Wintzenheim</span>
+          </p>
+          <h2 id="decouvrir-t" class="decouvrir__title">L'Alsace, entre vignes et châteaux</h2>
+        </div>
+        <div class="decouvrir__intro">
+          <p>
+            À quelques minutes de Colmar, explorez un territoire vivant&nbsp;:
+            le Grand Cru Hengst, le centre ancien et les chemins qui montent vers le Hohlandsbourg.
+          </p>
+          <a class="arrow-link arrow-link--underline" href="/decouvrir/">
+            Préparer votre visite
+            <Fragment set:html={arrow} />
+          </a>
+        </div>
+      </div>
+
+      <div class="decouvrir__gallery">
+        <a class="destination-card destination-card--main" href="/decouvrir/#vignoble">
+          <Image
+            class="destination-card__img"
+            src={photos.panorama.image}
+            alt={photos.panorama.alt}
+            widths={[500, 850, 1200]}
+            sizes="(max-width: 880px) 100vw, 62vw"
+            loading="lazy"
+          />
+          <span class="destination-card__shade" aria-hidden="true"></span>
+          <span class="destination-card__content">
+            <small>Terroir · 53 hectares</small>
+            <strong>Le Grand Cru Hengst</strong>
+            <span>Parcourir le vignoble <Fragment set:html={arrow} /></span>
+          </span>
+          <span class="destination-card__credit">{photos.panorama.credit}</span>
+        </a>
+
+        <a class="destination-card" href="/decouvrir/quartiers/">
+          <Image
+            class="destination-card__img"
+            src={photos.fontaine.image}
+            alt={photos.fontaine.alt}
+            widths={[400, 650, 900]}
+            sizes="(max-width: 880px) 100vw, 38vw"
+            loading="lazy"
+          />
+          <span class="destination-card__shade" aria-hidden="true"></span>
+          <span class="destination-card__content">
+            <small>Centre historique</small>
+            <strong>Flâner dans le bourg</strong>
+            <span>Voir les trois quartiers <Fragment set:html={arrow} /></span>
+          </span>
+          <span class="destination-card__credit">{photos.fontaine.credit}</span>
+        </a>
+
+        <a class="destination-card" href="/decouvrir/patrimoine/">
+          <Image
+            class="destination-card__img"
+            src={photos.egliseSaintLaurent.image}
+            alt={photos.egliseSaintLaurent.alt}
+            widths={[400, 650, 900]}
+            sizes="(max-width: 880px) 100vw, 38vw"
+            loading="lazy"
+          />
+          <span class="destination-card__shade" aria-hidden="true"></span>
+          <span class="destination-card__content">
+            <small>Patrimoine depuis 786</small>
+            <strong>Une histoire à ciel ouvert</strong>
+            <span>Explorer le patrimoine <Fragment set:html={arrow} /></span>
+          </span>
+          <span class="destination-card__credit">{photos.egliseSaintLaurent.credit}</span>
+        </a>
+      </div>
+
+      <nav class="tourism-links" aria-label="Accès touristiques">
+        <a href="/decouvrir/#tourisme"><span>01</span> Château du Hohlandsbourg</a>
+        <a href="/decouvrir/#balades"><span>02</span> Balades & randonnées</a>
+        <a href="/agenda/"><span>03</span> Sortir & se divertir</a>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ============ ACTUALITÉS ============ -->
+  <section id="actualites" class="section actu" aria-labelledby="actu-t">
+    <div class="container section__pad">
+      <div class="actu__head">
+        <div>
+          <p class="kicker">
+            <span class="kicker__tick"></span>
+            <span class="kicker__label">Vie locale</span>
+          </p>
+          <h2 id="actu-t" class="actu__title">Actualités</h2>
+        </div>
+        <a class="arrow-link" href="/actualites/">
+          Toutes les actualités
+          <Fragment set:html={arrow} />
+        </a>
+      </div>
+
+      <div class="actu__grid">
+        <article class="actu__lead">
+          <a class="actu__leadlink" href={lead.href}>
+            <figure class="actu__leadmedia">
+              <Image
+                class="actu__leadimg"
+                src={photos.rueClemenceau.image}
+                alt="La rue Clemenceau, où descend le défilé costumé de la Fête Révolutionnaire."
+                widths={[400, 720, 980]}
+                sizes="(max-width: 880px) 100vw, 60vw"
+                loading="lazy"
+              />
+            </figure>
+            <span class="actu__rubrique">{lead.rubrique}</span>
+            <h3 class="actu__leadtitle">{lead.titre}</h3>
+            <p class="actu__chapo">{lead.chapo}</p>
+            <p class="actu__date">{lead.date}</p>
+          </a>
+          <p class="credit">{photos.rueClemenceau.credit}</p>
+        </article>
+
+        <ul class="actu__list">
+          {autresActus.map((a) => (
+            <li class="actu__item">
+              <a class="actu__itemlink" href={`/actualites/${a.slug}/`}>
+                <span class="actu__rubrique">{a.rubrique}</span>
+                <span class="actu__itemtitle">{a.titre}</span>
+                <span class="actu__date">{a.dateLisible}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ AGENDA ============ -->
+  <section id="agenda" class="section section--dark agenda" aria-labelledby="agenda-t">
+    <div class="container section__pad">
+      <div class="agenda__grid">
+        <div class="agenda__intro">
+          <p class="kicker kicker--gold">
+            <span class="kicker__tick"></span>
+            <span class="kicker__label">Ne rien manquer</span>
+          </p>
+          <h2 id="agenda-t" class="agenda__title">Agenda</h2>
+          <p class="agenda__lede">
+            Marchés hebdomadaires, concerts, fêtes du village et rendez-vous
+            associatifs — toute l'année à Wintzenheim et à Logelbach.
+          </p>
+          <a class="arrow-link arrow-link--underline agenda__more" href="/agenda/">
+            Voir l'agenda complet
+            <Fragment set:html={arrow} />
+          </a>
+        </div>
+
+        <ul class="agenda__list">
+          {agendaAccueil.map((e) => (
+            <li>
+              <a class="agenda__item" href="/agenda/">
+                <span class="agenda__date">
+                  <span class="agenda__day">{e.jour}</span>
+                  <span class="agenda__month">{e.mois}</span>
+                </span>
+                <span class="agenda__body">
+                  <span class="agenda__name">{e.titre}</span>
+                  <span class="agenda__detail">{e.lieu} · {e.resume}</span>
+                </span>
+                <span class="agenda__chev"><Fragment set:html={chevron} /></span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PATRIMOINE ============ -->
+  <section id="patrimoine" class="patrimoine" aria-labelledby="pat-t">
+    <div class="container section__pad">
+      <div class="patrimoine__grid">
+        <div class="patrimoine__media">
+          <figure class="patrimoine__main">
+            <Image
+              class="patrimoine__img"
+              src={photos.chateau.image}
+              alt={photos.chateau.alt}
+              widths={[400, 720, 1000]}
+              sizes="(max-width: 880px) 100vw, 50vw"
+              loading="lazy"
+            />
+          </figure>
+          <figure class="patrimoine__detail">
+            <Image
+              class="patrimoine__img"
+              src={photos.egliseSaintLaurent.image}
+              alt={photos.egliseSaintLaurent.alt}
+              widths={[200, 400]}
+              sizes="220px"
+              loading="lazy"
+            />
+          </figure>
+        </div>
+
+        <div class="patrimoine__text">
+          <p class="kicker">
+            <span class="kicker__tick"></span>
+            <span class="kicker__label">Patrimoine & terroir</span>
+          </p>
+          <h2 id="pat-t" class="patrimoine__title">Le Hohlandsbourg veille sur le vignoble</h2>
+          <p class="patrimoine__body patrimoine__body--lettrine">
+            Dressé sur sa colline depuis 1279, le château du Hohlandsbourg est le
+            plus vaste château fort d'Alsace : son panorama embrasse la plaine,
+            la Forêt-Noire et les Vosges. À ses pieds s'étendent les 53 hectares
+            du Grand Cru Hengst, le bourg viticole et, le long de la Fecht, les
+            anciennes cités textiles de Logelbach.
+          </p>
+          <blockquote class="patrimoine__quote">
+            « Le plus vaste château fort d'Alsace veille sur le vignoble depuis 1279. »
+          </blockquote>
+          <a class="arrow-link arrow-link--underline" href="/decouvrir/patrimoine/">
+            Découvrir le patrimoine
+            <Fragment set:html={arrow} />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INFOS PRATIQUES ============ -->
+  <section id="pratique" class="section--sinople pratique" aria-labelledby="prat-t">
+    <div class="container section__pad">
+      <h2 id="prat-t" class="pratique__title">Infos pratiques</h2>
+      <div class="pratique__grid">
+        <div class="pratique__col">
+          <h3 class="pratique__label">Horaires de la mairie</h3>
+          <dl class="pratique__hours">
+            {mairie.horaires.map((h) => (
+              <div class="pratique__row">
+                <dt>{h.jour}</dt>
+                <dd>{h.h}</dd>
+              </div>
+            ))}
+          </dl>
+          <p class="pratique__note">{mairie.noteHoraires}</p>
+        </div>
+
+        <div class="pratique__col">
+          <h3 class="pratique__label">Nous contacter</h3>
+          <address class="pratique__addr">
+            <strong>{mairie.nom}</strong><br />
+            {mairie.adresse}<br />
+            {mairie.cp} {mairie.ville}<br /><br />
+            <a href={`tel:${mairie.telE164}`}>{mairie.tel}</a><br />
+            <a href={`mailto:${mairie.email}`}>{mairie.email}</a>
+          </address>
+        </div>
+
+        <div class="pratique__col">
+          <h3 class="pratique__label">Aller plus loin</h3>
+          <ul class="pratique__links">
+            <li><a href="/contact/">Contact & plan d'accès</a></li>
+            <li><a href="/contact/#logelbach">Mairie de Logelbach</a></li>
+            <li><a href="/la-mairie/">Le conseil municipal</a></li>
+            <li><a href="/agenda/">Tout l'agenda</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* =================== HERO =================== */
+  .hero {
+    background: var(--vert-profond);
+    overflow: hidden;
+  }
+  .hero__stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    min-height: clamp(500px, 56vh, 600px);
+    /* Héros contenu et centré comme le reste du site : la photo reste bornée
+       (elle ne prend plus toute la largeur), le fond vert occupe la pleine
+       largeur via la section .hero. */
+    max-width: var(--max);
+    margin-inline: auto;
+  }
+  .hero__panel {
+    position: relative;
+    overflow: hidden;
+    background: var(--vert-profond);
+    color: var(--sur-vert);
+  }
+  .hero__contours {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .hero__contours path {
+    stroke: var(--or-clair);
+    stroke-width: 1;
+  }
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    /* Le texte s'aligne sur le bord gauche du conteneur (retrait = gouttière),
+       puisque la scène est désormais centrée à la largeur du conteneur. */
+    padding: clamp(44px, 4.5vw, 72px) clamp(28px, 3vw, 48px) clamp(40px, 4vw, 60px)
+      var(--gutter);
+  }
+  .hero__kicker {
+    margin: 0 0 24px;
+  }
+  .hero__kicker .kicker__label {
+    color: var(--or-clair);
+  }
+  .hero__kicker .kicker__tick {
+    background: var(--or-clair);
+  }
+  .hero__title {
+    max-width: 14ch;
+    margin: 0 0 28px;
+    color: #fff;
+    font-size: clamp(50px, 4.6vw, 74px);
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    overflow-wrap: break-word;
+    hyphens: none;
+  }
+  .hero__title em {
+    font-style: italic;
+    color: var(--or-clair);
+  }
+  .hero__lede {
+    max-width: 44ch;
+    margin: 0 0 30px;
+    color: var(--sur-vert-muted);
+    font-size: clamp(17px, 1.4vw, 19px);
+    line-height: 1.6;
+  }
+  .hero__routes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .hero-route {
+    min-height: 92px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border: 1px solid var(--trait-clair);
+    color: #fff;
+    text-decoration: none;
+    transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+  }
+  .hero-route:hover {
+    transform: translateY(-2px);
+  }
+  .hero-route small,
+  .hero-route strong {
+    display: block;
+  }
+  .hero-route small {
+    margin-bottom: 3px;
+    color: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    opacity: 0.72;
+  }
+  .hero-route strong {
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.08;
+  }
+  .hero-route svg {
+    flex: none;
+  }
+  .hero-route--resident {
+    border-color: var(--creme);
+    background: var(--creme);
+    color: var(--vert-profond);
+  }
+  .hero-route--resident:hover {
+    background: #fff;
+  }
+  .hero-route--visitor {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .hero-route--visitor:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .hero__status {
+    min-height: 58px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-top: 1px solid var(--trait-clair);
+    border-bottom: 1px solid var(--trait-clair);
+    color: var(--sur-vert);
+    text-decoration: none;
+  }
+  .hero__status:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .hero__status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--or-clair);
+    box-shadow: 0 0 0 4px rgba(200, 165, 60, 0.14);
+  }
+  .hero__status-dot.is-open {
+    background: #8ed69f;
+    box-shadow: 0 0 0 4px rgba(142, 214, 159, 0.12);
+  }
+  .hero__status small,
+  .hero__status strong {
+    display: block;
+  }
+  .hero__status small {
+    color: var(--sur-vert-muted);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .hero__status strong {
+    margin-top: 1px;
+    font-size: 15px;
+  }
+  .hero__status svg {
+    color: var(--or-clair);
+  }
+  .hero__media {
+    position: relative;
+    margin: 0;
+    min-height: 0;
+    overflow: hidden;
+    background: var(--creme-3);
+  }
+  .hero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .hero__media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10, 24, 13, 0.02) 50%, rgba(10, 24, 13, 0.55) 100%);
+    pointer-events: none;
+  }
+  .hero__place {
+    position: absolute;
+    z-index: 2;
+    top: 34px;
+    right: 34px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    background: rgba(248, 246, 239, 0.92);
+    color: var(--vert-profond);
+    backdrop-filter: blur(5px);
+  }
+  .hero__place-line {
+    width: 2px;
+    height: 34px;
+    background: var(--or);
+  }
+  .hero__place small,
+  .hero__place strong {
+    display: block;
+  }
+  .hero__place small {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .hero__place strong {
+    font-family: var(--serif);
+    font-size: 19px;
+  }
+  .hero__event {
+    position: absolute;
+    right: 34px;
+    bottom: 42px;
+    left: 34px;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: rgba(18, 51, 26, 0.96);
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 12px 28px rgba(10, 24, 13, 0.22);
+  }
+  .hero__event:hover {
+    background: var(--sinople-fonce);
+  }
+  .hero__event-date {
+    color: var(--or-clair);
+    font-family: var(--serif);
+    font-size: 23px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .hero__event small,
+  .hero__event strong {
+    display: block;
+  }
+  .hero__event small {
+    color: var(--sur-vert-muted);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .hero__event strong {
+    font-size: 14px;
+  }
+  .hero__event svg {
+    color: var(--or-clair);
+  }
+  .hero__caption {
+    position: absolute;
+    z-index: 3;
+    right: 12px;
+    bottom: 10px;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 10.5px;
+    font-style: italic;
+  }
+
+  /* =================== EN BREF =================== */
+  .enbref {
+    background: var(--vert-profond);
+    color: var(--sur-vert);
+  }
+  .enbref .container {
+    padding-block: 22px;
+  }
+  .enbref__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .enbref__item {
+    padding: 0 24px;
+    border-right: 1px solid var(--trait-clair);
+  }
+  .enbref__item:first-child {
+    padding-left: 0;
+  }
+  .enbref__item:last-child {
+    padding-right: 0;
+    border-right: 0;
+  }
+  .enbref__eyebrow {
+    display: block;
+    font-size: 11.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--or-clair);
+    margin-bottom: 5px;
+  }
+  .enbref__item a {
+    min-height: 58px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: inherit;
+    text-decoration: none;
+  }
+  .enbref__item a:hover .enbref__valeur {
+    color: var(--or-clair);
+  }
+  .enbref__valeur {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  /* =================== DÉMARCHES =================== */
+  .demarches {
+    background: var(--creme);
+  }
+  .demarches__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .demarches__eyebrow {
+    margin: 0 0 6px;
+    color: var(--sinople);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .demarches__title {
+    font-size: clamp(28px, 3.6vw, 40px);
+    margin: 0;
+  }
+  .demarches__intro {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .demarches__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--trait);
+    border-top: 2px solid var(--or);
+    border-bottom: 2px solid var(--or);
+  }
+  .demarches__tile {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 14px;
+    row-gap: 3px;
+    padding: 22px;
+    text-decoration: none;
+    color: inherit;
+    background: var(--creme);
+    min-height: 44px;
+    transition: background 0.15s ease;
+  }
+  .demarches__tile:hover {
+    background: #f0f3ee;
+  }
+  .demarches__icon {
+    color: var(--sinople);
+    display: block;
+    grid-row: 1 / 3;
+    padding-top: 2px;
+  }
+  .demarches__tiletitle {
+    font-weight: 600;
+    font-size: 16.5px;
+  }
+  .demarches__tilesub {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* =================== DÉCOUVRIR =================== */
+  .decouvrir {
+    background: var(--creme-3);
+    border-top: 1px solid var(--trait);
+  }
+  .decouvrir__head {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: clamp(32px, 6vw, 88px);
+    align-items: end;
+    margin-bottom: 36px;
+  }
+  .decouvrir__title {
+    max-width: 12ch;
+    margin: 14px 0 0;
+    font-size: clamp(40px, 5.4vw, 66px);
+    line-height: 0.98;
+  }
+  .decouvrir__intro p {
+    max-width: 48ch;
+    margin: 0 0 20px;
+    color: var(--encre-douce);
+    font-size: 17px;
+    line-height: 1.65;
+  }
+  .decouvrir__gallery {
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    grid-template-rows: repeat(2, 255px);
+    gap: 12px;
+  }
+  .destination-card {
+    position: relative;
+    display: block;
+    min-height: 0;
+    overflow: hidden;
+    background: var(--vert-profond);
+    color: #fff;
+    text-decoration: none;
+  }
+  .destination-card--main {
+    grid-row: 1 / 3;
+  }
+  .destination-card__img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.2, 0.65, 0.25, 1);
+  }
+  .destination-card:hover .destination-card__img {
+    transform: scale(1.035);
+  }
+  .destination-card__shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 32%, rgba(8, 29, 14, 0.82) 100%);
+  }
+  .destination-card__content {
+    position: absolute;
+    z-index: 2;
+    right: clamp(20px, 3vw, 32px);
+    bottom: clamp(24px, 3vw, 34px);
+    left: clamp(20px, 3vw, 32px);
+  }
+  .destination-card__content small,
+  .destination-card__content strong,
+  .destination-card__content > span {
+    display: block;
+  }
+  .destination-card__content small {
+    margin-bottom: 6px;
+    color: var(--or-clair);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .destination-card__content strong {
+    max-width: 15ch;
+    font-family: var(--serif);
+    font-size: clamp(26px, 3.5vw, 44px);
+    line-height: 1;
+  }
+  .destination-card:not(.destination-card--main) .destination-card__content strong {
+    font-size: clamp(23px, 2.6vw, 32px);
+  }
+  .destination-card__content > span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 13px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .destination-card__credit {
+    position: absolute;
+    z-index: 2;
+    right: 9px;
+    bottom: 7px;
+    max-width: 70%;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 10px;
+    font-style: italic;
+    text-align: right;
+  }
+  .tourism-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 18px;
+    border-top: 1px solid var(--trait-fort);
+    border-bottom: 1px solid var(--trait-fort);
+  }
+  .tourism-links a {
+    min-height: 66px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 14px 18px;
+    border-right: 1px solid var(--trait);
+    color: inherit;
+    font-family: var(--serif);
+    font-size: 19px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .tourism-links a:last-child {
+    border-right: 0;
+  }
+  .tourism-links a:hover {
+    background: rgba(31, 107, 58, 0.06);
+    color: var(--sinople);
+  }
+  .tourism-links span {
+    color: var(--sinople);
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+  }
+
+  /* =================== ACTUALITÉS =================== */
+  .actu {
+    background: var(--creme-2);
+  }
+  .actu__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .actu__title {
+    font-size: clamp(32px, 4.4vw, 52px);
+    margin: 12px 0 0;
+  }
+  .actu__grid {
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: clamp(32px, 4vw, 56px);
+  }
+  .actu__leadlink {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .actu__leadmedia {
+    margin: 0 0 22px;
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+  .actu__leadimg {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .actu__leadlink:hover .actu__leadimg {
+    transform: scale(1.02);
+  }
+  .actu__rubrique {
+    display: block;
+    font-size: 12.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sinople);
+    font-weight: 600;
+  }
+  .actu__leadtitle {
+    font-size: clamp(26px, 3.4vw, 40px);
+    line-height: 1.06;
+    margin: 12px 0 14px;
+  }
+  .actu__chapo {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--encre-douce);
+    margin: 0 0 14px;
+    max-width: 56ch;
+  }
+  .actu__date {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .actu__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .actu__item + .actu__item {
+    border-top: 1px solid var(--trait);
+  }
+  .actu__itemlink {
+    display: block;
+    padding: 20px 0;
+    text-decoration: none;
+    color: inherit;
+  }
+  .actu__item:first-child .actu__itemlink {
+    padding-top: 0;
+  }
+  .actu__itemlink:hover .actu__itemtitle {
+    color: var(--sinople);
+  }
+  .actu__itemtitle {
+    display: block;
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.14;
+    margin: 7px 0 8px;
+    transition: color 0.15s ease;
+  }
+
+  /* =================== AGENDA =================== */
+  .agenda {
+    background: var(--vert-profond);
+    color: var(--sur-vert);
+  }
+  .agenda__grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(28px, 4vw, 60px);
+    align-items: start;
+  }
+  .agenda__title {
+    font-size: clamp(36px, 5vw, 60px);
+    margin: 14px 0 18px;
+  }
+  .agenda__lede {
+    font-size: 16.5px;
+    line-height: 1.6;
+    color: var(--sur-vert-muted);
+    max-width: 34ch;
+    margin: 0 0 22px;
+  }
+  .agenda__more {
+    color: #fff;
+  }
+  .agenda__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .agenda__item {
+    display: grid;
+    grid-template-columns: 76px 1fr auto;
+    gap: 24px;
+    align-items: center;
+    padding: 20px 0;
+    text-decoration: none;
+    color: inherit;
+    border-top: 1px solid var(--trait-clair);
+    transition: background 0.15s ease;
+  }
+  .agenda__list li:last-child .agenda__item {
+    border-bottom: 1px solid var(--trait-clair);
+  }
+  .agenda__item:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .agenda__date {
+    text-align: center;
+  }
+  .agenda__day {
+    display: block;
+    font-family: var(--serif);
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--or-clair);
+    font-variant-numeric: tabular-nums;
+  }
+  .agenda__month {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sur-vert-muted);
+  }
+  .agenda__name {
+    display: block;
+    font-family: var(--serif);
+    font-size: 23px;
+    font-weight: 600;
+    line-height: 1.1;
+  }
+  .agenda__detail {
+    font-size: 14px;
+    color: var(--sur-vert-muted);
+  }
+  .agenda__chev {
+    color: var(--or-clair);
+    display: flex;
+  }
+
+  /* =================== PATRIMOINE =================== */
+  .patrimoine {
+    background: var(--creme-3);
+  }
+  .patrimoine__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(32px, 5vw, 64px);
+    align-items: center;
+  }
+  .patrimoine__media {
+    position: relative;
+  }
+  .patrimoine__main {
+    margin: 0;
+  }
+  .patrimoine__detail {
+    position: absolute;
+    right: -18px;
+    bottom: -30px;
+    width: 46%;
+    margin: 0;
+    border: 6px solid var(--creme-3);
+    background: var(--creme-3);
+  }
+  .patrimoine__main .patrimoine__img {
+    aspect-ratio: 3 / 4;
+  }
+  .patrimoine__detail .patrimoine__img {
+    aspect-ratio: 1 / 1;
+  }
+  .patrimoine__img {
+    width: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: var(--radius);
+  }
+  .patrimoine__title {
+    font-size: clamp(34px, 4.6vw, 56px);
+    line-height: 1.02;
+    margin: 16px 0 22px;
+  }
+  .patrimoine__body {
+    font-size: 17.5px;
+    line-height: 1.68;
+    color: var(--encre-douce);
+    max-width: 54ch;
+    margin: 0 0 22px;
+  }
+  .patrimoine__body--lettrine::first-letter {
+    float: left;
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 74px;
+    line-height: 0.72;
+    padding: 6px 14px 0 0;
+    color: var(--sinople);
+  }
+  .patrimoine__quote {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(22px, 2.6vw, 30px);
+    line-height: 1.25;
+    color: var(--sinople);
+    border-left: 2px solid var(--or);
+    padding-left: 22px;
+    margin: 0 0 28px;
+  }
+
+  /* =================== INFOS PRATIQUES =================== */
+  .pratique {
+    background: var(--sinople-section);
+    color: var(--sur-vert);
+  }
+  .pratique__title {
+    font-size: clamp(30px, 4vw, 46px);
+    margin: 0 0 38px;
+  }
+  .pratique__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(28px, 4vw, 56px);
+  }
+  .pratique__label {
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--or-clair);
+    font-weight: 600;
+    margin: 0 0 18px;
+  }
+  .pratique__hours {
+    margin: 0;
+    font-size: 16px;
+  }
+  .pratique__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 0;
+    border-top: 1px solid var(--trait-clair);
+  }
+  .pratique__row:last-child {
+    border-bottom: 1px solid var(--trait-clair);
+  }
+  .pratique__row dt {
+    color: var(--sur-vert);
+  }
+  .pratique__row dd {
+    margin: 0;
+    color: #fff;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .pratique__note {
+    font-size: 14px;
+    color: var(--sur-vert-muted);
+    margin: 16px 0 0;
+  }
+  .pratique__addr {
+    font-style: normal;
+    font-size: 16.5px;
+    line-height: 1.7;
+    color: #ebe6d6;
+  }
+  .pratique__addr strong {
+    color: #fff;
+  }
+  .pratique__addr a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid var(--or);
+    overflow-wrap: anywhere;
+  }
+  .pratique__addr a:hover {
+    border-color: #fff;
+  }
+  .pratique__links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 16.5px;
+  }
+  .pratique__links a {
+    color: #fff;
+    text-decoration: none;
+    border-bottom: 1px solid var(--or);
+    padding-bottom: 3px;
+    width: fit-content;
+  }
+  .pratique__links a:hover {
+    border-color: #fff;
+  }
+
+  /* =================== RESPONSIVE =================== */
+  @media (max-width: 1080px) {
+    .hero__stage {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+    .hero__content {
+      max-width: var(--max);
+      margin-inline: auto;
+      padding-right: var(--gutter);
+      padding-left: var(--gutter);
+    }
+    .hero__title {
+      max-width: 12ch;
+    }
+    .hero__media {
+      min-height: 560px;
+      max-height: 680px;
+    }
+  }
+  @media (max-width: 980px) {
+    .demarches__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 880px) {
+    .actu__grid,
+    .agenda__grid,
+    .patrimoine__grid {
+      grid-template-columns: 1fr;
+    }
+    .decouvrir__head {
+      grid-template-columns: 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+    .decouvrir__title {
+      max-width: 15ch;
+    }
+    .enbref__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 0;
+    }
+    .pratique__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .patrimoine__detail {
+      width: 40%;
+      right: 0;
+    }
+  }
+  @media (max-width: 760px) {
+    .decouvrir__gallery {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+    }
+    .destination-card,
+    .destination-card--main {
+      grid-row: auto;
+      min-height: 310px;
+    }
+    .destination-card--main {
+      min-height: 430px;
+    }
+    .tourism-links {
+      grid-template-columns: 1fr;
+    }
+    .tourism-links a {
+      border-right: 0;
+      border-bottom: 1px solid var(--trait);
+    }
+    .tourism-links a:last-child {
+      border-bottom: 0;
+    }
+  }
+  @media (max-width: 620px) {
+    .hero__content {
+      padding-block: 42px 36px;
+    }
+    .hero__title {
+      font-size: clamp(46px, 14vw, 62px);
+    }
+    .hero__routes {
+      grid-template-columns: 1fr;
+    }
+    .hero-route {
+      min-height: 78px;
+    }
+    .hero__media {
+      min-height: 500px;
+    }
+    .hero__place {
+      top: 18px;
+      right: 18px;
+    }
+    .hero__event {
+      right: 18px;
+      bottom: 34px;
+      left: 18px;
+    }
+    .demarches__grid {
+      grid-template-columns: 1fr;
+    }
+    .pratique__grid {
+      grid-template-columns: 1fr;
+    }
+    .enbref__item {
+      padding-inline: 0 18px;
+    }
+  }
+  @media (max-width: 440px) {
+    .hero__event {
+      right: 12px;
+      bottom: 30px;
+      left: 12px;
+      grid-template-columns: 1fr auto;
+      gap: 6px 12px;
+    }
+    .hero__event-date {
+      grid-column: 1 / -1;
+      font-size: 18px;
+    }
+    .hero__place {
+      right: 12px;
+    }
+    .hero__place strong {
+      font-size: 17px;
+    }
+    .agenda__item {
+      grid-template-columns: 60px 1fr auto;
+      gap: 16px;
+    }
+    .enbref__grid {
+      grid-template-columns: 1fr;
+    }
+    .enbref__item {
+      border-right: 0;
+      border-top: 1px solid var(--trait-clair);
+      padding: 10px 0;
+    }
+  }
+</style>

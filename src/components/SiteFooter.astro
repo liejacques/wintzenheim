@@ -1,0 +1,167 @@
+---
+// Pied de page partagé : rappel d'identité, plan du site condensé, mentions.
+import { footerNav, legalNav } from "../data/nav";
+
+const colonnes = footerNav.map((c) => ({
+  titre: c.titre,
+  liens: c.liens.map((l) => ({
+    label: l.label,
+    href: l.href,
+    externe: /^https?:/.test(l.href),
+  })),
+}));
+const legal = legalNav;
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <div class="site-footer__id">
+          <img src="/blason.svg" width="42" height="46" alt="" aria-hidden="true" decoding="async" />
+          <span class="site-footer__name">Wintzenheim</span>
+        </div>
+        <p class="site-footer__blurb">
+          Commune du Haut-Rhin, sur la Route des Vins d'Alsace, au pied du château du Hohlandsbourg.
+        </p>
+        <address class="site-footer__addr">
+          28 rue Clemenceau, 68920 Wintzenheim<br />
+          <a href="tel:+33389279494">03 89 27 94 94</a>
+        </address>
+      </div>
+
+      {colonnes.map((col) => (
+        <nav class="site-footer__col" aria-label={col.titre}>
+          <span class="site-footer__coltitle">{col.titre}</span>
+          {col.liens.map((l) => (
+            <a
+              href={l.href}
+              {...(l.externe ? { rel: "noopener", target: "_blank" } : {})}
+            >
+              {l.label}{l.externe && <span aria-hidden="true"> ↗</span>}
+            </a>
+          ))}
+        </nav>
+      ))}
+    </div>
+
+    <div class="site-footer__legal">
+      <span>© 2026 Commune de Wintzenheim</span>
+      <nav class="site-footer__legalnav" aria-label="Informations légales">
+        {legal.map((l) => <a href={l.href}>{l.label}</a>)}
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--vert-footer);
+    color: var(--sur-vert-muted);
+  }
+  .site-footer .container {
+    padding-block: clamp(40px, 5vw, 64px) 0;
+  }
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: clamp(28px, 4vw, 48px);
+    padding-bottom: 44px;
+    border-bottom: 1px solid var(--trait-clair);
+  }
+  .site-footer__id {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .site-footer__id img {
+    width: 42px;
+    height: auto;
+  }
+  .site-footer__name {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 26px;
+    color: var(--sur-vert);
+  }
+  .site-footer__blurb {
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0 0 14px;
+    max-width: 32ch;
+  }
+  .site-footer__addr {
+    font-style: normal;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .site-footer__addr a {
+    color: var(--sur-vert);
+    text-decoration: none;
+    border-bottom: 1px solid var(--or);
+  }
+  .site-footer__addr a:hover {
+    border-color: #fff;
+  }
+
+  .site-footer__col {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    font-size: 15px;
+  }
+  .site-footer__coltitle {
+    color: var(--or-clair);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 12.5px;
+    margin-bottom: 4px;
+  }
+  .site-footer__col a {
+    text-decoration: none;
+    color: inherit;
+    width: fit-content;
+  }
+  .site-footer__col a:hover {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .site-footer__legal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    padding: 22px 0 30px;
+    font-size: 13.5px;
+  }
+  .site-footer__legalnav {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+  }
+  .site-footer__legalnav a {
+    text-decoration: none;
+    color: inherit;
+  }
+  .site-footer__legalnav a:hover {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (max-width: 880px) {
+    .site-footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 520px) {
+    .site-footer__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

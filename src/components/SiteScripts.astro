@@ -1,0 +1,291 @@
+---
+// Seul script client du site (amélioration progressive, non bloquant) :
+//  1. rafraîchit la date du jour dans la barre utilitaire ;
+//  2. easter egg « lévrier » — tapez « wint » ou cliquez 3× le blason :
+//     une traînée de pattes dorées traverse le bas de l'écran + le blasonnement.
+// Respecte prefers-reduced-motion ; sans JS, rien ne casse.
+---
+
+<div id="levrier-paws" aria-hidden="true"></div>
+<div id="levrier-toast" class="egg-toast" role="status" hidden>
+  <img src="/blason.svg" alt="" width="34" height="38" decoding="async" />
+  <div class="egg-toast__txt">
+    <p class="egg-toast__t">Le lévrier de Wintzenheim est passé par là.</p>
+    <p class="egg-toast__b">« De sinople à un lévrier rampant d'argent, accolé et bouclé d'or » — armes parlantes (<span lang="de">Windhund</span> → « Wint »).</p>
+  </div>
+  <button type="button" class="egg-toast__close" id="levrier-close" aria-label="Fermer">×</button>
+</div>
+
+<style>
+  .egg-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    z-index: 300;
+    width: min(92vw, 460px);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: var(--vert-profond);
+    color: var(--sur-vert);
+    border: 1px solid var(--or);
+    border-radius: 4px;
+    padding: 16px 16px 16px 18px;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  .egg-toast.is-visible {
+    opacity: 1;
+  }
+  .egg-toast img {
+    width: 34px;
+    height: auto;
+    flex: none;
+  }
+  .egg-toast__t {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: #fff;
+    margin: 0 0 4px;
+  }
+  .egg-toast__b {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--sur-vert-muted);
+    margin: 0;
+  }
+  .egg-toast__close {
+    margin-left: auto;
+    background: none;
+    border: 0;
+    color: var(--sur-vert-muted);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+  }
+  .egg-toast__close:hover {
+    color: #fff;
+  }
+  .egg-paw {
+    position: fixed;
+    z-index: 299;
+    opacity: 0;
+    transform: scale(0.4) rotate(-12deg);
+    pointer-events: none;
+    animation: pawpop 0.5s ease forwards;
+  }
+  @keyframes pawpop {
+    to {
+      opacity: 0.92;
+      transform: scale(1) rotate(-12deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .egg-toast {
+      transition: none;
+    }
+    .egg-paw {
+      animation: none;
+      opacity: 0.92;
+      transform: scale(1) rotate(-12deg);
+    }
+  }
+</style>
+
+<script>
+  // 1) Date du jour (live)
+  const dateEl = document.getElementById("js-today");
+  if (dateEl) {
+    try {
+      dateEl.textContent = new Intl.DateTimeFormat("fr-FR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }).format(new Date());
+    } catch (e) {
+      /* on garde la date du build */
+    }
+  }
+
+  // 2) État d'ouverture calculé dans le navigateur (aucun appel serveur).
+  const weeklyHours = [
+    { day: 1, label: "lundi", open: 8 * 60, close: 16 * 60 },
+    { day: 2, label: "mardi", open: 8 * 60, close: 14 * 60 + 30 },
+    { day: 3, label: "mercredi", open: 8 * 60, close: 16 * 60 },
+    { day: 4, label: "jeudi", open: 8 * 60, close: 16 * 60 + 30 },
+    { day: 5, label: "vendredi", open: 8 * 60, close: 12 * 60 },
+  ];
+
+  const formatOfficeTime = (minutes) => {
+    const hour = Math.floor(minutes / 60);
+    const rest = minutes % 60;
+    return rest ? `${hour}\u00a0h\u00a0${String(rest).padStart(2, "0")}` : `${hour}\u00a0h`;
+  };
+
+  const getOfficeState = () => {
+    const now = new Date();
+    const day = now.getDay();
+    const minutes = now.getHours() * 60 + now.getMinutes();
+    const todayHours = weeklyHours.find((entry) => entry.day === day);
+
+    if (todayHours && minutes >= todayHours.open && minutes < todayHours.close) {
+      return {
+        open: true,
+        label: `Mairie ouverte · jusqu'à ${formatOfficeTime(todayHours.close)}`,
+      };
+    }
+
+    if (todayHours && minutes < todayHours.open) {
+      return {
+        open: false,
+        label: `Mairie fermée · ouverture aujourd'hui à ${formatOfficeTime(todayHours.open)}`,
+      };
+    }
+
+    for (let offset = 1; offset <= 7; offset++) {
+      const nextDay = (day + offset) % 7;
+      const nextHours = weeklyHours.find((entry) => entry.day === nextDay);
+      if (nextHours) {
+        return {
+          open: false,
+          label: `Mairie fermée · réouverture ${nextHours.label} à ${formatOfficeTime(nextHours.open)}`,
+        };
+      }
+    }
+
+    return { open: false, label: "Consulter les horaires de la mairie" };
+  };
+
+  const officeState = getOfficeState();
+  document.querySelectorAll("[data-office-status]").forEach((element) => {
+    element.textContent = officeState.label;
+  });
+  document.querySelectorAll("[data-office-dot]").forEach((element) => {
+    element.classList.toggle("is-open", officeState.open);
+  });
+
+  // 3) Recherche d'accès rapides et fermeture propre du menu mobile.
+  const searchDialog = document.getElementById("site-search");
+  const searchInput = document.querySelector("[data-search-input]");
+  const searchItems = Array.from(document.querySelectorAll("[data-search-item]"));
+  const searchEmpty = document.querySelector("[data-search-empty]");
+  const normalizeSearch = (value) =>
+    value
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
+
+  const filterQuickLinks = () => {
+    if (!(searchInput instanceof HTMLInputElement)) return;
+    const query = normalizeSearch(searchInput.value);
+    let visible = 0;
+    searchItems.forEach((item) => {
+      const text = normalizeSearch(item.getAttribute("data-search-text") || "");
+      const match = !query || text.includes(query);
+      item.toggleAttribute("hidden", !match);
+      if (match) visible++;
+    });
+    if (searchEmpty instanceof HTMLElement) searchEmpty.hidden = visible > 0;
+  };
+
+  document.querySelectorAll("[data-search-open]").forEach((opener) => {
+    opener.addEventListener("click", () => {
+      document.querySelectorAll(".mobile-menu[open]").forEach((menu) => menu.removeAttribute("open"));
+      if (searchDialog instanceof HTMLDialogElement) {
+        if (!searchDialog.open) searchDialog.showModal();
+        requestAnimationFrame(() => {
+          if (searchInput instanceof HTMLInputElement) searchInput.focus();
+        });
+      }
+    });
+  });
+
+  if (searchInput instanceof HTMLInputElement) {
+    searchInput.addEventListener("input", filterQuickLinks);
+  }
+  searchItems.forEach((item) => {
+    item.querySelector("a")?.addEventListener("click", () => {
+      if (searchDialog instanceof HTMLDialogElement && searchDialog.open) searchDialog.close();
+    });
+  });
+  document.querySelectorAll(".mobile-menu__panel a").forEach((link) => {
+    link.addEventListener("click", () => link.closest("details")?.removeAttribute("open"));
+  });
+
+  // 4) Easter egg « lévrier »
+  const paws = document.getElementById("levrier-paws");
+  const toast = document.getElementById("levrier-toast");
+  const closeBtn = document.getElementById("levrier-close");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const PAW =
+    '<svg viewBox="0 0 24 24" width="22" height="22" fill="#C8A53C"><ellipse cx="12" cy="15.5" rx="5" ry="4"/><ellipse cx="5.5" cy="9.5" rx="1.9" ry="2.6"/><ellipse cx="10" cy="6.4" rx="2" ry="2.8"/><ellipse cx="14.5" cy="6.4" rx="2" ry="2.8"/><ellipse cx="18.5" cy="9.5" rx="1.9" ry="2.6"/></svg>';
+  let active = false;
+  let timer = null;
+
+  function reveal() {
+    if (active || !toast || !paws) return;
+    active = true;
+    toast.hidden = false;
+    requestAnimationFrame(() => toast.classList.add("is-visible"));
+    if (!reduce) {
+      const n = 9;
+      for (let i = 0; i < n; i++) {
+        const paw = document.createElement("span");
+        paw.className = "egg-paw";
+        paw.innerHTML = PAW;
+        paw.style.left = 4 + i * (92 / n) + "vw";
+        paw.style.bottom = 12 + (i % 2) * 26 + "px";
+        paw.style.animationDelay = i * 120 + "ms";
+        paws.appendChild(paw);
+      }
+    }
+    clearTimeout(timer);
+    timer = setTimeout(dismiss, 7000);
+  }
+
+  function dismiss() {
+    if (!toast || !paws) return;
+    toast.classList.remove("is-visible");
+    clearTimeout(timer);
+    setTimeout(() => {
+      toast.hidden = true;
+      paws.innerHTML = "";
+      active = false;
+    }, 400);
+  }
+
+  if (closeBtn) closeBtn.addEventListener("click", dismiss);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && active) dismiss();
+  });
+
+  // Déclencheur clavier : taper « wint »
+  let buf = "";
+  document.addEventListener("keydown", (e) => {
+    if (e.key && e.key.length === 1) {
+      buf = (buf + e.key.toLowerCase()).slice(-4);
+      if (buf === "wint") reveal();
+    }
+  });
+
+  // Déclencheur souris/tactile : 3 clics sur le blason [data-egg]
+  let clicks = 0;
+  let clickTimer = null;
+  document.addEventListener("click", (e) => {
+    const t = e.target instanceof Element ? e.target.closest("[data-egg]") : null;
+    if (!t) return;
+    clicks++;
+    clearTimeout(clickTimer);
+    clickTimer = setTimeout(() => (clicks = 0), 1500);
+    if (clicks >= 3) {
+      clicks = 0;
+      reveal();
+    }
+  });
+</script>

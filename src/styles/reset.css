@@ -1,0 +1,89 @@
+/* =========================================================================
+   Reset moderne, minimal et accessible.
+   Indépendant de la charte graphique : ne contient aucune couleur ni police.
+   ========================================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -moz-tab-size: 4;
+  tab-size: 4;
+}
+
+body {
+  min-height: 100svh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Médias : jamais de débordement, comportement bloc par défaut. */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Les champs héritent de la typographie ambiante. */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Évite les débordements de mots longs (noms de lieux, URLs). */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+figcaption {
+  overflow-wrap: break-word;
+}
+
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+  padding: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration-skip-ink: auto;
+}
+
+/* Décalage de défilement pour l'élément reçu au focus clavier (l'en-tête n'est
+   pas collant ; ce retrait évite qu'un élément focalisé colle au bord haut). */
+:where(:focus) {
+  scroll-margin-top: var(--header-offset, 5rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

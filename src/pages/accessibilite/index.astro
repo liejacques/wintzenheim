@@ -1,0 +1,71 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { mairie } from "../../data/commune";
+---
+
+<Base
+  title="Déclaration d'accessibilité — Wintzenheim"
+  description="Déclaration d'accessibilité du site de la commune de Wintzenheim (RGAA). État de conformité, contenus non accessibles, retour d'information et voies de recours."
+>
+  <PageHero
+    title="Déclaration d'accessibilité"
+    kicker="Engagement"
+    crumbs={[{ label: "Accessibilité" }]}
+  />
+
+  <section class="section">
+    <div class="container prose">
+      <p>
+        La Commune de Wintzenheim s'engage à rendre son site internet accessible
+        conformément à l'article 47 de la loi n° 2005-102 du 11 février 2005 et au
+        Référentiel général d'amélioration de l'accessibilité (RGAA).
+      </p>
+
+      <h2>État de conformité</h2>
+      <p>
+        Ce site est <strong>non conforme</strong> au RGAA version 4 : un audit complet
+        n'a pas encore été réalisé. Le site a néanmoins été conçu en suivant les bonnes
+        pratiques d'accessibilité (structure sémantique, contrastes, navigation au clavier,
+        lien d'évitement, textes alternatifs, respect des préférences de mouvement réduit).
+      </p>
+
+      <h2>Contenus non accessibles</h2>
+      <p>
+        En l'absence d'audit formel, certains écarts ne peuvent être exclus, notamment sur
+        les contenus cartographiques externes et les documents mis à disposition. Ces points
+        feront l'objet d'une vérification lors du prochain audit.
+      </p>
+
+      <h2>Établissement de cette déclaration</h2>
+      <p>
+        Cette déclaration a été établie à la mise en ligne du site. Elle sera mise à jour
+        après la réalisation d'un audit de conformité.
+      </p>
+
+      <h2>Retour d'information et contact</h2>
+      <p>
+        Si vous ne parvenez pas à accéder à un contenu ou à un service, vous pouvez nous
+        contacter afin d'obtenir une alternative accessible ou le contenu sous une autre forme :
+      </p>
+      <p>
+        {mairie.nom} — {mairie.adresse}, {mairie.cp} {mairie.ville}<br />
+        Téléphone : <a href={`tel:${mairie.telE164}`}>{mairie.tel}</a><br />
+        Courriel : <a href={`mailto:${mairie.email}`}>{mairie.email}</a>
+      </p>
+
+      <h2>Voies de recours</h2>
+      <p>
+        Si vous constatez un défaut d'accessibilité vous empêchant d'accéder à un contenu
+        ou à un service du site, que vous nous le signalez et que vous ne parvenez pas à
+        obtenir une réponse, vous êtes en droit de saisir le Défenseur des droits.
+        Plusieurs moyens sont à votre disposition :
+      </p>
+      <ul>
+        <li>écrire un message au <a href="https://formulaire.defenseurdesdroits.fr/" rel="noopener" target="_blank">Défenseur des droits<span aria-hidden="true"> ↗</span></a> ;</li>
+        <li>contacter le délégué du Défenseur des droits de votre département ;</li>
+        <li>envoyer un courrier (gratuit, sans timbre) à : Défenseur des droits, Libre réponse 71120, 75342 Paris CEDEX 07.</li>
+      </ul>
+    </div>
+  </section>
+</Base>

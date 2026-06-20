@@ -1,0 +1,251 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { categoriesDemarches } from "../../data/demarches";
+import { mairie } from "../../data/commune";
+
+const arrow =
+  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>';
+---
+
+<Base
+  title="Vos démarches — Mairie de Wintzenheim"
+  description="Toutes vos démarches administratives à Wintzenheim : carte d'identité et passeport, état civil, urbanisme, élections, emménagement, logement. Accès direct aux téléservices officiels."
+>
+  <PageHero
+    kicker="Services au quotidien"
+    title="Vos démarches"
+    lede="Carte d'identité, état civil, urbanisme, élections… Retrouvez ici l'essentiel de vos démarches et un accès direct aux téléservices officiels. Le dépôt sur place se fait à la mairie, 28 rue Clemenceau."
+    crumbs={[{ label: "Démarches" }]}
+  />
+
+  <!-- Sommaire -->
+  <nav class="toc" aria-label="Catégories de démarches">
+    <div class="container toc__inner">
+      {categoriesDemarches.map((cat) => (
+        <a class="toc__link" href={`#${cat.id}`}>{cat.titre}</a>
+      ))}
+    </div>
+  </nav>
+
+  {categoriesDemarches.map((cat, i) => (
+    <section id={cat.id} class={`cat ${i % 2 === 0 ? "cat--cream" : "cat--cream3"}`} aria-labelledby={`${cat.id}-t`}>
+      <div class="container cat__pad">
+        <div class="cat__head">
+          <p class="cat__num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</p>
+          <div>
+            <h2 id={`${cat.id}-t`} class="cat__title">{cat.titre}</h2>
+            <p class="cat__intro">{cat.intro}</p>
+          </div>
+        </div>
+
+        <ul class="dlist">
+          {cat.demarches.map((d) => (
+            <li class="dlist__item">
+              <div class="dlist__text">
+                <h3 class="dlist__title">{d.titre}</h3>
+                <p class="dlist__desc">{d.desc}</p>
+              </div>
+              {d.lien && (
+                <a class="dlist__action" href={d.lien} rel="noopener" target="_blank">
+                  {d.libelleLien ?? "Accéder au service"}
+                  <span aria-hidden="true"> ↗</span>
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  ))}
+
+  <!-- Aide / contact -->
+  <section class="help section--sinople" aria-labelledby="help-t">
+    <div class="container help__pad">
+      <div class="help__grid">
+        <div>
+          <h2 id="help-t" class="help__title">Besoin d'aide pour une démarche&nbsp;?</h2>
+          <p class="help__lede">
+            Les agents de la mairie vous accompagnent et vous orientent. Vous pouvez
+            passer au guichet aux horaires d'ouverture, téléphoner ou écrire.
+          </p>
+          <a class="btn btn--ghost help__cta" href="/contact/">
+            Contact & plan d'accès
+            <Fragment set:html={arrow} />
+          </a>
+        </div>
+        <address class="help__addr">
+          <strong>{mairie.nom}</strong><br />
+          {mairie.adresse}<br />
+          {mairie.cp} {mairie.ville}<br /><br />
+          <a href={`tel:${mairie.telE164}`}>{mairie.tel}</a><br />
+          <a href={`mailto:${mairie.email}`}>{mairie.email}</a>
+        </address>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Sommaire collant */
+  .toc {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--vert-profond);
+    border-bottom: 1px solid var(--trait-clair);
+  }
+  .toc__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    padding-block: 12px;
+  }
+  .toc__link {
+    color: var(--sur-vert);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 4px 2px;
+    border-bottom: 2px solid transparent;
+  }
+  .toc__link:hover {
+    color: #fff;
+    border-color: var(--or);
+  }
+
+  .cat {
+    border-top: 1px solid var(--trait);
+  }
+  .cat--cream { background: var(--creme); }
+  .cat--cream3 { background: var(--creme-3); }
+  .cat__pad {
+    padding-block: clamp(40px, 5vw, 72px);
+  }
+  /* La cible d'ancre est la section .cat ; on la décale sous le sommaire collant. */
+  .cat {
+    scroll-margin-top: 60px;
+  }
+  .cat__head {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(18px, 3vw, 36px);
+    align-items: start;
+    margin-bottom: 28px;
+  }
+  .cat__num {
+    font-family: var(--serif);
+    font-size: clamp(40px, 5vw, 64px);
+    line-height: 0.8;
+    color: var(--or);
+    margin: 0;
+  }
+  .cat__title {
+    font-size: clamp(28px, 3.6vw, 42px);
+    margin: 0;
+  }
+  .cat__intro {
+    margin: 12px 0 0;
+    max-width: 66ch;
+    font-size: 16.5px;
+    line-height: 1.65;
+    color: var(--encre-douce);
+  }
+  .dlist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 1px;
+    background: var(--trait);
+    border-block: 2px solid var(--or);
+  }
+  .dlist__item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: clamp(20px, 2.4vw, 26px);
+    background: var(--creme);
+  }
+  .cat--cream3 .dlist__item {
+    background: var(--creme-3);
+  }
+  .dlist__title {
+    font-size: 19px;
+    margin: 0;
+  }
+  .dlist__desc {
+    margin: 6px 0 0;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+  .dlist__action {
+    margin-top: auto;
+    align-self: start;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--sinople);
+    text-decoration: none;
+    border-bottom: 1px solid var(--or);
+    padding-bottom: 3px;
+  }
+  .dlist__action:hover {
+    border-color: var(--sinople);
+  }
+
+  .help {
+    background: var(--sinople-section);
+    color: var(--sur-vert);
+  }
+  .help__pad {
+    padding-block: clamp(40px, 5vw, 72px);
+  }
+  .help__grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: clamp(28px, 4vw, 56px);
+    align-items: center;
+  }
+  .help__title {
+    color: #fff;
+    font-size: clamp(28px, 3.6vw, 44px);
+    margin: 0 0 14px;
+  }
+  .help__lede {
+    margin: 0 0 22px;
+    max-width: 50ch;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .help__cta {
+    color: #fff;
+    border-color: var(--or-clair);
+  }
+  .help__cta:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-color: #fff;
+  }
+  .help__addr {
+    font-style: normal;
+    font-size: 16.5px;
+    line-height: 1.7;
+    color: #ebe6d6;
+  }
+  .help__addr strong { color: #fff; }
+  .help__addr a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid var(--or);
+    overflow-wrap: anywhere;
+  }
+  .help__addr a:hover { border-color: #fff; }
+
+  @media (max-width: 720px) {
+    .help__grid { grid-template-columns: 1fr; }
+    .cat__head { grid-template-columns: 1fr; gap: 4px; }
+  }
+</style>
