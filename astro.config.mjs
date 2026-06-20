@@ -19,6 +19,8 @@ export default defineConfig({
     sitemap({
       i18n: undefined,
       changefreq: 'monthly',
+      // L'espace de gestion n'est pas indexé.
+      filter: (page) => !page.includes('/admin'),
     }),
   ],
   image: {

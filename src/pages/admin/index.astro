@@ -1,0 +1,35 @@
+---
+// Espace de gestion (SPA client). Hors layout public, non indexé.
+import "@fontsource/cormorant-garamond/600.css";
+import "@fontsource/source-sans-3/400.css";
+import "@fontsource/source-sans-3/500.css";
+import "@fontsource/source-sans-3/600.css";
+import "@fontsource/source-sans-3/700.css";
+import "../../styles/tokens.css";
+import "../../styles/admin.css";
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Espace de gestion — Wintzenheim</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/blason.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#16401f" />
+  </head>
+  <body>
+    <div id="admin-root" aria-live="polite"></div>
+    <noscript>
+      <p style="padding:40px;text-align:center;font-family:sans-serif">
+        L'espace de gestion nécessite JavaScript pour fonctionner.
+      </p>
+    </noscript>
+    <script>
+      import { mountAdmin } from "../../lib/cms/app.ts";
+      const el = document.getElementById("admin-root");
+      if (el) mountAdmin(el);
+    </script>
+  </body>
+</html>
