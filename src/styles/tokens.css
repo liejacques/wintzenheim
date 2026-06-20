@@ -12,9 +12,9 @@
      Les anciens noms (--sinople, --creme…) restent et pointent ici, pour
      ne rien casser visuellement tout en unifiant la palette.
      ======================================================================= */
-  --color-primary: #1f6b3a;        /* vert profond communal (marque, boutons) */
-  --color-primary-strong: #16401f; /* vert très profond (bandeaux, footer) */
-  --color-primary-soft: #eef3ee;   /* vert très clair (fonds, badges, survols) */
+  --color-primary: #2c6a48;        /* vert sapin adouci (marque, boutons) */
+  --color-primary-strong: #1c3d2a; /* vert très profond, plus doux (bandeaux, footer) */
+  --color-primary-soft: #eef2ee;   /* vert très clair (fonds, badges, survols) */
   --color-gold: #c8a53c;           /* doré héraldique discret (filets, accents) */
   --color-gold-strong: #a9842a;    /* doré foncé lisible en texte sur clair */
   --color-cream: #f8f6ef;          /* crème (ambiance) */
@@ -25,11 +25,11 @@
   --color-border: rgba(27, 27, 24, 0.12);
 
   /* --- Verts (émail sinople du blason) --- */
-  --sinople: #1f6b3a;          /* primaire : marque, boutons, liens colorés */
-  --sinople-fonce: #16512c;    /* survol des boutons pleins */
-  --sinople-section: #1a5d33;  /* fond des sections « sinople » : assez sombre pour l'or et le blanc en AA */
-  --vert-profond: #16401f;     /* bandeaux sombres (barre utilitaire, agenda) */
-  --vert-footer: #12331a;      /* pied de page */
+  --sinople: #2c6a48;          /* primaire adouci : marque, boutons, liens colorés */
+  --sinople-fonce: #245539;    /* survol des boutons pleins */
+  --sinople-section: #205036;  /* fond des sections « sinople » : assez sombre pour l'or et le blanc en AA */
+  --vert-profond: #1c3d2a;     /* bandeaux sombres (barre utilitaire, agenda) — adouci */
+  --vert-footer: #15331f;      /* pied de page */
 
   /* --- Or héraldique (collier & boucle du lévrier) --- */
   --or: #c8a53c;               /* filets, ticks — décoratif */

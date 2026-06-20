@@ -2,7 +2,6 @@
 import Base from "../../layouts/Base.astro";
 import PageHero from "../../components/PageHero.astro";
 import { commune, mairie } from "../../data/commune";
-import { maire } from "../../data/elus";
 ---
 
 <Base
@@ -19,27 +18,24 @@ import { maire } from "../../data/elus";
     <div class="container prose">
       <h2>Éditeur du site</h2>
       <p>
-        Ce site est édité par la <strong>Commune de {commune.nom}</strong>, collectivité
-        territoriale du département du {commune.departement} ({commune.codeDepartement}).
+        Ce site est réalisé et édité par <strong>Jocelin Saur</strong>
+        (entrepreneur individuel). Il présente la commune de {commune.nom}
+        ({commune.departement}, {commune.codeDepartement}).
       </p>
       <p>
-        {mairie.nom}<br />
-        {mairie.adresse}, {mairie.cp} {mairie.ville}<br />
-        Téléphone : <a href={`tel:${mairie.telE164}`}>{mairie.tel}</a><br />
-        Courriel : <a href={`mailto:${mairie.email}`}>{mairie.email}</a>
+        SIRET : 106&nbsp;247&nbsp;539&nbsp;00013<br />
+        Courriel : <a href="mailto:saurjocelin@gmail.com">saurjocelin@gmail.com</a><br />
+        Téléphone : <a href="tel:+33630111449">06&nbsp;30&nbsp;11&nbsp;14&nbsp;49</a>
       </p>
 
       <h2>Directeur de la publication</h2>
-      <p>
-        Le directeur de la publication est <strong>{maire.nom}</strong>, {maire.fonction.toLowerCase()},
-        ou son représentant.
-      </p>
+      <p>Le directeur de la publication est <strong>Jocelin Saur</strong>.</p>
 
       <h2>Hébergement</h2>
       <p>
-        Le site est généré sous forme de pages statiques et hébergé par un prestataire
-        d'hébergement web. Les coordonnées complètes de l'hébergeur sont disponibles sur
-        simple demande auprès de la mairie.
+        Le site est hébergé par <strong>Vercel Inc.</strong><br />
+        340 S Lemon Avenue #4133, Walnut, CA 91789, États-Unis<br />
+        <a href="https://vercel.com" rel="noopener" target="_blank">vercel.com<span aria-hidden="true"> ↗</span></a>
       </p>
 
       <h2>Propriété intellectuelle</h2>
@@ -70,7 +66,9 @@ import { maire } from "../../data/elus";
 
       <h2>Contact</h2>
       <p>
-        Pour toute question relative au site ou à son contenu, vous pouvez écrire à la mairie :
+        Pour toute question relative au site (technique, contenu), écrivez à l'éditeur :
+        <a href="mailto:saurjocelin@gmail.com">saurjocelin@gmail.com</a>.
+        Pour vos démarches et la vie de la commune, contactez la mairie :
         <a href={`mailto:${mairie.email}`}>{mairie.email}</a>.
       </p>
     </div>

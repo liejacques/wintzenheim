@@ -100,6 +100,9 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
               Rechercher un service
             </button>
+            <div class="mobile-menu__quick">
+              {utilityNav.map((l) => <a href={l.href}>{l.label}</a>)}
+            </div>
             {mainNav.map((item) => (
               <div class="mobile-menu__group">
                 <a class="mobile-menu__parent" href={item.href}>{item.label}</a>
@@ -114,9 +117,6 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
               Accéder à mes démarches
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
             </a>
-            <div class="mobile-menu__utility">
-              {utilityNav.map((l) => <a href={l.href}>{l.label}</a>)}
-            </div>
           </nav>
         </details>
       </div>
@@ -606,6 +606,38 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
       border-color: var(--sinople);
       color: var(--encre);
     }
+    .mobile-menu__quick {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 16px;
+    }
+    .mobile-menu__quick a {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      border: 1px solid var(--trait-fort);
+      border-radius: 999px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--encre);
+      text-decoration: none;
+    }
+    .mobile-menu__quick a:first-child {
+      background: var(--sinople);
+      border-color: var(--sinople);
+      color: #fff;
+    }
+    .mobile-menu__quick a:hover {
+      border-color: var(--sinople);
+      color: var(--sinople);
+      background: var(--color-primary-soft);
+    }
+    .mobile-menu__quick a:first-child:hover {
+      background: var(--sinople-fonce);
+      color: #fff;
+    }
     .mobile-menu__group {
       padding: 4px 0;
       border-bottom: 1px solid var(--trait);
@@ -737,9 +769,18 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
       color: #fff;
       border: 1px solid rgba(255, 255, 255, 0.16);
       border-top: 2px solid var(--or);
-      border-radius: 4px;
+      border-radius: 6px;
       overflow: hidden;
-      box-shadow: 0 12px 34px rgba(12, 30, 17, 0.32);
+      box-shadow: 0 10px 28px rgba(12, 30, 17, 0.26);
+      transition: transform 0.28s ease, opacity 0.28s ease;
+    }
+    .mobile-dock.is-hidden {
+      transform: translateY(160%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .mobile-dock { transition: none; }
     }
     .mobile-dock a,
     .mobile-dock button {
