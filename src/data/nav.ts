@@ -61,10 +61,11 @@ export const footerNav: { titre: string; liens: NavItem[] }[] = [
     liens: [
       { label: "Vos démarches", href: "/demarches/" },
       { label: "Signaler un problème", href: "/signalement/" },
+      { label: "Réserver une salle", href: "/reserver-une-salle/" },
       { label: "Déchets & collecte", href: "/dechets/" },
+      { label: "Petites annonces", href: "/petites-annonces/" },
       { label: "Annuaire", href: "/annuaire/" },
-      { label: "Agenda", href: "/agenda/" },
-      { label: "Actualités", href: "/actualites/" },
+      { label: "Newsletter", href: "/newsletter/" },
     ],
   },
   {
@@ -80,6 +81,7 @@ export const footerNav: { titre: string; liens: NavItem[] }[] = [
     titre: "La Mairie",
     liens: [
       { label: "Horaires & contact", href: "/contact/" },
+      { label: "Documents officiels", href: "/documents/" },
       { label: "Le maire & les adjoints", href: "/la-mairie/#elus" },
       { label: "Conseil municipal", href: "/la-mairie/#conseil" },
       { label: "Recrutement", href: "/la-mairie/#recrutement" },

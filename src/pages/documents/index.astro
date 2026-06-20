@@ -1,0 +1,89 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { seedDocuments } from "../../lib/cms/seed";
+import { estVisible } from "../../lib/cms/schedule";
+
+// Documents publiés uniquement (les brouillons restent à la mairie).
+const docs = seedDocuments
+  .filter((d) => estVisible({ statut: d.statut, datePublication: d.date }))
+  .sort((a, b) => b.date.localeCompare(a.date));
+const fmt = (iso: string) => new Date(iso).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+---
+
+<Base
+  title="Documents officiels — Wintzenheim"
+  description="Documents officiels de la commune de Wintzenheim : arrêtés municipaux, procès-verbaux, délibérations, budgets, DICRIM et formulaires à télécharger."
+>
+  <PageHero
+    kicker="Vie municipale"
+    title="Documents officiels"
+    lede="Arrêtés, procès-verbaux, délibérations, budgets et formulaires de la commune, à consulter et télécharger."
+    crumbs={[{ label: "Documents officiels" }]}
+  />
+
+  <section class="section">
+    <div class="container">
+      <input class="doc-search" id="docSearch" type="search" placeholder="Rechercher un document…" aria-label="Rechercher un document" />
+      {docs.length === 0 ? (
+        <div class="doc-empty">Aucun document publié pour le moment.</div>
+      ) : (
+        <ul class="doc-list" id="docList">
+          {docs.map((d) => (
+            <li class="doc" data-text={`${d.titre} ${d.type} ${d.description} ${(d.tags || []).join(" ")}`.toLowerCase()}>
+              <span class="doc__ico" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 3h7l5 5v13H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/></svg>
+              </span>
+              <span class="doc__body">
+                <span class="doc__type">{d.type}</span>
+                <strong class="doc__titre">{d.titre}</strong>
+                {d.description && <span class="doc__desc">{d.description}</span>}
+                <span class="doc__date">{fmt(d.date)}</span>
+              </span>
+              {d.fichier
+                ? <a class="doc__dl" href={d.fichier} rel="noopener" target="_blank">Télécharger</a>
+                : <span class="doc__soon">Bientôt en ligne</span>}
+            </li>
+          ))}
+        </ul>
+      )}
+      <p class="doc-empty" id="docNone" hidden>Aucun document ne correspond à votre recherche.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .doc-search { width: 100%; max-width: 420px; padding: 11px 14px; border: 1px solid var(--trait-fort); background: #fff; font: 400 16px/1.2 var(--sans); margin-bottom: 22px; border-radius: var(--radius); }
+  .doc-search:focus { outline: 2px solid var(--sinople); border-color: var(--sinople); }
+  .doc-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; background: var(--trait); border-block: 2px solid var(--or); }
+  .doc { display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; background: var(--creme); padding: 16px 18px; }
+  .doc__ico { color: var(--sinople); display: flex; }
+  .doc__type { display: inline-block; font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sinople); font-weight: 700; }
+  .doc__titre { display: block; font-family: var(--serif); font-size: 19px; margin: 2px 0; }
+  .doc__desc { display: block; font-size: 14px; color: var(--muted); }
+  .doc__date { display: block; font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .doc__dl { flex: none; color: #fff; background: var(--sinople); padding: 9px 16px; border-radius: var(--radius); text-decoration: none; font-weight: 600; font-size: 14px; white-space: nowrap; }
+  .doc__dl:hover { background: var(--sinople-fonce); }
+  .doc__soon { flex: none; font-size: 13px; color: var(--muted); font-style: italic; }
+  .doc-empty { background: var(--creme-3); border: 1px dashed var(--trait-fort); padding: 30px; text-align: center; color: var(--muted); }
+  @media (max-width: 600px) {
+    .doc { grid-template-columns: auto 1fr; }
+    .doc__dl, .doc__soon { grid-column: 2; justify-self: start; }
+  }
+</style>
+
+<script>
+  const input = document.getElementById("docSearch");
+  const list = document.getElementById("docList");
+  const none = document.getElementById("docNone");
+  input?.addEventListener("input", () => {
+    const q = (input as HTMLInputElement).value.toLowerCase().trim();
+    let visible = 0;
+    list?.querySelectorAll(".doc").forEach((li) => {
+      const ok = !q || (li.getAttribute("data-text") || "").includes(q);
+      (li as HTMLElement).hidden = !ok;
+      if (ok) visible++;
+    });
+    if (none) none.hidden = visible > 0;
+  });
+</script>

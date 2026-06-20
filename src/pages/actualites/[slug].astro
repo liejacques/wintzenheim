@@ -2,11 +2,11 @@
 import { Image } from "astro:assets";
 import Base from "../../layouts/Base.astro";
 import PageHero from "../../components/PageHero.astro";
-import { articles } from "../../data/actualites";
+import { actualitesVisibles } from "../../data/actualites";
 import { articleImages } from "../../data/photos";
 
 export function getStaticPaths() {
-  return articles.map((a) => ({ params: { slug: a.slug }, props: { a } }));
+  return actualitesVisibles().map((a) => ({ params: { slug: a.slug }, props: { a } }));
 }
 
 const { a } = Astro.props;

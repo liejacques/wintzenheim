@@ -319,6 +319,21 @@ h1, h2, h3, h4 {
   font-size: 0.85em;
 }
 
+/* --- Formulaires publics (réservation, newsletter, annonces) --- */
+.pubform { max-width: 680px; background: var(--color-card); border-top: 3px solid var(--or); padding: clamp(20px, 2.6vw, 30px); }
+.pf-field { margin-bottom: 14px; }
+.pf-field > label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+.pf-field input, .pf-field textarea, .pf-field select { width: 100%; padding: 11px 13px; border: 1px solid var(--trait-fort); background: #fff; font: 400 16px/1.4 var(--sans); color: var(--encre); border-radius: var(--radius); }
+.pf-field input:focus, .pf-field textarea:focus, .pf-field select:focus { outline: 2px solid var(--sinople); outline-offset: 1px; border-color: var(--sinople); }
+.pf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.pf-check { display: flex; gap: 10px; align-items: flex-start; margin: 6px 0 16px; font-size: 14px; line-height: 1.45; }
+.pf-check input { margin-top: 3px; width: 18px; height: 18px; flex: none; accent-color: var(--sinople); }
+.pf-check a { color: var(--sinople); }
+.pf-done { display: none; margin-top: 16px; padding: 16px 18px; background: var(--color-primary-soft); border-left: 3px solid var(--sinople); }
+.pf-done.is-on { display: block; }
+.pf-done strong { font-family: var(--serif); font-size: 19px; display: block; margin-bottom: 2px; }
+@media (max-width: 620px) { .pf-row { grid-template-columns: 1fr; } }
+
 /* Sur mobile/tablette l'en-tête est collant : on décale les cibles d'ancre
    (sections avec id) pour qu'elles ne se placent pas dessous. */
 @media (max-width: 1080px) {

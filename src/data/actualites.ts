@@ -1,16 +1,19 @@
 // Actualités municipales (reformulées à partir des publications officielles
 // de juin 2026 — ne pas recopier l'ancien site mot pour mot).
+import { estVisible, type Schedulable } from "../lib/cms/schedule";
 
 export interface Article {
   slug: string;
   rubrique: string;
   titre: string;
   dateLisible: string;
-  iso: string;
+  iso: string; // sert aussi de date de publication (programmation à 00:00)
   chapo: string;
   corps: string[];
   pratique?: { label: string; valeur: string }[];
   image?: "rue-clemenceau" | "panorama" | "chateau";
+  /** Publication programmée : "publie" (défaut), "programme", "brouillon", "archive". */
+  statut?: "publie" | "programme" | "brouillon" | "archive";
 }
 
 export const articles: Article[] = [
@@ -100,3 +103,14 @@ export const articles: Article[] = [
     ],
   },
 ];
+
+/**
+ * Actualités réellement visibles côté public : publiées, ou programmées dont la
+ * date est atteinte. Les brouillons/archivées ne sortent jamais. Combiné à une
+ * reconstruction quotidienne (00:00), une actu « programmée » paraît le jour dit.
+ */
+export function actualitesVisibles(now: Date = new Date()): Article[] {
+  return articles.filter((a) =>
+    estVisible({ statut: a.statut ?? "publie", datePublication: a.iso }, now)
+  );
+}

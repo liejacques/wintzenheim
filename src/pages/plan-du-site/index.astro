@@ -3,7 +3,8 @@ import Base from "../../layouts/Base.astro";
 import PageHero from "../../components/PageHero.astro";
 import { legalNav } from "../../data/nav";
 import { evenements } from "../../data/agenda";
-import { articles } from "../../data/actualites";
+import { actualitesVisibles } from "../../data/actualites";
+const articles = actualitesVisibles();
 
 const sections = [
   {
@@ -20,6 +21,10 @@ const sections = [
     liens: [
       { label: "Signaler un problème", href: "/signalement/" },
       { label: "Suivre un signalement", href: "/signalement/suivi/" },
+      { label: "Réserver une salle", href: "/reserver-une-salle/" },
+      { label: "Petites annonces", href: "/petites-annonces/" },
+      { label: "Documents officiels", href: "/documents/" },
+      { label: "Newsletter", href: "/newsletter/" },
       { label: "Déchets & collecte", href: "/dechets/" },
     ],
   },

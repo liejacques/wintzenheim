@@ -2,10 +2,10 @@
 import { Image } from "astro:assets";
 import Base from "../../layouts/Base.astro";
 import PageHero from "../../components/PageHero.astro";
-import { articles } from "../../data/actualites";
+import { actualitesVisibles } from "../../data/actualites";
 import { photos, articleImages } from "../../data/photos";
 
-const sorted = [...articles].sort((a, b) => b.iso.localeCompare(a.iso));
+const sorted = [...actualitesVisibles()].sort((a, b) => b.iso.localeCompare(a.iso));
 const [lead, ...rest] = sorted;
 const leadPhoto = lead?.image ? articleImages[lead.image] : photos.rueClemenceau;
 ---

@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import { photos } from "../data/photos";
 import { evenements } from "../data/agenda";
-import { articles } from "../data/actualites";
+import { actualitesVisibles } from "../data/actualites";
 import { mairie, mapsUrl } from "../data/commune";
 
 // Accès rapides « démarches » (curaté pour l'accueil → pages réelles)
@@ -47,7 +47,7 @@ const lead = {
   date: "Publié le 8 juin 2026",
   href: "/agenda/fete-revolutionnaire-2026/",
 };
-const autresActus = articles.slice(0, 3);
+const autresActus = actualitesVisibles().slice(0, 3);
 const agendaAccueil = evenements.slice(0, 4);
 
 const arrow =

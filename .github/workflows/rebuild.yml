@@ -1,0 +1,20 @@
+name: Reconstruction quotidienne (publication programmée)
+
+# Publie les actualités « programmées » dont la date est atteinte : on
+# redéploie chaque nuit. 23:00 UTC ≈ 00:00–01:00 à Paris.
+on:
+  schedule:
+    - cron: "0 23 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Déclencher le déploiement Vercel
+        run: |
+          if [ -z "${{ secrets.VERCEL_DEPLOY_HOOK }}" ]; then
+            echo "Secret VERCEL_DEPLOY_HOOK absent — créez un Deploy Hook dans Vercel (Settings → Git → Deploy Hooks) puis ajoutez-le en secret de dépôt."
+            exit 0
+          fi
+          curl -fsSL -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
