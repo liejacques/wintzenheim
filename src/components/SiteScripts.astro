@@ -248,8 +248,8 @@
     let ticking = false;
     const onScroll = () => {
       const y = window.scrollY;
-      if (y > lastY + 6 && y > 140) dock.classList.add("is-hidden");
-      else if (y < lastY - 6 || y < 140) dock.classList.remove("is-hidden");
+      if (y > lastY + 10 && y > 160) dock.classList.add("is-hidden");
+      else if (y < lastY - 10 || y < 160) dock.classList.remove("is-hidden");
       lastY = y;
       ticking = false;
     };

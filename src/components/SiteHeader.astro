@@ -772,10 +772,11 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
       border-radius: 6px;
       overflow: hidden;
       box-shadow: 0 10px 28px rgba(12, 30, 17, 0.26);
-      transition: transform 0.28s ease, opacity 0.28s ease;
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+      will-change: transform, opacity;
     }
     .mobile-dock.is-hidden {
-      transform: translateY(160%);
+      transform: translateY(135%);
       opacity: 0;
       pointer-events: none;
     }

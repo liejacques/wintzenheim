@@ -160,6 +160,13 @@ const legal = legalNav;
       grid-template-columns: 1fr 1fr;
     }
   }
+  /* Réserve l'espace du dock mobile DANS le pied de page (fond vert) :
+     plus de bande claire sous le footer en bas de page. */
+  @media (max-width: 720px) {
+    .site-footer__legal {
+      padding-bottom: 96px;
+    }
+  }
   @media (max-width: 520px) {
     .site-footer__grid {
       grid-template-columns: 1fr;

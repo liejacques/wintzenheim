@@ -342,8 +342,5 @@ h1, h2, h3, h4 {
   }
 }
 
-@media (max-width: 720px) {
-  body {
-    padding-bottom: 88px;
-  }
-}
+/* L'espace réservé au dock mobile est porté par le pied de page (fond vert),
+   et non par le body : on évite ainsi une bande claire sous le footer. */
