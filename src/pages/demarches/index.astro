@@ -244,6 +244,13 @@ const arrow =
   }
   .help__addr a:hover { border-color: #fff; }
 
+  /* Sur mobile/tablette, l'en-tête devient collant : on désactive le sommaire
+     collant pour éviter qu'il se cache derrière l'en-tête. */
+  @media (max-width: 1080px) {
+    .toc {
+      position: static;
+    }
+  }
   @media (max-width: 720px) {
     .help__grid { grid-template-columns: 1fr; }
     .cat__head { grid-template-columns: 1fr; gap: 4px; }

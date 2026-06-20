@@ -218,6 +218,22 @@
     link.addEventListener("click", () => link.closest("details")?.removeAttribute("open"));
   });
 
+  // Tiroir mobile : fermeture au clic sur le voile et à la touche Échap.
+  const closeMobileMenus = () =>
+    document.querySelectorAll(".mobile-menu[open]").forEach((menu) => menu.removeAttribute("open"));
+  document.querySelectorAll("[data-menu-close]").forEach((el) => {
+    el.addEventListener("click", closeMobileMenus);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeMobileMenus();
+  });
+  // Verrou de défilement de l'arrière-plan quand le tiroir est ouvert.
+  document.querySelectorAll(".mobile-menu").forEach((menu) => {
+    menu.addEventListener("toggle", () => {
+      document.body.style.overflow = menu.open ? "hidden" : "";
+    });
+  });
+
   // 4) Easter egg « lévrier »
   const paws = document.getElementById("levrier-paws");
   const toast = document.getElementById("levrier-toast");

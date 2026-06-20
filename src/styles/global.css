@@ -11,7 +11,9 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
+  /* « clip » empêche le défilement horizontal accidentel SANS créer de conteneur
+     de défilement (ce que ferait « hidden »), ce qui casserait position: sticky. */
+  overflow-x: clip;
 }
 
 ::selection {
@@ -317,8 +319,16 @@ h1, h2, h3, h4 {
   font-size: 0.85em;
 }
 
+/* Sur mobile/tablette l'en-tête est collant : on décale les cibles d'ancre
+   (sections avec id) pour qu'elles ne se placent pas dessous. */
+@media (max-width: 1080px) {
+  section[id] {
+    scroll-margin-top: 112px;
+  }
+}
+
 @media (max-width: 720px) {
   body {
-    padding-bottom: 82px;
+    padding-bottom: 88px;
   }
 }

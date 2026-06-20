@@ -88,10 +88,17 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
         </button>
         <details class="mobile-menu">
           <summary aria-label="Ouvrir le menu principal" data-testid="mobile-menu-toggle">
-            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+            <svg class="ico-menu" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+            <svg class="ico-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
             <span class="mobile-menu__label">Menu</span>
           </summary>
+          <span class="mobile-menu__scrim" data-menu-close aria-hidden="true"></span>
           <nav class="mobile-menu__panel" aria-label="Navigation mobile">
+            <p class="mobile-menu__heading">Navigation</p>
+            <button type="button" class="mobile-menu__search" data-search-open>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+              Rechercher un service
+            </button>
             {mainNav.map((item) => (
               <div class="mobile-menu__group">
                 <a class="mobile-menu__parent" href={item.href}>{item.label}</a>
@@ -102,7 +109,13 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
                 )}
               </div>
             ))}
-            <a class="mobile-menu__cta" href="/demarches/">Accéder à mes démarches</a>
+            <a class="mobile-menu__cta" href="/demarches/">
+              Accéder à mes démarches
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+            </a>
+            <div class="mobile-menu__utility">
+              {utilityNav.map((l) => <a href={l.href}>{l.label}</a>)}
+            </div>
           </nav>
         </details>
       </div>
@@ -498,8 +511,16 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
     .mobile-actions__search {
       padding: 0;
     }
+    /* En-tête collant sur mobile : la navigation et la recherche restent
+       accessibles même après avoir fait défiler la page. (On colle tout le
+       <header> : un enfant seul ne pourrait pas coller au-delà de son parent.) */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 180;
+    }
     .mobile-menu {
-      position: relative;
+      position: static;
     }
     .mobile-menu > summary {
       gap: 7px;
@@ -511,52 +532,156 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
     .mobile-menu > summary::-webkit-details-marker {
       display: none;
     }
+    /* Le pictogramme « hamburger » devient « ✕ » à l'ouverture (ferme sans JS). */
+    .mobile-menu .ico-close {
+      display: none;
+    }
+    .mobile-menu[open] .ico-menu {
+      display: none;
+    }
+    .mobile-menu[open] .ico-close {
+      display: block;
+    }
+
+    /* Voile sombre derrière le tiroir */
+    .mobile-menu__scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      background: rgba(12, 30, 17, 0.55);
+      animation: mm-fade 0.25s ease;
+    }
+    /* Tiroir qui glisse depuis la droite */
     .mobile-menu__panel {
-      position: absolute;
-      top: calc(100% + 15px);
-      right: calc(-1 * var(--gutter));
-      width: min(420px, 100vw);
-      max-height: calc(100vh - 124px);
+      position: fixed;
+      z-index: 160;
+      inset: 0 0 0 auto;
+      width: min(360px, 88vw);
+      height: 100dvh;
       overflow-y: auto;
-      padding: 20px var(--gutter) 26px;
+      overscroll-behavior: contain;
+      padding: 116px 20px calc(28px + env(safe-area-inset-bottom, 0px));
       background: var(--creme-2);
-      border-top: 2px solid var(--or);
-      box-shadow: 0 18px 38px rgba(22, 64, 31, 0.18);
+      border-left: 3px solid var(--or);
+      box-shadow: -20px 0 50px rgba(12, 30, 17, 0.3);
+      animation: mm-slide 0.28s cubic-bezier(0.2, 0.7, 0.25, 1);
+    }
+    @keyframes mm-slide {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+    @keyframes mm-fade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .mobile-menu__heading {
+      margin: 0 0 10px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--sinople);
+    }
+    .mobile-menu__search {
+      width: 100%;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 8px;
+      padding: 0 16px;
+      border: 1px solid var(--trait-fort);
+      background: #fff;
+      color: var(--muted);
+      font: 500 15px/1 var(--sans);
+      text-align: left;
+      cursor: pointer;
+    }
+    .mobile-menu__search svg {
+      color: var(--sinople);
+      flex: none;
+    }
+    .mobile-menu__search:hover {
+      border-color: var(--sinople);
+      color: var(--encre);
     }
     .mobile-menu__group {
-      padding: 11px 0;
+      padding: 4px 0;
       border-bottom: 1px solid var(--trait);
     }
     .mobile-menu__parent {
-      display: block;
+      display: flex;
+      align-items: center;
+      min-height: 48px;
       color: var(--encre);
       font-family: var(--serif);
-      font-size: 23px;
+      font-size: 22px;
       font-weight: 600;
       text-decoration: none;
     }
+    .mobile-menu__parent:hover {
+      color: var(--sinople);
+    }
     .mobile-menu__children {
       display: grid;
-      gap: 3px;
-      margin-top: 7px;
+      gap: 2px;
+      margin: 0 0 8px;
       padding-left: 14px;
       border-left: 2px solid var(--or);
     }
     .mobile-menu__children a {
+      min-height: 40px;
+      display: flex;
+      align-items: center;
       padding: 4px 0;
       color: var(--muted);
-      font-size: 14px;
+      font-size: 15px;
       text-decoration: none;
     }
+    .mobile-menu__children a:hover {
+      color: var(--sinople);
+    }
     .mobile-menu__cta {
-      display: block;
-      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 50px;
+      margin-top: 16px;
       padding: 13px 18px;
       background: var(--sinople);
       color: #fff;
       font-weight: 700;
-      text-align: center;
       text-decoration: none;
+    }
+    .mobile-menu__cta:hover {
+      background: var(--sinople-fonce);
+    }
+    .mobile-menu__utility {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 18px;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--trait);
+    }
+    .mobile-menu__utility a {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .mobile-menu__utility a:hover {
+      color: var(--sinople);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .mobile-menu__scrim,
+      .mobile-menu__panel {
+        animation: none;
+      }
     }
   }
 
@@ -596,9 +721,7 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
       padding: 0;
     }
     .mobile-menu__panel {
-      top: calc(100% + 12px);
-      max-height: calc(100vh - 156px);
-      padding-bottom: 92px;
+      padding-top: 104px;
     }
     .mobile-dock {
       position: fixed;
@@ -606,26 +729,38 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
       right: 12px;
       bottom: 12px;
       left: 12px;
-      height: 58px;
+      height: 60px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       background: var(--vert-profond);
       color: #fff;
       border: 1px solid rgba(255, 255, 255, 0.16);
+      border-top: 2px solid var(--or);
+      border-radius: 4px;
+      overflow: hidden;
       box-shadow: 0 12px 34px rgba(12, 30, 17, 0.32);
     }
     .mobile-dock a,
     .mobile-dock button {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 7px;
+      gap: 4px;
       border: 0;
       border-right: 1px solid rgba(255, 255, 255, 0.14);
       background: transparent;
       color: inherit;
-      font: 600 13px/1 var(--sans);
+      font: 600 12px/1 var(--sans);
       text-decoration: none;
+      cursor: pointer;
+    }
+    .mobile-dock svg {
+      color: var(--or-clair);
+    }
+    .mobile-dock a:active,
+    .mobile-dock button:active {
+      background: rgba(255, 255, 255, 0.1);
     }
     .mobile-dock > :last-child {
       border-right: 0;
@@ -636,11 +771,11 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
   }
 
   @media (max-width: 390px) {
-    .brand__text {
-      display: none;
+    .brand__name {
+      font-size: 22px;
     }
     .mobile-menu__panel {
-      top: calc(100% + 12px);
+      width: min(330px, 92vw);
     }
   }
 </style>
