@@ -2,6 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import PageHero from "../../components/PageHero.astro";
 import { dechetsContact, collecte, tri, decheterie } from "../../data/dechets";
+import { mapsUrl } from "../../data/commune";
 
 const arrow =
   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>';
@@ -69,7 +70,7 @@ const arrow =
           <p class="kicker"><span class="kicker__tick"></span><span class="kicker__label">Encombrants & déchets verts</span></p>
           <h2 id="dech-t" class="block-title">{decheterie.nom}</h2>
           <address class="decheterie__addr">
-            {decheterie.adresse}<br />
+            <a href={mapsUrl(`${decheterie.nom}, ${decheterie.adresse}`)} rel="noopener" target="_blank">{decheterie.adresse}</a><br />
             <a href={`tel:${decheterie.tel.replace(/\s/g, "")}`}>{decheterie.tel}</a>
           </address>
           <p class="decheterie__acces">{decheterie.acces}</p>

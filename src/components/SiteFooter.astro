@@ -1,6 +1,7 @@
 ---
 // Pied de page partagé : rappel d'identité, plan du site condensé, mentions.
 import { footerNav, legalNav } from "../data/nav";
+import { mapsUrl } from "../data/commune";
 
 const colonnes = footerNav.map((c) => ({
   titre: c.titre,
@@ -25,7 +26,7 @@ const legal = legalNav;
           Commune du Haut-Rhin, sur la Route des Vins d'Alsace, au pied du château du Hohlandsbourg.
         </p>
         <address class="site-footer__addr">
-          28 rue Clemenceau, 68920 Wintzenheim<br />
+          <a href={mapsUrl("Mairie de Wintzenheim, 28 rue Clemenceau, 68920 Wintzenheim")} rel="noopener" target="_blank">28 rue Clemenceau, 68920 Wintzenheim</a><br />
           <a href="tel:+33389279494">03 89 27 94 94</a>
         </address>
       </div>

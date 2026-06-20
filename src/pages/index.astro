@@ -4,7 +4,7 @@ import Base from "../layouts/Base.astro";
 import { photos } from "../data/photos";
 import { evenements } from "../data/agenda";
 import { articles } from "../data/actualites";
-import { mairie } from "../data/commune";
+import { mairie, mapsUrl } from "../data/commune";
 
 // Accès rapides « démarches » (curaté pour l'accueil → pages réelles)
 const acces = [
@@ -446,8 +446,7 @@ const chevron =
           <h3 class="pratique__label">Nous contacter</h3>
           <address class="pratique__addr">
             <strong>{mairie.nom}</strong><br />
-            {mairie.adresse}<br />
-            {mairie.cp} {mairie.ville}<br /><br />
+            <a href={mapsUrl(`${mairie.nom}, ${mairie.adresse}, ${mairie.cp} ${mairie.ville}`)} rel="noopener" target="_blank">{mairie.adresse}<br />{mairie.cp} {mairie.ville}</a><br /><br />
             <a href={`tel:${mairie.telE164}`}>{mairie.tel}</a><br />
             <a href={`mailto:${mairie.email}`}>{mairie.email}</a>
           </address>

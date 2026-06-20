@@ -10,6 +10,7 @@ import {
   sportEquipements,
   solidarite,
 } from "../../data/vie-locale";
+import { mapsUrl } from "../../data/commune";
 ---
 
 <Base
@@ -36,14 +37,14 @@ import {
           <article class="ecole">
             <strong class="ecole__nom">{e.nom}</strong>
             <span class="ecole__quartier">{e.quartier}</span>
-            <p class="ecole__addr">{e.adresse}</p>
+            <p class="ecole__addr"><a href={mapsUrl(`${e.nom}, ${e.adresse}, Wintzenheim`)} rel="noopener" target="_blank">{e.adresse}</a></p>
             <a class="ecole__tel" href={`tel:${e.tel.replace(/\s/g, "")}`}>{e.tel}</a>
           </article>
         ))}
         <article class="ecole ecole--privee">
           <strong class="ecole__nom">{ecolePrivee.nom}</strong>
           <span class="ecole__quartier">{ecolePrivee.quartier} · école privée</span>
-          <p class="ecole__addr">{ecolePrivee.adresse}</p>
+          <p class="ecole__addr"><a href={mapsUrl(`${ecolePrivee.nom}, ${ecolePrivee.adresse}, Wintzenheim`)} rel="noopener" target="_blank">{ecolePrivee.adresse}</a></p>
           <p class="ecole__detail">{ecolePrivee.detail}</p>
         </article>
       </div>
@@ -166,6 +167,8 @@ import {
     font-weight: 600;
   }
   .ecole__addr { margin: 0 0 6px; font-size: 14.5px; color: var(--muted); }
+  .ecole__addr a { color: var(--sinople); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--or); }
+  .ecole__addr a:hover { text-decoration-thickness: 2px; }
   .ecole__detail { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.5; }
   .ecole__tel { color: var(--sinople); text-decoration: none; font-weight: 600; border-bottom: 1px solid var(--or); }
 

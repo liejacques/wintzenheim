@@ -1,13 +1,11 @@
 ---
 import Base from "../../layouts/Base.astro";
 import PageHero from "../../components/PageHero.astro";
-import { mairie, annexe } from "../../data/commune";
+import { mairie, annexe, mapsUrl } from "../../data/commune";
 import { urgences, servicesProximite, transports } from "../../data/pratique";
 
-// Itinéraire vers la mairie (lien externe, sans traceur embarqué)
-const itineraire = `https://www.openstreetmap.org/search?query=${encodeURIComponent(
-  `${mairie.adresse}, ${mairie.cp} ${mairie.ville}`
-)}`;
+// Itinéraire vers la mairie (ouvre Google Maps)
+const itineraire = mapsUrl(`${mairie.nom}, ${mairie.adresse}, ${mairie.cp} ${mairie.ville}`);
 ---
 
 <Base
@@ -29,8 +27,7 @@ const itineraire = `https://www.openstreetmap.org/search?query=${encodeURICompon
           <p class="kicker"><span class="kicker__tick"></span><span class="kicker__label">Hôtel de ville</span></p>
           <h2 id="mc-t" class="block-title">{mairie.nom}</h2>
           <address class="big-addr">
-            {mairie.adresse}<br />
-            {mairie.cp} {mairie.ville}<br /><br />
+            <a href={mapsUrl(`${mairie.nom}, ${mairie.adresse}, ${mairie.cp} ${mairie.ville}`)} rel="noopener" target="_blank">{mairie.adresse}<br />{mairie.cp} {mairie.ville}</a><br /><br />
             <a href={`tel:${mairie.telE164}`}>{mairie.tel}</a><br />
             <a href={`mailto:${mairie.email}`}>{mairie.email}</a>
           </address>
@@ -100,7 +97,11 @@ const itineraire = `https://www.openstreetmap.org/search?query=${encodeURICompon
         {servicesProximite.map((s) => (
           <article class="prox">
             <strong class="prox__nom">{s.nom}</strong>
-            <p class="prox__detail">{s.detail}</p>
+            {/\d\d\d\d\d/.test(s.detail) ? (
+              <p class="prox__detail"><a href={mapsUrl(`${s.nom}, ${s.detail}`)} rel="noopener" target="_blank">{s.detail}</a></p>
+            ) : (
+              <p class="prox__detail">{s.detail}</p>
+            )}
             {s.tel && <a class="prox__tel" href={`tel:${s.telE164}`}>{s.tel}</a>}
           </article>
         ))}
@@ -293,6 +294,8 @@ const itineraire = `https://www.openstreetmap.org/search?query=${encodeURICompon
   }
   .prox__nom { display: block; font-family: var(--serif); font-size: 20px; }
   .prox__detail { margin: 6px 0 8px; font-size: 14.5px; color: var(--muted); line-height: 1.5; }
+  .prox__detail a { color: var(--sinople); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--or); }
+  .prox__detail a:hover { text-decoration-thickness: 2px; }
   .prox__tel {
     color: var(--sinople);
     text-decoration: none;

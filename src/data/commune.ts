@@ -1,6 +1,10 @@
 // Données institutionnelles vérifiées (source : ville-wintzenheim.fr, INSEE,
 // recoupées le 20/06/2026). Ne pas inventer : toute valeur ici est sourcée.
 
+// Construit un lien Google Maps pour une adresse (ouvre l'app Maps sur mobile).
+export const mapsUrl = (query: string) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+
 export const commune = {
   nom: "Wintzenheim",
   gentile: "Wintzenheimois",

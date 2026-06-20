@@ -2,7 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import PageHero from "../../components/PageHero.astro";
 import { maire, adjoints, conseillersDelegues, conseil, instances } from "../../data/elus";
-import { jumelages, mairie } from "../../data/commune";
+import { jumelages, mairie, mapsUrl } from "../../data/commune";
 import { articles } from "../../data/actualites";
 
 // Offres / vie municipale : on remonte les actualités « municipales »
@@ -125,7 +125,7 @@ const offres = articles.filter((a) =>
           <h3 class="sub-title">Adresser une candidature</h3>
           <address class="recrut__addr">
             <strong>{mairie.nom}</strong> — à l'attention de Monsieur le Maire<br />
-            {mairie.adresse}, {mairie.cp} {mairie.ville}<br /><br />
+            <a href={mapsUrl(`${mairie.nom}, ${mairie.adresse}, ${mairie.cp} ${mairie.ville}`)} rel="noopener" target="_blank">{mairie.adresse}, {mairie.cp} {mairie.ville}</a><br /><br />
             <a href={`tel:${mairie.telE164}`}>{mairie.tel}</a><br />
             <a href={`mailto:${mairie.email}`}>{mairie.email}</a>
           </address>

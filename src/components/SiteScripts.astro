@@ -39,6 +39,12 @@
   .egg-toast.is-visible {
     opacity: 1;
   }
+  /* Tant qu'il n'est pas déclenché, le toast ne doit pas exister à l'écran :
+     sinon, invisible (opacity:0) mais présent, il interceptait les clics du
+     dock mobile (Appeler / Trouver / Horaires). */
+  .egg-toast[hidden] {
+    display: none;
+  }
   .egg-toast img {
     width: 34px;
     height: auto;
