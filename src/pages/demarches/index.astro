@@ -92,8 +92,9 @@ const arrow =
     position: sticky;
     top: 0;
     z-index: 40;
-    background: var(--vert-profond);
-    border-bottom: 1px solid var(--trait-clair);
+    background: var(--creme-2);
+    border-bottom: 1px solid var(--trait);
+    box-shadow: 0 6px 16px rgba(22, 64, 31, 0.05);
   }
   .toc__inner {
     display: flex;
@@ -102,7 +103,7 @@ const arrow =
     padding-block: 12px;
   }
   .toc__link {
-    color: var(--sur-vert);
+    color: var(--sinople);
     text-decoration: none;
     font-size: 13.5px;
     font-weight: 600;
@@ -110,7 +111,7 @@ const arrow =
     border-bottom: 2px solid transparent;
   }
   .toc__link:hover {
-    color: #fff;
+    color: var(--sinople-fonce);
     border-color: var(--or);
   }
 
@@ -196,8 +197,12 @@ const arrow =
   }
 
   .help {
-    background: var(--sinople-section);
-    color: var(--sur-vert);
+    background: var(--creme-3);
+    color: var(--encre);
+    --sur-vert: var(--encre);
+    --sur-vert-muted: var(--muted);
+    --or-clair: var(--sinople);
+    --trait-clair: var(--trait);
   }
   .help__pad {
     padding-block: clamp(40px, 5vw, 72px);
@@ -243,6 +248,15 @@ const arrow =
     overflow-wrap: anywhere;
   }
   .help__addr a:hover { border-color: #fff; }
+
+  /* Bloc d'aide en fond clair : accents verts/dorés */
+  .help__title,
+  .help__addr strong { color: var(--encre); }
+  .help__addr { color: var(--encre-douce); }
+  .help__addr a { color: var(--sinople); }
+  .help__addr a:hover { border-color: var(--sinople); }
+  .help__cta { color: var(--sinople); border-color: var(--trait-fort); }
+  .help__cta:hover { background: var(--color-primary-soft); color: var(--sinople); border-color: var(--sinople); }
 
   /* Sur mobile/tablette, l'en-tête devient collant : on désactive le sommaire
      collant pour éviter qu'il se cache derrière l'en-tête. */

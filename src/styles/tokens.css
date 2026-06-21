@@ -29,7 +29,7 @@
   --sinople-fonce: #245539;    /* survol des boutons pleins */
   --sinople-section: #205036;  /* fond des sections « sinople » : assez sombre pour l'or et le blanc en AA */
   --vert-profond: #1c3d2a;     /* bandeaux sombres (barre utilitaire, agenda) — adouci */
-  --vert-footer: #15331f;      /* pied de page */
+  --vert-footer: #1c3d2a;      /* pied de page : un seul ton de vert, allégé (plus « presque noir ») */
 
   /* --- Or héraldique (collier & boucle du lévrier) --- */
   --or: #c8a53c;               /* filets, ticks — décoratif */

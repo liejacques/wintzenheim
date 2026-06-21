@@ -248,7 +248,15 @@ const offres = articles.filter((a) =>
   .delegue strong { display: block; font-family: var(--serif); font-size: 19px; }
   .delegue span { font-size: 14px; color: var(--muted); }
 
-  /* Conseil */
+  /* Conseil — fond clair, vert/doré en accent */
+  .conseil {
+    background: var(--creme-3);
+    color: var(--encre);
+    --sur-vert: var(--encre);
+    --sur-vert-muted: var(--muted);
+    --or-clair: var(--sinople);
+    --trait-clair: var(--trait);
+  }
   .conseil__grid {
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
@@ -270,8 +278,9 @@ const offres = articles.filter((a) =>
   .conseil__lieu strong { color: #fff; }
   .conseil__cta { color: #fff; }
   .compo {
-    background: rgba(255, 255, 255, 0.06);
-    border-top: 2px solid var(--or-clair);
+    background: var(--color-card);
+    border: 1px solid var(--trait);
+    border-top: 2px solid var(--or);
     padding: clamp(22px, 3vw, 30px);
   }
   .compo__stat {
@@ -335,6 +344,13 @@ const offres = articles.filter((a) =>
     color: var(--sur-vert);
   }
 
+  /* Conseil/Jumelages en fond clair : titres et liens en accent */
+  .conseil .block-title--light,
+  .jumelages .block-title--light,
+  .conseil__lieu strong,
+  .compo__group { color: var(--encre); }
+  .conseil__cta { color: var(--sinople); }
+
   /* Recrutement */
   .recrut__grid {
     display: grid;
@@ -388,6 +404,14 @@ const offres = articles.filter((a) =>
   }
 
   /* Jumelages */
+  .jumelages {
+    background: var(--creme-3);
+    color: var(--encre);
+    --sur-vert: var(--encre);
+    --sur-vert-muted: var(--muted);
+    --or-clair: var(--sinople);
+    --trait-clair: var(--trait);
+  }
   .jumelages__grid {
     margin-top: 24px;
     display: grid;
@@ -395,8 +419,9 @@ const offres = articles.filter((a) =>
     gap: 14px;
   }
   .jumelage {
-    background: rgba(255, 255, 255, 0.06);
-    border-top: 2px solid var(--or-clair);
+    background: var(--color-card);
+    border: 1px solid var(--trait);
+    border-top: 2px solid var(--or);
     padding: clamp(20px, 2.6vw, 28px);
   }
   .jumelage__ville {
@@ -418,6 +443,8 @@ const offres = articles.filter((a) =>
     color: var(--sur-vert);
     font-size: 15px;
   }
+  .jumelage__ville { color: var(--encre); }
+  .jumelage__detail { color: var(--encre-douce); }
 
   section { scroll-margin-top: 20px; }
 

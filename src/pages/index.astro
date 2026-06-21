@@ -918,9 +918,10 @@ const chevron =
   .destination-card__shade {
     position: absolute;
     inset: 0;
-    /* Voile renforcé : texte blanc + suréxergue dorée lisibles (AA) même sur
-       les photos claires des cartes secondaires. */
-    background: linear-gradient(180deg, transparent 18%, rgba(20, 40, 30, 0.5) 55%, rgba(20, 40, 30, 0.92) 100%);
+    /* Voile allégé : la moitié haute reste transparente (photo bien visible) ;
+       le tiers bas — où le texte commence (~65 %) — garde la même densité
+       qu'avant, donc lisibilité inchangée (blanc + suréxergue dorée, AA). */
+    background: linear-gradient(180deg, transparent 40%, rgba(20, 40, 30, 0.5) 60%, rgba(20, 40, 30, 0.92) 100%);
   }
   .destination-card__content {
     position: absolute;
@@ -1102,9 +1103,16 @@ const chevron =
   }
 
   /* =================== AGENDA =================== */
+  /* Fond clair : on redéfinit localement les tokens « sur fond vert » vers des
+     valeurs « sur fond clair » → le texte secondaire, les filets et les accents
+     s'adaptent automatiquement. Le vert/doré reste en accent. */
   .agenda {
-    background: var(--vert-profond);
-    color: var(--sur-vert);
+    background: var(--creme);
+    color: var(--encre);
+    --sur-vert: var(--encre);
+    --sur-vert-muted: var(--muted);
+    --or-clair: var(--sinople);
+    --trait-clair: var(--trait);
   }
   .agenda__grid {
     display: grid;
@@ -1253,8 +1261,12 @@ const chevron =
 
   /* =================== INFOS PRATIQUES =================== */
   .pratique {
-    background: var(--sinople-section);
-    color: var(--sur-vert);
+    background: var(--creme-2);
+    color: var(--encre);
+    --sur-vert: var(--encre);
+    --sur-vert-muted: var(--muted);
+    --or-clair: var(--sinople);
+    --trait-clair: var(--trait);
   }
   .pratique__title {
     font-size: clamp(30px, 4vw, 46px);
@@ -1340,6 +1352,18 @@ const chevron =
   .pratique__links a:hover {
     border-color: #fff;
   }
+
+  /* Accueil en fond clair : le vert/doré devient accent (corrige les anciens
+     textes blancs prévus pour fond vert). */
+  .agenda__more { color: var(--sinople); }
+  .agenda__item:hover { background: var(--color-primary-soft); }
+  .pratique__row dd,
+  .pratique__addr strong { color: var(--encre); }
+  .pratique__addr { color: var(--encre-douce); }
+  .pratique__addr a,
+  .pratique__links a { color: var(--sinople); }
+  .pratique__addr a:hover,
+  .pratique__links a:hover { border-color: var(--sinople); }
 
   /* =================== RESPONSIVE =================== */
   @media (max-width: 1080px) {

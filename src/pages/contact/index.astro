@@ -303,7 +303,15 @@ const sujets = [
   }
   .hours__dot.is-open { background: #2f9c54; }
 
-  /* Annexe */
+  /* Annexe — fond clair, accents verts/dorés */
+  .annexe {
+    background: var(--creme-2);
+    color: var(--encre);
+    --sur-vert: var(--encre);
+    --sur-vert-muted: var(--muted);
+    --or-clair: var(--sinople);
+    --trait-clair: var(--trait);
+  }
   .annexe__grid { align-items: center; }
   .annexe__lede {
     margin: 14px 0 0;
@@ -316,20 +324,21 @@ const sujets = [
     font-style: normal;
     font-size: 17px;
     line-height: 1.8;
-    background: rgba(255, 255, 255, 0.08);
-    border-top: 2px solid var(--or-clair);
+    background: var(--color-card);
+    border: 1px solid var(--trait);
+    border-top: 2px solid var(--or);
     padding: clamp(18px, 2.4vw, 26px);
-    color: #ebe6d6;
+    color: var(--encre-douce);
   }
-  .annexe__h { display: block; margin-bottom: 10px; color: #fff; font-weight: 600; }
+  .annexe__h { display: block; margin-bottom: 10px; color: var(--encre); font-weight: 600; }
   .annexe__addr a {
-    color: #fff;
+    color: var(--sinople);
     text-decoration: none;
     font-weight: 600;
     border-bottom: 1px solid var(--or);
     overflow-wrap: anywhere;
   }
-  .annexe__addr a:hover { border-color: #fff; }
+  .annexe__addr a:hover { border-color: var(--sinople); }
 
   /* Urgences */
   .urg-grid {
@@ -384,7 +393,15 @@ const sujets = [
     border-bottom: 1px solid var(--or);
   }
 
-  /* Transports */
+  /* Transports — fond clair, accents verts/dorés */
+  .transports {
+    background: var(--creme-3);
+    color: var(--encre);
+    --sur-vert: var(--encre);
+    --sur-vert-muted: var(--muted);
+    --or-clair: var(--sinople);
+    --trait-clair: var(--trait);
+  }
   .transports__lede {
     margin: 14px 0 14px;
     font-size: 17px;
@@ -393,9 +410,11 @@ const sujets = [
     max-width: 48ch;
   }
   .transports__contact { font-size: 15px; color: var(--sur-vert-muted); margin: 0 0 16px; }
-  .transports__cta { color: #fff; }
-  .lignes { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; background: var(--trait-clair); border-block: 2px solid var(--or-clair); }
-  .ligne { background: var(--vert-profond); padding: 18px 20px; }
+  .transports__cta { color: var(--sinople); }
+  .lignes { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .ligne { background: var(--color-card); border: 1px solid var(--trait); border-top: 2px solid var(--or); padding: 18px 20px; }
+  .annexe .block-title--light,
+  .transports .block-title--light { color: var(--encre); }
   .ligne__nom { display: block; font-family: var(--serif); font-size: 20px; color: var(--or-clair); }
   .ligne__detail { font-size: 15px; color: var(--sur-vert); }
 
