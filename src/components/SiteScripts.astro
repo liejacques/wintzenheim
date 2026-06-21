@@ -180,6 +180,24 @@
   const searchInput = document.querySelector("[data-search-input]");
   const searchItems = Array.from(document.querySelectorAll("[data-search-item]"));
   const searchEmpty = document.querySelector("[data-search-empty]");
+
+  // Fermeture animée du panneau de recherche. dialog.close() rend le focus au
+  // bouton déclencheur (natif). Respecte prefers-reduced-motion.
+  const reduceMotionSearch = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const closeSearch = () => {
+    if (!(searchDialog instanceof HTMLDialogElement) || !searchDialog.open) return;
+    if (reduceMotionSearch) { searchDialog.close(); return; }
+    if (searchDialog.classList.contains("is-closing")) return;
+    searchDialog.classList.add("is-closing");
+    const finish = () => {
+      searchDialog.removeEventListener("animationend", finish);
+      searchDialog.classList.remove("is-closing");
+      searchDialog.close();
+    };
+    searchDialog.addEventListener("animationend", finish, { once: true });
+    setTimeout(() => { if (searchDialog.classList.contains("is-closing")) finish(); }, 300);
+  };
+
   const normalizeSearch = (value) =>
     value
       .toLowerCase()
@@ -217,9 +235,14 @@
   }
   searchItems.forEach((item) => {
     item.querySelector("a")?.addEventListener("click", () => {
-      if (searchDialog instanceof HTMLDialogElement && searchDialog.open) searchDialog.close();
+      if (searchDialog instanceof HTMLDialogElement && searchDialog.open) closeSearch();
     });
   });
+  document.querySelectorAll("[data-search-close]").forEach((b) => b.addEventListener("click", closeSearch));
+  if (searchDialog instanceof HTMLDialogElement) {
+    // Échap : fermeture animée (on intercepte l'annulation native du <dialog>).
+    searchDialog.addEventListener("cancel", (e) => { e.preventDefault(); closeSearch(); });
+  }
   document.querySelectorAll(".mobile-menu__panel a").forEach((link) => {
     link.addEventListener("click", () => link.closest("details")?.removeAttribute("open"));
   });

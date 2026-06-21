@@ -918,7 +918,9 @@ const chevron =
   .destination-card__shade {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, transparent 32%, rgba(8, 29, 14, 0.82) 100%);
+    /* Voile renforcé : texte blanc + suréxergue dorée lisibles (AA) même sur
+       les photos claires des cartes secondaires. */
+    background: linear-gradient(180deg, transparent 18%, rgba(20, 40, 30, 0.5) 55%, rgba(20, 40, 30, 0.92) 100%);
   }
   .destination-card__content {
     position: absolute;

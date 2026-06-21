@@ -82,9 +82,4 @@ export const jumelages = [
     pays: "Allemagne",
     detail: "Jumelage avec Möhnesee (Rhénanie-du-Nord-Westphalie).",
   },
-  {
-    ville: "Pont-du-Casse",
-    pays: "France",
-    detail: "Pacte d'amitié avec Pont-du-Casse (Lot-et-Garonne).",
-  },
 ];

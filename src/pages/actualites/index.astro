@@ -70,7 +70,7 @@ const leadPhoto = lead?.image ? articleImages[lead.image] : photos.rueClemenceau
   .lead__chapo { font-size: 18px; line-height: 1.6; color: var(--encre-douce); margin: 0 0 12px; max-width: 64ch; }
   .lead__date { font-size: 14px; color: var(--muted); margin: 0; }
 
-  .list__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1px; background: var(--trait); border-block: 2px solid var(--or); }
+  .list__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1px; background: var(--trait); border-block: 2px solid var(--or); }
   .news { background: var(--creme-2); }
   .news__link { display: block; padding: clamp(20px, 2.6vw, 28px); text-decoration: none; color: inherit; height: 100%; }
   .news__link:hover { background: var(--creme); }

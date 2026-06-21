@@ -131,7 +131,7 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
         <p class="search-dialog__eyebrow">Accès direct</p>
         <h2 id="search-dialog-title">Que cherchez-vous&nbsp;?</h2>
       </div>
-      <button class="search-dialog__close" value="close" aria-label="Fermer la recherche">×</button>
+      <button type="button" class="search-dialog__close" data-search-close aria-label="Fermer la recherche">×</button>
     </form>
     <label class="search-field" for="quick-search">
       <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
@@ -387,6 +387,27 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
   .search-dialog::backdrop {
     background: rgba(12, 30, 17, 0.7);
     backdrop-filter: blur(3px);
+  }
+  /* Apparition / fermeture douces (symétriques) */
+  .search-dialog[open] {
+    animation: sd-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .search-dialog.is-closing {
+    animation: sd-out 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes sd-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes sd-out {
+    from { opacity: 1; transform: none; }
+    to { opacity: 0; transform: translateY(8px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .search-dialog[open],
+    .search-dialog.is-closing {
+      animation: none;
+    }
   }
   .search-dialog__inner {
     padding: clamp(24px, 5vw, 42px);
