@@ -700,16 +700,18 @@ const chevron =
     align-items: center;
     gap: 14px;
     padding: 16px 18px;
-    background: rgba(18, 51, 26, 0.96);
-    color: #fff;
+    background: rgba(255, 253, 248, 0.96);
+    color: var(--encre);
+    border-top: 2px solid var(--or);
+    backdrop-filter: blur(4px);
     text-decoration: none;
     box-shadow: 0 12px 28px rgba(10, 24, 13, 0.22);
   }
   .hero__event:hover {
-    background: var(--sinople-fonce);
+    background: #fff;
   }
   .hero__event-date {
-    color: var(--or-clair);
+    color: var(--sinople);
     font-family: var(--serif);
     font-size: 23px;
     font-weight: 600;
@@ -720,7 +722,7 @@ const chevron =
     display: block;
   }
   .hero__event small {
-    color: var(--sur-vert-muted);
+    color: var(--muted);
     font-size: 11px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -729,7 +731,7 @@ const chevron =
     font-size: 14px;
   }
   .hero__event svg {
-    color: var(--or-clair);
+    color: var(--sinople);
   }
   .hero__caption {
     position: absolute;
@@ -742,9 +744,14 @@ const chevron =
   }
 
   /* =================== EN BREF =================== */
+  /* Barre de chiffres-clés en fond clair (le vert ne reste que sur le héro et
+     le footer). Tokens « sur vert » redéfinis localement → accents verts. */
   .enbref {
-    background: var(--vert-profond);
-    color: var(--sur-vert);
+    background: var(--creme-3);
+    color: var(--encre);
+    border-top: 1px solid var(--trait);
+    --trait-clair: var(--trait);
+    --or-clair: var(--sinople);
   }
   .enbref .container {
     padding-block: 22px;
@@ -790,7 +797,7 @@ const chevron =
     font-family: var(--serif);
     font-size: 18px;
     font-weight: 600;
-    color: #fff;
+    color: var(--encre);
   }
 
   /* =================== DÉMARCHES =================== */

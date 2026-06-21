@@ -173,8 +173,9 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
     z-index: 100;
   }
   .masthead-top {
-    background: var(--vert-profond);
-    color: var(--sur-vert);
+    background: var(--creme-2);
+    color: var(--muted);
+    border-bottom: 1px solid var(--trait);
     font-size: 13px;
   }
   .masthead-top__inner {
@@ -188,7 +189,7 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    color: #fff;
+    color: var(--encre);
     text-decoration: none;
     font-weight: 600;
     white-space: nowrap;
@@ -201,12 +202,12 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: var(--or-clair);
-    box-shadow: 0 0 0 3px rgba(226, 201, 122, 0.14);
+    background: var(--color-gold-strong);
+    box-shadow: 0 0 0 3px rgba(169, 132, 42, 0.16);
   }
   .office-state__dot.is-open {
-    background: #8ed69f;
-    box-shadow: 0 0 0 3px rgba(142, 214, 159, 0.14);
+    background: #2f9c54;
+    box-shadow: 0 0 0 3px rgba(47, 156, 84, 0.16);
   }
   .masthead-top__date {
     margin-left: auto;
@@ -786,13 +787,14 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
       height: 60px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      background: var(--vert-profond);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 253, 248, 0.97);
+      color: var(--encre);
+      border: 1px solid var(--trait);
       border-top: 2px solid var(--or);
       border-radius: 6px;
       overflow: hidden;
-      box-shadow: 0 10px 28px rgba(12, 30, 17, 0.26);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 12px 30px rgba(12, 30, 17, 0.18);
       transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
       will-change: transform, opacity;
     }
@@ -812,7 +814,7 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
       justify-content: center;
       gap: 4px;
       border: 0;
-      border-right: 1px solid rgba(255, 255, 255, 0.14);
+      border-right: 1px solid var(--trait);
       background: transparent;
       color: inherit;
       font: 600 12px/1 var(--sans);
@@ -820,11 +822,11 @@ const chevron = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" str
       cursor: pointer;
     }
     .mobile-dock svg {
-      color: var(--or-clair);
+      color: var(--sinople);
     }
     .mobile-dock a:active,
     .mobile-dock button:active {
-      background: rgba(255, 255, 255, 0.1);
+      background: var(--color-primary-soft);
     }
     .mobile-dock > :last-child {
       border-right: 0;

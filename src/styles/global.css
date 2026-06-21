@@ -29,7 +29,6 @@ body {
 }
 .section--dark :focus-visible,
 .section--sinople :focus-visible,
-.masthead-top :focus-visible,
 .site-footer :focus-visible {
   outline-color: var(--or-clair);
 }
